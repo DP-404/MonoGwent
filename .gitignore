@@ -1,0 +1,6 @@
+
+src/bin/Debug
+src/Content/obj
+src/obj/Debug
+src/obj/MonoGwent*
+*.cache
