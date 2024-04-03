@@ -7537,11 +7537,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Programs\\MonoGwent\\src\\MonoGwent.csproj",
+      "projectUniqueName": "F:\\Programs\\MonoGwent\\MonoGwent.csproj",
       "projectName": "MonoGwent",
-      "projectPath": "F:\\Programs\\MonoGwent\\src\\MonoGwent.csproj",
+      "projectPath": "F:\\Programs\\MonoGwent\\MonoGwent.csproj",
       "packagesPath": "C:\\Users\\Maribel\\.nuget\\packages\\",
-      "outputPath": "F:\\Programs\\MonoGwent\\src\\obj\\",
+      "outputPath": "F:\\Programs\\MonoGwent\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Maribel\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -7599,5 +7599,13 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Error occurred while getting package vulnerability data: Se produjo un error durante el intento de conexión ya que la parte conectada no respondió adecuadamente tras un periodo de tiempo, o bien se produjo un error en la conexión establecida ya que el host conectado no ha podido responder. (api.nuget.org:443)"
+    }
+  ]
 }

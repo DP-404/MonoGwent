@@ -1,6 +1,10 @@
 
-src/bin/Debug
-src/Content/obj
-src/obj/Debug
-src/obj/MonoGwent*
+bin/Debug
+Content/bin
+Content/obj
+obj/Debug
+obj/MonoGwent*
 *.cache
+
+.fake
+.ionide
