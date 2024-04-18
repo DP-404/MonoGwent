@@ -19,21 +19,26 @@ public class GraphicTools{
 
 public class Gwent : Game
 {
-    private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
+    private GraphicsDeviceManager graphics;
+    private SpriteBatch spriteBatch;
     private GraphicTools graphicTools;
+
+    private Point gameResolution = new (1024,720);
+    private RenderTarget2D renderTarget;
+    private Rectangle renderTargetDestination;
+    private Color clearColor = Color.Black;
 
     private BattleManager bm;
 
     public Gwent()
     {
-        _graphics = new GraphicsDeviceManager(this)
+        graphics = new GraphicsDeviceManager(this)
         {
             IsFullScreen = false,
-            PreferredBackBufferWidth = 1024,
-            PreferredBackBufferHeight = 720
+            PreferredBackBufferWidth = gameResolution.X,
+            PreferredBackBufferHeight = gameResolution.Y
         };
-        _graphics.ApplyChanges();
+        graphics.ApplyChanges();
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -53,8 +58,11 @@ public class Gwent : Game
 
     protected override void LoadContent()
     {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
-        graphicTools = new GraphicTools(_graphics, _spriteBatch, Content);
+        spriteBatch = new SpriteBatch(GraphicsDevice);
+        graphicTools = new GraphicTools(graphics, spriteBatch, Content);
+
+        renderTarget = new RenderTarget2D(GraphicsDevice, gameResolution.X, gameResolution.Y);
+        renderTargetDestination = GetRenderTargetDestination(gameResolution, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
         // TODO: use this.Content to load your game content here
 
@@ -65,6 +73,9 @@ public class Gwent : Game
     {
         if (Keyboard.GetState().IsKeyDown(Keys.Escape)) 
             Exit();
+        if (Keyboard.GetState().IsKeyDown(Keys.F4)) {
+            ToggleFullScreen();
+        }
 
         // TODO: Add your update logic here
 
@@ -74,12 +85,71 @@ public class Gwent : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+        GraphicsDevice.SetRenderTarget(renderTarget);
+        GraphicsDevice.Clear(clearColor);
+
         // TODO: Add your drawing code here
 
         graphicTools.spriteBatch.Begin();
         bm.Draw(graphicTools);
-        base.Draw(gameTime);
         graphicTools.spriteBatch.End();
+
+        GraphicsDevice.SetRenderTarget(null);
+        GraphicsDevice.Clear(clearColor);
+
+        spriteBatch.Begin();
+        spriteBatch.Draw(renderTarget, renderTargetDestination, Color.White);
+        spriteBatch.End();
+
+        base.Draw(gameTime);
+    }
+
+    void ToggleFullScreen()
+    {
+        if (!graphics.IsFullScreen)
+        {
+            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        }
+        else
+        {
+            graphics.PreferredBackBufferWidth = gameResolution.X;
+            graphics.PreferredBackBufferHeight = gameResolution.Y;
+        }
+        graphics.IsFullScreen = !graphics.IsFullScreen;
+        graphics.ApplyChanges();
+
+        renderTargetDestination = GetRenderTargetDestination(gameResolution, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+    }
+
+    Rectangle GetRenderTargetDestination(Point resolution, int preferredBackBufferWidth, int preferredBackBufferHeight)
+    {
+        float resolutionRatio = (float)resolution.X / resolution.Y;
+        float screenRatio;
+        Point bounds = new Point(preferredBackBufferWidth, preferredBackBufferHeight);
+        screenRatio = (float)bounds.X / bounds.Y;
+        float scale;
+        Rectangle rectangle = new Rectangle();
+
+        if (resolutionRatio < screenRatio)
+            scale = (float)bounds.Y / resolution.Y;
+        else if (resolutionRatio > screenRatio)
+            scale = (float)bounds.X / resolution.X;
+        else
+        {
+            // Resolution and window/screen share aspect ratio
+            rectangle.Size = bounds;
+            return rectangle;
+        }
+        rectangle.Width = (int)(resolution.X * scale);
+        rectangle.Height = (int)(resolution.Y * scale);
+        return CenterRectangle(new Rectangle(Point.Zero, bounds), rectangle);
+    }
+
+    static Rectangle CenterRectangle(Rectangle outerRectangle, Rectangle innerRectangle)
+    {
+        Point delta = outerRectangle.Center - innerRectangle.Center;
+        innerRectangle.Offset(delta);
+        return innerRectangle;
     }
 }
