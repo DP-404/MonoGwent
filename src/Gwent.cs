@@ -39,11 +39,6 @@ public class Gwent : Game
         IsMouseVisible = true;
 
         bm = new BattleManager();
-        Deck[] decks = {
-            DecksDump.Deck1.GetDeck(),
-            DecksDump.Deck1.GetDeck()
-        };
-        bm.Initialize(decks);
     }
 
     protected override void Initialize()
@@ -51,6 +46,9 @@ public class Gwent : Game
         // TODO: Add your initialization logic here
 
         base.Initialize();
+        var deck1 = DecksDump.Deck1.GetDeck();
+        var deck2 = DecksDump.Deck1.GetDeck();
+        bm.Initialize(deck1, deck2);
     }
 
     protected override void LoadContent()
@@ -79,7 +77,9 @@ public class Gwent : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
         // TODO: Add your drawing code here
 
+        graphicTools.spriteBatch.Begin();
         bm.Draw(graphicTools);
         base.Draw(gameTime);
+        graphicTools.spriteBatch.End();
     }
 }

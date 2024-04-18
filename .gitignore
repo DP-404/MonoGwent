@@ -4,6 +4,7 @@ Content/bin
 Content/obj
 obj/Debug
 obj/MonoGwent*
+*.psd
 *.cache
 
 .fake

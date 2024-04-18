@@ -1,223 +1,162 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace MonoGwent;
 
-public class BattleManager
+public partial class BattleManager
 {
     private class Cursor {
         private const int DEFAULT_INDEX = 0;
         public const int NONE = -1;
         public Section section = Section.HAND;
         public int index = DEFAULT_INDEX;
-        public int sub_index = DEFAULT_INDEX;
+        public int hand = NONE;
+        public int field = NONE;
         public bool holding = false;
 
-        public Texture2D cardSquare;
+        public Texture2D mark_card_hovered;
+        public Texture2D mark_card_selected;
+        public Texture2D mark_row_hovered;
+        public Texture2D mark_row_enabled;
+        public Texture2D mark_row_disabled;
+        public Texture2D mark_row_hovered_disabled;
 
-        public void Move(Section s, int i) {
+        public void Move(Section s, int i, int h, int f, bool hold=true) {
             section = s;
             index = i;
+            hand = h;
+            field = f;
+            if (hold) Hold();
         }
-        public void Move(Section s) {
-            Move(s, DEFAULT_INDEX);
+        public void Move(Section s, int i, bool hold=true) {
+            var f = NONE;
+            var h = NONE;
+            if (s == Section.FIELD) {
+                h = hand;
+            }
+            else if (s == Section.ROW) {
+                f = field;
+                h = hand;
+            }
+            Move(s, i, h, f, hold);
         }
-        public void Move(int i) {
-            Move(section, i);
+        public void Move(Section s, bool hold=true) {
+            Move(s, DEFAULT_INDEX, hold);
+        }
+        public void Move(int i, bool hold=true) {
+            Move(section, i, hand, field, hold);
         }
         public void Hold() {holding = true;}
         public void Release() {holding = false;}
-
     }
+
     private enum Scene {
+        START_GAME,
+        REDRAW,
+        START_PHASE,
         START_TURN,
         PLAY_TURN,
         END_TURN,
+        END_PHASE,
+        END_GAME
     }
     private enum Section {
         HAND,
         FIELD,
+        ROW,
+        LEADER,
     }
 
     private const string PLAYER_1_NAME = "Radiant";
     private const string PLAYER_2_NAME = "Dire";
-    private const int STARTING_CARDS = 10;
-    private const int PREVIEW_CARD_XPOS = 800;
-    private const int PREVIEW_CARD_YPOS = 0;
-    private const int PREVIEW_CARD_WIDTH = 224;
-    private const int PREVIEW_CARD_HEIGHT = 325;
-    private const int PREVIEW_CARD_XOFFSET = 55;
-    private const int PREVIEW_CARD_YOFFSET = 50;
+    private const int REDRAW_PHASE = 0;
+    private const int LOSE_HEALTH = 0;
 
-    private int phase = 0;
-    private Scene scene = Scene.START_TURN;
+    private int phase = REDRAW_PHASE;
+    private Scene scene = Scene.START_GAME;
     private Cursor cursor = new ();
-    private Player player_1;
-    private Player player_2;
-    private Player turn;
-
-    private Texture2D background;
-    private Texture2D turnEndBackground;
-
-    private Player getRivalPlayer(Player player) {
-        return player==player_1? player_2 : player_1;
+    private Player player_1 = new Player(PLAYER_1_NAME);
+    private Player player_2 = new Player(PLAYER_2_NAME);
+    private Player[] players {get => [player_1, player_2];}
+    private Player current_player;
+    private Player rival_player {get => current_player==player_1? player_2 : player_1;}
+    private Player highscore_player {
+        get {
+            var p1 = player_1.GetPower(weathers);
+            var p2 = player_2.GetPower(weathers);
+            if
+            (p1 > p2) {return player_1;}
+            else if
+            (p2 > p1) {return player_2;}
+            else
+            {return null;}
+        }
     }
+    private Player victor = null;
+    private Dictionary<RowType,List<CardWeather>> weathers
+    = Enum.GetValues(typeof(RowType)).Cast<RowType>().ToDictionary(x => x, x => new List<CardWeather>());
 
-    private void GameStart() {
-        phase += 1;
-        player_1.GetCards(STARTING_CARDS);
-        player_2.GetCards(STARTING_CARDS);
-    }
+    private Texture2D img_background;
+    private Texture2D img_dim_background;
+    private Texture2D img_round_start;
+    private Texture2D img_turn_start;
+    private Texture2D img_turn_passed;
+    private Texture2D img_victory;
+    private Texture2D img_draw;
+    private SpriteFont fnt_message;
 
-    private void StartTurn() {
-        if (!turn.has_passed) turn = getRivalPlayer(turn);
-        cursor.Move(Section.HAND);
-        scene = Scene.START_TURN;
+    public void InitializePlayers() {
+        player_1.Initialize();
+        player_2.Initialize();
+        current_player = (Random.Shared.Next(2)==0)? player_1 : player_2;
     }
-    private void PlayTurn() {
-        scene = Scene.START_TURN;
-    }
-    private void EndTurn() {
-        scene = Scene.END_TURN;
-    }
-
-
-    public void Initialize(Deck[] decks) {
-        player_1 = new Player(PLAYER_1_NAME, decks[0]);
-        player_2 = new Player(PLAYER_2_NAME, decks[1]);
-        turn = (Random.Shared.Next(1)==0)? player_1 : player_2;
+    public void Initialize(Deck deck1, Deck deck2) {
+        current_player = player_1;
+        player_1.Initialize(deck1);
+        player_2.Initialize(deck2);
     }
 
     public void LoadContent(GraphicTools gt) {
-        turnEndBackground = new Texture2D(
-            gt.graphics.GraphicsDevice,
-            gt.graphics.PreferredBackBufferWidth,
-            gt.graphics.PreferredBackBufferHeight
-        );
-        Card.hover_image = gt.content.Load<Texture2D>(Card.HOVER_NAME);
-        Card.back_image = gt.content.Load<Texture2D>(Card.BACK_NAME);
-        cursor.cardSquare = new Texture2D(gt.graphics.GraphicsDevice, Card.WIDTH, Card.HEIGHT);
-        cursor.cardSquare.CreateBorder(5, Color.Red);
+        Card.img_back = gt.content.Load<Texture2D>("card_back");
+        Card.img_power_normal = gt.content.Load<Texture2D>("power_normal");
+        Card.img_power_hero = gt.content.Load<Texture2D>("power_hero");
+        Card.img_melee = gt.content.Load<Texture2D>("melee");
+        Card.img_range = gt.content.Load<Texture2D>("range");
+        Card.img_siege = gt.content.Load<Texture2D>("siege");
+        Card.img_rows = new() {
+            {RowType.MELEE,Card.img_melee},
+            {RowType.RANGE,Card.img_range},
+            {RowType.SIEGE,Card.img_siege}
+        };
 
-        background = gt.content.Load<Texture2D>("desk");
-        player_1.LoadContent(gt);
-        player_2.LoadContent(gt);
-    }
+        cursor.mark_card_hovered = new Texture2D(gt.graphics.GraphicsDevice, Card.WIDTH, Card.HEIGHT);
+        cursor.mark_card_hovered.CreateBorder(6, Color.Lime);
+        cursor.mark_card_selected = new Texture2D(gt.graphics.GraphicsDevice, Card.WIDTH, Card.HEIGHT);
+        cursor.mark_card_selected.CreateBorder(3, Color.DeepSkyBlue);
 
-    public void Update() {
-        if (phase == 0) GameStart();
+        cursor.mark_row_hovered = new Texture2D(gt.graphics.GraphicsDevice, Player.ROW_WIDTH, Card.HEIGHT);
+        cursor.mark_row_hovered.CreateBorder(5, Color.Lime);
+        cursor.mark_row_enabled = new Texture2D(gt.graphics.GraphicsDevice, Player.ROW_WIDTH, Card.HEIGHT);
+        cursor.mark_row_enabled.CreateBorder(5, Color.Silver);
+        cursor.mark_row_disabled = new Texture2D(gt.graphics.GraphicsDevice, Player.ROW_WIDTH, Card.HEIGHT);
+        cursor.mark_row_disabled.CreateBorder(5, Color.Black);
+        cursor.mark_row_hovered_disabled = new Texture2D(gt.graphics.GraphicsDevice, Player.ROW_WIDTH, Card.HEIGHT);
+        cursor.mark_row_hovered_disabled.CreateBorder(5, Color.Red);
 
-        if (
-            scene == Scene.END_TURN &&
-            Keyboard.GetState().IsKeyDown(Keys.Enter)
-        ) StartTurn();
-
-        if (
-            scene != Scene.END_TURN &&
-            Keyboard.GetState().IsKeyDown(Keys.Tab)
-        ) EndTurn();
-
-        if (
-            scene == Scene.START_TURN &&
-            cursor.section == Section.HAND &&
-            cursor.index != 0 &&
-            !cursor.holding &&
-            Keyboard.GetState().IsKeyDown(Keys.Left)
-        ) {
-            cursor.Move(cursor.index-1);
-            cursor.Hold();
-        }
-
-        if (
-            scene == Scene.START_TURN &&
-            cursor.section == Section.HAND &&
-            cursor.index != player_1.hand.Count-1 &&
-            !cursor.holding &&
-            Keyboard.GetState().IsKeyDown(Keys.Right)
-        ) {
-            cursor.Move(cursor.index+1);
-            cursor.Hold();
-        }
-
-        if (
-            cursor.holding &&
-            Keyboard.GetState().IsKeyUp(Keys.Up) &&
-            Keyboard.GetState().IsKeyUp(Keys.Down) &&
-            Keyboard.GetState().IsKeyUp(Keys.Left) &&
-            Keyboard.GetState().IsKeyUp(Keys.Right)
-        ) cursor.Release();
-    }
-
-    public void Draw(GraphicTools gt) {
-        // Draw Board
-        gt.spriteBatch.Begin();
-        gt.spriteBatch.Draw(background, new Vector2(0,0), Color.White);
-        gt.spriteBatch.End();
-
-        // Draw Fields
-        player_1.Draw(gt, turn == player_1);
-        player_2.Draw(gt, turn == player_2);
-
-        // Draw Cursor
-        gt.spriteBatch.Begin();
-        if (cursor.section == Section.HAND) {
-            var position = Card._GetRowPosition(
-                cursor.index,
-                turn.hand.Count,
-                Player.HAND_XPOS,
-                Player.HAND_PLAYER_YPOS,
-                Player.HAND_WIDTH
-            );
-            gt.spriteBatch.Draw(
-                cursor.cardSquare,
-                position,
-                Color.Red
-            );
-        }
-        gt.spriteBatch.End();
-
-        // Draw Selected Card
-        if (
-            scene == Scene.START_TURN &&
-            cursor.index != Cursor.NONE
-        ) {
-            void DrawSelectedCard(Card card) {
-                gt.spriteBatch.Begin();
-                gt.spriteBatch.Draw(
-                    card.image,
-                    new Vector2(PREVIEW_CARD_XPOS+PREVIEW_CARD_XOFFSET, PREVIEW_CARD_YPOS+PREVIEW_CARD_YOFFSET),
-                    null,
-                    Color.White,
-                    new Vector2(0.3125f, 0.3640f)
-                );
-                gt.spriteBatch.Draw(
-                    Card.hover_image,
-                    new Vector2(PREVIEW_CARD_XPOS, PREVIEW_CARD_YPOS),
-                    null,
-                    Color.White,
-                    0.4375f
-                );
-                gt.spriteBatch.End();
-            }
-            if (cursor.section == Section.HAND) {
-                if (player_1.hand.Count != 0) {
-                    DrawSelectedCard(turn.hand[cursor.index]);
-                }
-            } else if (cursor.section == Section.FIELD) {
-                if (cursor.sub_index != Cursor.NONE) {
-                    DrawSelectedCard(turn.card_rows[cursor.index][cursor.sub_index]);
-                }
-            }
-        }
-
-        // Draw End Turn Background
-        if (scene == Scene.END_TURN) {
-            gt.spriteBatch.Begin();
-            gt.spriteBatch.Draw(turnEndBackground, new Vector2(0,0), Color.Black * 0.8f);
-            gt.spriteBatch.End();
-        }
+        img_background = gt.content.Load<Texture2D>("desk");
+        img_dim_background = gt.content.Load<Texture2D>("dim_background");
+        img_round_start = gt.content.Load<Texture2D>("round_start");
+        img_turn_start = gt.content.Load<Texture2D>("turn_start");
+        img_turn_passed = gt.content.Load<Texture2D>("turn_passed");
+        img_victory = gt.content.Load<Texture2D>("victory");
+        img_draw = gt.content.Load<Texture2D>("draw");
+        fnt_message = gt.content.Load<SpriteFont>("Arial");
+        foreach (var player in players) player.LoadContent(gt);
+        CardsDump.LoadContent(gt);
     }
 
 }

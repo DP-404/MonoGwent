@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace MonoGwent;
 
 static class Utilities {
+
     public static void CreateBorder( this Texture2D texture,  int borderWidth, Color borderColor ) {
         Color[] colors = new Color[ texture.Width * texture.Height ];
 
@@ -25,8 +26,8 @@ static class Utilities {
 
         texture.SetData( colors );
     }
-    public static void Draw (this SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float scale) {
-        spriteBatch.Draw(
+    public static void Draw (this GraphicTools gt, Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float scale) {
+        gt.spriteBatch.Draw(
             texture,
             position,
             sourceRectangle,
@@ -47,6 +48,19 @@ static class Utilities {
             0,
             new Vector2(0,0),
             scale,
+            SpriteEffects.None,
+            0
+        );
+    }
+    public static void Draw (this SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float scale) {
+        spriteBatch.Draw(
+            texture,
+            position,
+            sourceRectangle,
+            color,
+            0,
+            new Vector2(0,0),
+            new Vector2(scale),
             SpriteEffects.None,
             0
         );

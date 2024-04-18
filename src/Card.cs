@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace MonoGwent;
 
@@ -12,27 +13,38 @@ public enum RowType {
     SIEGE
 }
 
+public enum LeaderEffect {
+    DRAW_EXTRA_CARD,
+}
+
 public class Card
 {
-    public static readonly string HOVER_NAME = "card_hover";
-    public static readonly string BACK_NAME = "card_back";
-    public const int HEIGHT = 80;
+    public const int ACTUAL_WIDTH = 520;
+    public const int ACTUAL_HEIGHT = 768;
     public const int WIDTH = 55;
+    public const int HEIGHT = 80;
+    public static readonly Vector2 SCALE =
+    new Vector2((float)WIDTH/ACTUAL_WIDTH, (float)HEIGHT/ACTUAL_HEIGHT);
 
-    public string img_name;
+    public RowType[] types {get; init;}
 
-    public Texture2D image;
-    public static Texture2D hover_image;
-    public static Texture2D back_image;
+    public Texture2D img;
+    public static Texture2D img_back;
+    public static Texture2D img_power_normal;
+    public static Texture2D img_power_hero;
+    public static Texture2D img_melee;
+    public static Texture2D img_range;
+    public static Texture2D img_siege;
+    public static Dictionary<RowType,Texture2D> img_rows;
 
     public static Vector2 _GetRowPosition(int index, int count, int xpos, int ypos, int width) {
         var xConsumed = count * WIDTH;
-        var xFree = (xConsumed > width)? 0 : (width - xConsumed) / 2;
+        var xUsed = width - xConsumed;
+        var xFree = (xUsed < 0)? 0 : xUsed / 2;
         return new Vector2(
             xpos            // Row starting position
             +WIDTH*index    // Card position in row
-            //-(WIDTH/2)      // Center card position
-            +xFree,         // Center row position
+            +((xUsed > 0)? xFree : xUsed / count * index),         // Center row position
             ypos
         );
     }
@@ -40,48 +52,36 @@ public class Card
         return _GetRowPosition(index, count, xpos, ypos, width);
     }
 
-    public void LoadContent(GraphicTools gt) {
-        image = gt.content.Load<Texture2D>(img_name);
-    }
-    public void Draw(GraphicTools gt, int xpos, int ypos) {
-        gt.spriteBatch.Begin();
-        gt.spriteBatch.Draw(
-            image,
-            new Vector2(xpos, ypos),
-            null,
-            Color.Black,
-            0.1074f
-        );
-        gt.spriteBatch.End();
-    }
 }
 
 public class CardUnit : Card {
 
-    public RowType[] types {get; init;}
+    public virtual bool is_hero {get; init;}
     public virtual int power {get; set;}
-    public bool is_hero {get; init;}
-    public int effect {get; init;}
+    public virtual int effect {get; init;}
+
+    public bool is_decoy {get => power == 0? true : false;}
+
+    public int ApplyWeathers(List<CardWeather> weathers) {
+        int actual_power = power;
+        foreach (var weather in weathers) actual_power = Math.Min(actual_power, weather.penalty);
+        return actual_power;
+    }
+}
+
+public class CardLeader : Card {
+    public LeaderEffect effect;
+    public bool used = false;
 }
 
 public class CardWeather : Card {
 
     public int penalty;
-    public RowType[] types;
+    public bool is_dispel;
+
 }
 
 public class CardBoost : Card {
 
     public int bonus;
-    public RowType type;
-}
-
-public class CardDispel : Card {
-
-    public RowType[] types;
-}
-
-public class CardBait : CardUnit {
-
-    public override int power {get => 0;}
 }
