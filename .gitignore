@@ -1,9 +1,6 @@
 
-bin/Debug
-Content/bin
-Content/obj
-obj/Debug
-obj/MonoGwent*
+bin
+obj
 *.psd
 *.cache
 
