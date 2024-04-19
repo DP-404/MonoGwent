@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,8 +27,8 @@ static class Utilities {
 
         texture.SetData( colors );
     }
-    public static void Draw (this GraphicTools gt, Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float scale) {
-        gt.spriteBatch.Draw(
+    public static void Draw (this SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float scale) {
+        spriteBatch.Draw(
             texture,
             position,
             sourceRectangle,
@@ -52,17 +53,35 @@ static class Utilities {
             0
         );
     }
-    public static void Draw (this SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float scale) {
-        spriteBatch.Draw(
-            texture,
-            position,
-            sourceRectangle,
-            color,
-            0,
-            new Vector2(0,0),
-            new Vector2(scale),
-            SpriteEffects.None,
-            0
-        );
+    public static string WrapText(this GraphicTools gt, SpriteFont spriteFont, string text, float maxLineWidth)
+    {
+        string[] words = text.Split(' ');
+        StringBuilder sb = new StringBuilder();
+        float lineWidth = 0f;
+        float spaceWidth = spriteFont.MeasureString(" ").X;
+
+        foreach (string word in words)
+        {
+            Vector2 size = spriteFont.MeasureString(word);
+
+            if (lineWidth + size.X < maxLineWidth)
+            {
+                sb.Append(word + " ");
+                if (word.Contains('\n')) {
+                    lineWidth = spriteFont.MeasureString(word.Substring(word.LastIndexOf('\n'))).X;
+                }
+                else
+                {
+                    lineWidth += size.X + spaceWidth;
+                }
+            }
+            else
+            {
+                sb.Append("\n" + word + " ");
+                lineWidth = size.X + spaceWidth;
+            }
+        }
+
+        return sb.ToString();
     }
 }

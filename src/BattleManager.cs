@@ -81,6 +81,7 @@ public partial class BattleManager
 
     private int phase = REDRAW_PHASE;
     private Scene scene = Scene.START_GAME;
+    private bool help = false;
     private Cursor cursor = new ();
     private Player player_1 = new Player(PLAYER_1_NAME);
     private Player player_2 = new Player(PLAYER_2_NAME);

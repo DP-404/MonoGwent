@@ -29,7 +29,26 @@ public partial class BattleManager
     private const string TEXT_VICTORY = "The victor is {0}!";
     private const string TEXT_DRAW = "It's a draw. Players failed to decide a victor.";
     private const string TEXT_PRESS_ENTER = "Press Enter to continue.";
+    private const string TEXT_PRESS_F1 = "Press F1 for help.";
     private const string TEXT_CARD_TYPE = "Card Type: {0}";
+    private const int HELP_XPOS = 20;
+    private const int HELP_YPOS = 20;
+    private const string TEXT_HELP = @"
+MonoGwent Help
+
+Goal: Take turns to play one of your cards in your field to increase your power. When you are finished for the round, pass. When both players have passed, the round is over. The one with the higher power is the round winner. They who wins two rounds wins the game.
+
+Controls:
+Esc - Exit game
+F1 - Open/Close help
+F4 - Toggle Fullscreen/Window mode
+
+Arrow Keys - Move
+Enter - Accept
+Backspace - Return
+Right Shift - Select Leader
+Tab - Pass
+";
 
     private void DrawBoard(GraphicTools gt) {
         gt.spriteBatch.Draw(img_background, new Vector2(0,0), Color.White);
@@ -334,7 +353,8 @@ public partial class BattleManager
             scene == Scene.START_TURN ||
             scene == Scene.END_TURN ||
             scene == Scene.END_PHASE ||
-            scene == Scene.END_GAME
+            scene == Scene.END_GAME ||
+            help
         ) {
             gt.spriteBatch.Draw(
                 img_dim_background,
@@ -342,6 +362,8 @@ public partial class BattleManager
                 null,
                 Color.Black
             );
+
+            if (help) return;
 
             var text_xpos = gt.graphics.PreferredBackBufferWidth / 4;
             var text_ypos = gt.graphics.PreferredBackBufferHeight / 2;
@@ -457,7 +479,6 @@ public partial class BattleManager
 
             if (input) {
                 var input_size = fnt_message.MeasureString(TEXT_PRESS_ENTER);
-
                 gt.spriteBatch.DrawString(
                     fnt_message,
                     TEXT_PRESS_ENTER,
@@ -468,6 +489,28 @@ public partial class BattleManager
                     color
                 );
             }
+
+            var help_size = fnt_message.MeasureString(TEXT_PRESS_F1);
+            gt.spriteBatch.DrawString(
+                fnt_message,
+                TEXT_PRESS_F1,
+                new Vector2(
+                    (gt.graphics.PreferredBackBufferWidth - help_size.X) / 2,
+                    gt.graphics.PreferredBackBufferHeight * 4 / 5
+                ),
+                color
+            );
+        }
+    }
+    private void DrawHelp(GraphicTools gt) {
+        if (help) {
+            var wrapped_text = gt.WrapText(fnt_message, TEXT_HELP, 1000);
+            gt.spriteBatch.DrawString(
+                fnt_message,
+                wrapped_text,
+                new Vector2(HELP_XPOS, HELP_YPOS),
+                Color.White
+            );
         }
     }
 
@@ -478,6 +521,7 @@ public partial class BattleManager
         DrawSelectedCards(gt);
         DrawHoveredCardInfo(gt);
         DrawMessage(gt);
+        DrawHelp(gt);
     }
 
 }

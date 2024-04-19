@@ -189,6 +189,16 @@ public partial class BattleManager
             ClearWeather(row);
     }
 
+    private void UpdateHelp() {
+        // Await for input > Toggle Help
+        if (
+            !cursor.holding &&
+            Keyboard.GetState().IsKeyDown(Keys.F1)
+        ) {
+            cursor.Hold();
+            help = !help;
+        }
+    }
     private void UpdateStartGame() {
         // Await for input > Start new game
         if (
@@ -554,34 +564,36 @@ public partial class BattleManager
     }
 
     public void Update() {
+        UpdateHelp();
 
-        switch (scene)
-        {
-            case Scene.START_GAME:
-                UpdateStartGame();
-                break;
-            case Scene.REDRAW:
-                UpdateRedraw();
-                break;
-            case Scene.START_PHASE:
-                UpdateStartPhase();
-                break;
-            case Scene.START_TURN:
-                UpdateStartTurn();
-                break;
-            case Scene.PLAY_TURN:
-                UpdatePlayTurn();
-                break;
-            case Scene.END_TURN:
-                UpdateEndTurn();
-                break;
-            case Scene.END_PHASE:
-                UpdateEndPhase();
-                break;
-            case Scene.END_GAME:
-                UpdateEndGame();
-                break;
-
+        if (!help) {
+            switch (scene)
+            {
+                case Scene.START_GAME:
+                    UpdateStartGame();
+                    break;
+                case Scene.REDRAW:
+                    UpdateRedraw();
+                    break;
+                case Scene.START_PHASE:
+                    UpdateStartPhase();
+                    break;
+                case Scene.START_TURN:
+                    UpdateStartTurn();
+                    break;
+                case Scene.PLAY_TURN:
+                    UpdatePlayTurn();
+                    break;
+                case Scene.END_TURN:
+                    UpdateEndTurn();
+                    break;
+                case Scene.END_PHASE:
+                    UpdateEndPhase();
+                    break;
+                case Scene.END_GAME:
+                    UpdateEndGame();
+                    break;
+            }
         }
 
         // Release Cursor
