@@ -8,7 +8,7 @@ MonoGwent is a two-players card game. Each player is given a deck which they wil
 A deck is composed by +25 cards of different types:
 - **Unit**: these are the main type, as they add power to the player's overall. Unit cards can be played in any of the fields whose type is specified in the types of the card. The field types are Melee, Range and Siege. These can be:
     * **Silver**: decks can have up to 3 copies of these cards.
-    * **Gold (Hero)**: decks can only have 1 copy of these cards. They are also unaffected by any effect.
+    * **Golden (Hero)**: decks can only have 1 copy of these cards. They are also unaffected by any effect.
 - **Weather**: after being placed in any of the fields whose type is specified in the types of the card, all cards' power in this field for both players are decreased.
 - **Dispel**: cancel one Weather in any of the fields whose type is specified in the types of the card, or all Weathers at once.
 - **Boost**: increase the power of all cards in a single one of any of the fields whose type is specified in the types of the card.
@@ -65,3 +65,19 @@ Within the `Gwent.cs`, the game is run through an instance of the `Gwent` class 
 
 ## Content
 Content is managed through the [MonoGame Content Builder Tool (MGCB Editor)](https://docs.monogame.net/articles/tools/mgcb_editor.html).
+
+## TODO
+- [x] Game can be won.
+- [x] Enhanced GUI.
+- [x] Unit cards.
+    * [x] Silver cards.
+    * [x] Golden cards.
+    * [ ] Special effects.
+- [x] Leader cards.
+- [ ] Additional leader cards effects.
+- [x] Weather cards.
+- [x] Dispel cards.
+- [x] Boost cards.
+- [x] Decoy cards.
+- [ ] Build full fledged decks.
+- [ ] Deck selection scene.
