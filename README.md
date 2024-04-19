@@ -4,6 +4,16 @@ MonoGwent is a card game similar to the Gwent Card Game from The Witcher 3. It i
 # User Guide
 MonoGwent is a two-players card game. Each player is given a deck which they will use to play cards in the board in order to accumulate power and win rounds.
 
+## Key Bindings
+- Esc: exit game
+- F1: open/close help
+- F4: toggle Fullscreen/Window mode
+- Arrow Keys: move
+- Enter: accept
+- Backspace: return
+- Right Shift: select Leader
+- Tab: pass
+
 ## Deck Composition
 A deck is composed by +25 cards of different types:
 - **Unit**: these are the main type, as they add power to the player's overall. Unit cards can be played in any of the fields whose type is specified in the types of the card. The field types are Melee, Range and Siege. These can be:
@@ -81,3 +91,5 @@ Content is managed through the [MonoGame Content Builder Tool (MGCB Editor)](htt
 - [x] Decoy cards.
 - [ ] Build full fledged decks.
 - [ ] Deck selection scene.
+- [x] Add music.
+- [x] Add sfx.
