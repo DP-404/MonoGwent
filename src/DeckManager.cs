@@ -201,11 +201,31 @@ public struct CardsDump {
         power=9,
         is_hero=true
     };
+    public static CardUnitBlueprint card_0U7 = new() {
+        name="Dung Defender",
+        description="Skilled combatant living at the heart of the Waterways. Assails intruders with balls of compacted dung.",
+        image_name="graphics/cards/0U7",
+        types=[RowType.SIEGE],
+        power=4
+    };
+    public static CardUnitBlueprint card_0U8 = new() {
+        name="White Defender",
+        description="The Champion's Call, the Knotted Grove, the Battle of the Blackwyrm... I remember it all. I will carry those glories with me always... until we meet again.",
+        image_name="graphics/cards/0U8",
+        types=[RowType.SIEGE],
+        power=5
+    };
     public static CardDecoyBlueprint card_0D1 = new() {
         name="Zote",
         description="A self-proclaimed Knight, of no renown. Wields a nail he carved from shellwood, named 'Life Ender.'",
         image_name="graphics/cards/0D1",
         types=[RowType.MELEE]
+    };
+    public static CardDecoyBlueprint card_0D2 = new() {
+        name="False Knight",
+        description="Weak creatures love to steal the strength of others. Their lives are brief and fearful, and they yearn to have the power to dominate those who have dominated them.",
+        image_name="graphics/cards/0D2",
+        types=[RowType.SIEGE]
     };
     public static CardWeatherBlueprint card_0W1 = new() {
         name="City of Tears",
@@ -218,6 +238,12 @@ public struct CardsDump {
         description="This ashen place is grave of Wyrm. Once told, it came to die. But what is death for that ancient being? More transformation methinks. This failed kingdom is product of the being spawned from that event.",
         image_name="graphics/cards/0W2",
         types=[RowType.MELEE]
+    };
+    public static CardWeatherBlueprint card_0W3 = new() {
+        name="The Infection",
+        description="The bugs of Hallownest were twisted out of shape by that ancient sickness. First they fell into deep slumber, then they awoke with broken minds, and then their bodies started to deform...",
+        image_name="graphics/cards/0W3",
+        types=[RowType.RANGE]
     };
     public static CardDispelBlueprint card_0P1 = new() {
         name="Lake of Unn",
@@ -236,6 +262,13 @@ public struct CardsDump {
         description="Shadows dream of endless fire,\nFlames devour and embers swoop,\nOne will light the Nightmare Lantern,\nCall and serve in Grimm's dread Troupe.",
         image_name="graphics/cards/0B2",
         types=[RowType.RANGE],
+        bonus=1
+    };
+    public static CardBoostBlueprint card_0B3 = new() {
+        name="White Lady",
+        description="These bindings about me, I've chosen to erect. There is some shame I feel from my own part in the deed, and this method guarantees it cease.",
+        image_name="graphics/cards/0B3",
+        types=[RowType.SIEGE],
         bonus=1
     };
 
@@ -264,28 +297,39 @@ public struct DecksDump {
         public static Deck GetDeck() {
             var deck = new Deck
             {
-                CardsDump.card_0U1.GetCard(),
-                CardsDump.card_0U1.GetCard(),
-                CardsDump.card_0U1.GetCard(),
-                CardsDump.card_0U2.GetCard(),
-                CardsDump.card_0U2.GetCard(),
-                CardsDump.card_0U2.GetCard(),
-                CardsDump.card_0U3.GetCard(),
-                CardsDump.card_0U3.GetCard(),
-                CardsDump.card_0U3.GetCard(),
-                CardsDump.card_0U4.GetCard(),
-                CardsDump.card_0U5.GetCard(),
-                CardsDump.card_0U6.GetCard(),
-
+                // Total: 25
+                // Unit: 16
+                    // Silver: 13
+                    CardsDump.card_0U1.GetCard(),
+                    CardsDump.card_0U1.GetCard(),
+                    CardsDump.card_0U1.GetCard(),
+                    CardsDump.card_0U2.GetCard(),
+                    CardsDump.card_0U2.GetCard(),
+                    CardsDump.card_0U2.GetCard(),
+                    CardsDump.card_0U3.GetCard(),
+                    CardsDump.card_0U3.GetCard(),
+                    CardsDump.card_0U3.GetCard(),
+                    CardsDump.card_0U7.GetCard(),
+                    CardsDump.card_0U7.GetCard(),
+                    CardsDump.card_0U8.GetCard(),
+                    CardsDump.card_0U8.GetCard(),
+                    // Golden: 3
+                    CardsDump.card_0U4.GetCard(),
+                    CardsDump.card_0U5.GetCard(),
+                    CardsDump.card_0U6.GetCard(),
+                // Weather: 3
                 CardsDump.card_0W1.GetCard(),
                 CardsDump.card_0W2.GetCard(),
-
+                CardsDump.card_0W3.GetCard(),
+                // Dispel: 1
                 CardsDump.card_0P1.GetCard(),
-
+                // Boost: 3
                 CardsDump.card_0B1.GetCard(),
                 CardsDump.card_0B2.GetCard(),
-
+                CardsDump.card_0B3.GetCard(),
+                // Decoy: 2
                 CardsDump.card_0D1.GetCard(),
+                CardsDump.card_0D2.GetCard(),
             };
             deck.leader = (CardLeader)CardsDump.card_0L.GetCard();
             return deck;
