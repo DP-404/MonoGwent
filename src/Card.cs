@@ -26,6 +26,8 @@ public abstract class Card
     public static readonly Vector2 THUMB_SCALE =
     new Vector2((float)WIDTH/ACTUAL_WIDTH, (float)HEIGHT/ACTUAL_HEIGHT);
 
+    public string name;
+    public string description;
     public RowType[] types {get; init;}
     public abstract string type_name {get;}
 
