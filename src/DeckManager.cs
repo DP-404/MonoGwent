@@ -65,6 +65,21 @@ public class CardUnitBlueprint : CardBlueprint {
 
 }
 
+public class CardDecoyBlueprint : CardBlueprint {
+
+    public override Card GetCard() {
+        return new CardUnit {
+            img_name=image_name,
+            img=image,
+            types=types,
+            power=CardUnit.POWER_DECOY,
+            is_hero=false,
+            effect=0
+        };
+    }
+
+}
+
 public class CardLeaderBlueprint : CardBlueprint {
     public LeaderEffect effect;
 
@@ -151,6 +166,10 @@ public struct CardsDump {
         power=8,
         is_hero=true
     };
+    public static CardDecoyBlueprint card_0D1 = new() {
+        image_name="0D1",
+        types=[RowType.MELEE]
+    };
     public static CardWeatherBlueprint card_0W1 = new() {
         image_name="0W1",
         types=[RowType.MELEE,RowType.RANGE]
@@ -172,7 +191,8 @@ public struct CardsDump {
                 f.FieldType == typeof(CardLeaderBlueprint) ||
                 f.FieldType == typeof(CardWeatherBlueprint) ||
                 f.FieldType == typeof(CardDispelBlueprint) ||
-                f.FieldType == typeof(CardBoostBlueprint)
+                f.FieldType == typeof(CardBoostBlueprint) ||
+                f.FieldType == typeof(CardDecoyBlueprint)
             )
             .ToDictionary(f => f.Name, f => (CardBlueprint) f.GetValue(null));
         foreach (var bp in blueprints.Values) {
@@ -204,6 +224,8 @@ public struct DecksDump {
                 CardsDump.card_0P1.GetCard(),
 
                 CardsDump.card_0B1.GetCard(),
+
+                CardsDump.card_0D1.GetCard(),
             };
             deck.leader = (CardLeader)CardsDump.card_0L.GetCard();
             return deck;

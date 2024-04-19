@@ -37,6 +37,7 @@ public abstract class Card
     public static Texture2D img_weather;
     public static Texture2D img_dispel;
     public static Texture2D img_boost;
+    public static Texture2D img_decoy;
     public static Texture2D img_melee;
     public static Texture2D img_range;
     public static Texture2D img_siege;
@@ -60,6 +61,7 @@ public abstract class Card
 }
 
 public class CardUnit : Card {
+    public const int POWER_DECOY = 0;
     private const string TYPE_UNIT_NAME = "Unit";
     private const string TYPE_DECOY_NAME = "Decoy";
 
@@ -68,7 +70,7 @@ public class CardUnit : Card {
     public int power {get; set;}
     public int effect {get; init;}
 
-    public bool is_decoy {get => power == 0? true : false;}
+    public bool is_decoy {get => power == POWER_DECOY? true : false;}
 
     public int GetPower(CardWeather weather, CardBoost boost) {
         var actual_power = power;

@@ -55,8 +55,10 @@ public partial class BattleManager
         }
     }
     private void DrawCursor(GraphicTools gt) {
+        Vector2 position;
+
         if (cursor.section == Section.HAND) {
-            var position = Card._GetRowPosition(
+            position = Card._GetRowPosition(
                 cursor.index,
                 current_player.hand.Count,
                 Player.HAND_XPOS,
@@ -146,9 +148,42 @@ public partial class BattleManager
             }
             else {throw new Exception("Unsupported hovered card type.");}
         }
-        else if (cursor.section == Section.LEADER) {
+        else if (cursor.section == Section.ROW) {
+            // Highlight Cards
+            var row_type = (RowType)cursor.field;
+            var row = current_player.rows[row_type];
+            foreach (CardUnit card in row) {
+                var index = row.IndexOf(card);
+                position = card.GetRowPosition(
+                    index,
+                    row.Count,
+                    Player.ROW_XPOS,
+                    Player.ROW_YPOS + Player.ROW_YPOS_OFFSET[row_type],
+                    Player.ROW_WIDTH
+                );
+                gt.spriteBatch.Draw(
+                    card.types.Contains(row_type)? cursor.mark_card_enabled : cursor.mark_card_disabled,
+                    position,
+                    Color.White
+                );
+            }
+            // Hovered Card
+            position = Card._GetRowPosition(
+                cursor.index,
+                row.Count,
+                Player.ROW_XPOS,
+                Player.ROW_YPOS + Player.ROW_YPOS_OFFSET[row_type],
+                Player.ROW_WIDTH
+            );
             gt.spriteBatch.Draw(
                 cursor.mark_card_hovered,
+                position,
+                Color.White
+            );
+        }
+        else if (cursor.section == Section.LEADER) {
+            gt.spriteBatch.Draw(
+                !current_player.leader.used? cursor.mark_card_hovered : cursor.mark_card_hovered_disabled,
                 new Vector2(
                     Player.LEADER_XPOS,
                     Player.GetRelativePosition(Player.LEADER_YPOS, Player.LEADER_YPOS_OFFSET, Card.HEIGHT, true)
@@ -195,7 +230,11 @@ public partial class BattleManager
                 Texture2D img_card_type = null;
                 if (card is CardUnit) {
                     Color power_color;
-                    if (((CardUnit)card).is_hero) {
+                    if (((CardUnit)card).is_decoy) {
+                        img_card_type = Card.img_decoy;
+                        power_color = Color.Black;
+                    }
+                    else if (((CardUnit)card).is_hero) {
                         img_card_type = Card.img_power_hero;
                         power_color = Color.White;
                     } else {

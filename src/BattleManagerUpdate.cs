@@ -90,8 +90,8 @@ public partial class BattleManager
                     current_player.hand.Add(takeback_card);
 
                     // Place card on field card's place
+                    current_player.rows[(RowType)cursor.field].Insert(cursor.index, (CardUnit)card);
                     current_player.hand.Remove(card);
-                    current_player.hand.Insert(cursor.index, card);
                     break;
                 } else {
                     // Place card on field
@@ -376,14 +376,14 @@ public partial class BattleManager
                     cursor.field == Cursor.NONE &&
                     Keyboard.GetState().IsKeyDown(Keys.Enter)
                 ) {
-                    // Selected card is Bait > Move to Row
+                    // Selected card is Decoy > Move to Row
                     if (
-                        hand_card is CardUnit &&
-                        ((CardUnit)hand_card).is_decoy &&
-                        current_player.GetHandCard(cursor.hand).types.Contains((RowType)cursor.field)
+                        ((CardUnit)hand_card).is_decoy
                     ) {
-                        cursor.field = cursor.index;
-                        cursor.Move(Section.ROW);
+                        if (hand_card.types.Contains((RowType)cursor.index)) {
+                            cursor.field = cursor.index;
+                            cursor.Move(Section.ROW);
+                        }
                     }
                     // Selected card is Unit > Play Card
                     else {
@@ -423,13 +423,33 @@ public partial class BattleManager
             case Section.ROW:
                 hand_card = current_player.GetHandCard(cursor.hand);
 
-                // Selected card is Bait > Play Card
+                // Selected card is Decoy > Play Card
                 if (
+                    !cursor.holding &&
                     hand_card is CardUnit &&
                     ((CardUnit)hand_card).is_decoy &&
-                    !((CardUnit)current_player.GetFieldCard((RowType)cursor.field, cursor.index)).is_decoy
+                    current_player.rows[(RowType)cursor.field].Count != 0 &&
+                    !((CardUnit)current_player.GetFieldCard((RowType)cursor.field, cursor.index)).is_decoy &&
+                    Keyboard.GetState().IsKeyDown(Keys.Enter)
                 ) {
                     PlayCard();
+                }
+
+                // Move Right
+                if (
+                    !cursor.holding &&
+                    Keyboard.GetState().IsKeyDown(Keys.Right)
+                ) {
+                    if (cursor.index == current_player.rows[(RowType)cursor.field].Count-1)
+                    {cursor.Move(0);} else {cursor.Move(cursor.index+1);}
+                }
+                // Move Left
+                else if (
+                    !cursor.holding &&
+                    Keyboard.GetState().IsKeyDown(Keys.Left)
+                ) {
+                    if (cursor.index == 0)
+                    {cursor.Move(current_player.rows[(RowType)cursor.field].Count-1);} else {cursor.Move(cursor.index-1);}
                 }
 
                 // Cancelling
