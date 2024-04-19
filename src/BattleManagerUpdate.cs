@@ -16,6 +16,7 @@ public partial class BattleManager
         scene = Scene.START_GAME;
     }
     private void StartGame() {
+        ClearAllWeathers();
         InitializePlayers();
         phase = REDRAW_PHASE;
         scene = Scene.START_TURN;

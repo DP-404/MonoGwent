@@ -123,8 +123,9 @@ public class Player
         graveyard.Clear();
         hand.Clear();
         selected.Clear();
-        foreach (var row in rows.Values) {
-            row.Clear();
+        foreach (var row in rows) {
+            rows[row.Key].Clear();
+            boosts[row.Key] = null;
         }
 
         ReceiveCard(STARTING_CARDS);
