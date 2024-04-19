@@ -125,7 +125,7 @@ public partial class BattleManager
         player_2.Initialize(deck2);
     }
 
-    public void LoadContent(GraphicTools gt) {
+    public void LoadContent(GameTools gt) {
         Card.img_back = gt.content.Load<Texture2D>("card_back");
         Card.img_power_normal = gt.content.Load<Texture2D>("card_power_normal");
         Card.img_power_hero = gt.content.Load<Texture2D>("card_power_hero");

@@ -5,11 +5,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MonoGwent;
 
-public class GraphicTools{
+public class GameTools{
     public GraphicsDeviceManager graphics;
     public SpriteBatch spriteBatch;
     public ContentManager content;
-    public GraphicTools(GraphicsDeviceManager g, SpriteBatch s, ContentManager c) {
+    public GameTools(GraphicsDeviceManager g, SpriteBatch s, ContentManager c) {
         graphics = g;
         spriteBatch = s;
         content = c;
@@ -59,7 +59,7 @@ public class Gwent : Game
     protected override void LoadContent()
     {
         spriteBatch = new SpriteBatch(GraphicsDevice);
-        graphicTools = new GraphicTools(graphics, spriteBatch, Content);
+        graphicTools = new GameTools(graphics, spriteBatch, Content);
 
         renderTarget = new RenderTarget2D(GraphicsDevice, gameResolution.X, gameResolution.Y);
         renderTargetDestination = GetRenderTargetDestination(gameResolution, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);

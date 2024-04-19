@@ -39,7 +39,7 @@ public class CardBlueprint {
 
     public Texture2D image;
 
-    public void LoadContent(GraphicTools gt) {
+    public void LoadContent(GameTools gt) {
         image = gt.content.Load<Texture2D>(image_name);
     }
 
@@ -210,7 +210,7 @@ public struct CardsDump {
         bonus=1
     };
 
-    public static void LoadContent(GraphicTools gt) {
+    public static void LoadContent(GameTools gt) {
         var blueprints = typeof(CardsDump)
             .GetFields(BindingFlags.Public | BindingFlags.Static)
             .Where(f =>

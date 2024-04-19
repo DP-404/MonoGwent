@@ -53,7 +53,7 @@ static class Utilities {
             0
         );
     }
-    public static string WrapText(this GraphicTools gt, SpriteFont spriteFont, string text, float maxLineWidth)
+    public static string WrapText(this GameTools gt, SpriteFont spriteFont, string text, float maxLineWidth)
     {
         string[] words = text.Split(' ');
         StringBuilder sb = new StringBuilder();

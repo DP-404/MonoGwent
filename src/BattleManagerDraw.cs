@@ -61,10 +61,10 @@ Licenced under MIT Licence
 Copyright (c) 2024 DP-404
 ";
 
-    private void DrawBoard(GraphicTools gt) {
+    private void DrawBoard(GameTools gt) {
         gt.spriteBatch.Draw(img_background, new Vector2(0,0), Color.White);
     }
-    private void DrawFields(GraphicTools gt) {
+    private void DrawFields(GameTools gt) {
         var show = scene == Scene.PLAY_TURN || scene == Scene.REDRAW;
         player_1.Draw(gt, weathers, current_player == player_1, highscore_player == player_1, show);
         player_2.Draw(gt, weathers, current_player == player_2, highscore_player == player_2, show);
@@ -84,7 +84,7 @@ Copyright (c) 2024 DP-404
             weather_xpos += Card.WIDTH;
         }
     }
-    private void DrawCursor(GraphicTools gt) {
+    private void DrawCursor(GameTools gt) {
         Vector2 position;
 
         if (cursor.section == Section.HAND) {
@@ -222,7 +222,7 @@ Copyright (c) 2024 DP-404
             );
         }
     }
-    private void DrawSelectedCards(GraphicTools gt) {
+    private void DrawSelectedCards(GameTools gt) {
         foreach (Card card in current_player.selected) {
             var position = Card._GetRowPosition(
                 current_player.hand.IndexOf(card),
@@ -238,7 +238,7 @@ Copyright (c) 2024 DP-404
             );
         }
     }
-    private void DrawHoveredCardInfo(GraphicTools gt) {
+    private void DrawHoveredCardInfo(GameTools gt) {
         if (
             (
                 scene == Scene.REDRAW ||
@@ -386,7 +386,7 @@ Copyright (c) 2024 DP-404
             }
         }
     }
-    private void DrawMessage(GraphicTools gt) {
+    private void DrawMessage(GameTools gt) {
         if (
             scene == Scene.START_GAME ||
             scene == Scene.START_PHASE ||
@@ -542,7 +542,7 @@ Copyright (c) 2024 DP-404
             );
         }
     }
-    private void DrawHelp(GraphicTools gt) {
+    private void DrawHelp(GameTools gt) {
         if (help) {
             var wrapped_text = gt.WrapText(fnt_message, TEXT_HELP, 1000);
             gt.spriteBatch.DrawString(
@@ -554,7 +554,7 @@ Copyright (c) 2024 DP-404
         }
     }
 
-    public void Draw(GraphicTools gt) {
+    public void Draw(GameTools gt) {
         DrawBoard(gt);
         DrawFields(gt);
         DrawCursor(gt);
