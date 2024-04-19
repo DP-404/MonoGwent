@@ -33,21 +33,29 @@ public partial class BattleManager
     private const string TEXT_CARD_TYPE = "Card Type: {0}";
     private const int HELP_XPOS = 20;
     private const int HELP_YPOS = 20;
-    private const string TEXT_HELP = @"
-MonoGwent Help
+    private const string TEXT_HELP = @"MonoGwent Help
 
-Goal: Take turns to play one of your cards in your field to increase your power. When you are finished for the round, pass. When both players have passed, the round is over. The one with the higher power is the round winner. They who wins two rounds wins the game.
+Both players draw 10 cards each. This is the maximum amount they can have at any time. If any card is drawn while having this many already, they are discarded. The first player is randomly selected. Then, they can return up to 2 cards to the deck in order to draw again as many cards as returned.
+Players play rounds to determine the winner. Each round, players take turns to play they cards. In a turn, a player can either use a card, use the leader's effect or pass. If a player passes, they can no longer play in the current round. When both players have passed, the one with the highest power is the round's winner. If both players have the same power at the end of a round, the round is a draw (both won). When starting a new round, be it the second or third round, both players' fields are cleared, including the weathers, and then they draw 2 cards, before starting to play the round.
+When any player has won twice, they win the game. If both players ended up with two round draws (both won twice), the game is a draw.
 
 Controls:
 Esc - Exit game
 F1 - Open/Close help
 F4 - Toggle Fullscreen/Window mode
-
 Arrow Keys - Move
 Enter - Accept
 Backspace - Return
 Right Shift - Select Leader
 Tab - Pass
+
+Credits:
+Developed by DP-404 (https://github.com/DP-404).
+Made with MonoGame.
+All assets used in this game belong to their respective owners.
+
+Licenced under MIT Licence
+Copyright (c) 2024 DP-404
 ";
 
     private void DrawBoard(GraphicTools gt) {
