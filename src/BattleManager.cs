@@ -126,6 +126,8 @@ public partial class BattleManager
         current_player = (Random.Shared.Next(2)==0)? player_1 : player_2;
     }
     public void Initialize(Deck deck1, Deck deck2) {
+        MediaPlayer.Play(bgm_playing1);
+        MediaPlayer.IsRepeating = true;
         current_player = player_1;
         player_1.Initialize(deck1);
         player_2.Initialize(deck2);

@@ -13,7 +13,6 @@ public partial class BattleManager
 
     private void NewGame() {
         MediaPlayer.Play(bgm_playing1);
-        MediaPlayer.IsRepeating = true;
         scene = Scene.START_GAME;
     }
     private void StartGame() {
@@ -637,10 +636,6 @@ public partial class BattleManager
             cursor.holding &&
             Keyboard.GetState().GetPressedKeyCount() == 0
         ) cursor.Release();
-
-        // Handle MediaPlayer
-        if (MediaPlayer.State == MediaState.Stopped) MediaPlayer.Play(bgm_playing1); 
-        else if (MediaPlayer.State == MediaState.Paused) MediaPlayer.Resume(); 
     }
 
 }
