@@ -182,7 +182,23 @@ public struct CardsDump {
         description="Fully grown Vessel, carrying the plague's heart within its body.",
         image_name="graphics/cards/0U4",
         types=[RowType.MELEE],
+        power=7,
+        is_hero=true
+    };
+    public static CardUnitBlueprint card_0U5 = new() {
+        name="Radiance",
+        description="The light, forgotten.",
+        image_name="graphics/cards/0U5",
+        types=[RowType.RANGE],
         power=8,
+        is_hero=true
+    };
+    public static CardUnitBlueprint card_0U6 = new() {
+        name="Nightmare King Grimm",
+        description="The expanse of dream in past was split,\nOne realm now must stay apart,\nDarkest reaches, beating red,\nTerror of sleep. The Nightmare's Heart.",
+        image_name="graphics/cards/0U6",
+        types=[RowType.SIEGE],
+        power=9,
         is_hero=true
     };
     public static CardDecoyBlueprint card_0D1 = new() {
@@ -195,7 +211,13 @@ public struct CardsDump {
         name="City of Tears",
         description="The city looks to be built into an enormous cavern, and the rain pours down from cracks in the stone above. There must be a lot of water up there somewhere.",
         image_name="graphics/cards/0W1",
-        types=[RowType.MELEE,RowType.RANGE]
+        types=[RowType.RANGE,RowType.SIEGE]
+    };
+    public static CardWeatherBlueprint card_0W2 = new() {
+        name="Kingdom's Edge",
+        description="This ashen place is grave of Wyrm. Once told, it came to die. But what is death for that ancient being? More transformation methinks. This failed kingdom is product of the being spawned from that event.",
+        image_name="graphics/cards/0W2",
+        types=[RowType.MELEE]
     };
     public static CardDispelBlueprint card_0P1 = new() {
         name="Lake of Unn",
@@ -207,6 +229,13 @@ public struct CardsDump {
         description="Figment of an obsessed mind. Lacks grace but becomes stronger with every defeat.",
         image_name="graphics/cards/0B1",
         types=[RowType.MELEE],
+        bonus=1
+    };
+    public static CardBoostBlueprint card_0B2 = new() {
+        name="The Grimm Troupe",
+        description="Shadows dream of endless fire,\nFlames devour and embers swoop,\nOne will light the Nightmare Lantern,\nCall and serve in Grimm's dread Troupe.",
+        image_name="graphics/cards/0B2",
+        types=[RowType.RANGE],
         bonus=1
     };
 
@@ -245,12 +274,16 @@ public struct DecksDump {
                 CardsDump.card_0U3.GetCard(),
                 CardsDump.card_0U3.GetCard(),
                 CardsDump.card_0U4.GetCard(),
+                CardsDump.card_0U5.GetCard(),
+                CardsDump.card_0U6.GetCard(),
 
                 CardsDump.card_0W1.GetCard(),
+                CardsDump.card_0W2.GetCard(),
 
                 CardsDump.card_0P1.GetCard(),
 
                 CardsDump.card_0B1.GetCard(),
+                CardsDump.card_0B2.GetCard(),
 
                 CardsDump.card_0D1.GetCard(),
             };
