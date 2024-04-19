@@ -404,9 +404,33 @@
 /processorParam:TextureFormat=Color
 /build:graphics/img/victory.png
 
-#begin music/Night3.ogg
+#begin music/bgm_playing1.ogg
 /importer:OggImporter
 /processor:SongProcessor
 /processorParam:Quality=Best
-/build:music/Night3.ogg
+/build:music/bgm_playing1.ogg
+
+#begin music/bgm_playing2.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:music/bgm_playing2.ogg
+
+#begin music/bgm_playing3.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:music/bgm_playing3.mp3
+
+#begin music/sfx_cancel.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/sfx_cancel.ogg
+
+#begin music/sfx_playcard.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/sfx_playcard.ogg
 

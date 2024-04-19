@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 
 namespace MonoGwent;
 
@@ -113,6 +114,11 @@ public partial class BattleManager
     private Texture2D img_victory;
     private Texture2D img_draw;
     private SpriteFont fnt_message;
+    private Song bgm_playing1;
+    private Song bgm_playing2;
+    private Song bgm_playing3;
+    private SoundEffect sfx_playcard;
+    private SoundEffect sfx_cancel;
 
     public void InitializePlayers() {
         player_1.Initialize();
@@ -170,6 +176,11 @@ public partial class BattleManager
         img_victory = gt.content.Load<Texture2D>("graphics/img/victory");
         img_draw = gt.content.Load<Texture2D>("graphics/img/draw");
         fnt_message = gt.content.Load<SpriteFont>("font/Arial");
+        bgm_playing1 = gt.content.Load<Song>("music/bgm_playing1");
+        bgm_playing2 = gt.content.Load<Song>("music/bgm_playing2");
+        bgm_playing3 = gt.content.Load<Song>("music/bgm_playing3");
+        sfx_playcard = gt.content.Load<SoundEffect>("music/sfx_playcard");
+        sfx_cancel = gt.content.Load<SoundEffect>("music/sfx_cancel");
         foreach (var player in players) player.LoadContent(gt);
         CardsDump.LoadContent(gt);
     }

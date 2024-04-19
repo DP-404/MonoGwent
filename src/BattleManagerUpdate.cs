@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace MonoGwent;
 
@@ -10,6 +12,8 @@ public partial class BattleManager
 {
 
     private void NewGame() {
+        MediaPlayer.Play(bgm_playing1);
+        MediaPlayer.IsRepeating = true;
         scene = Scene.START_GAME;
     }
     private void StartGame() {
@@ -33,6 +37,14 @@ public partial class BattleManager
             player_2.ReceiveCard(Player.PHASE_DRAW_CARDS);
         }
         phase += 1;
+        switch (phase) {
+            case 2:
+                MediaPlayer.Play(bgm_playing2);
+                break;
+            case 3:
+                MediaPlayer.Play(bgm_playing3);
+                break;
+        }
     }
     private void StartTurn() {
         if (!rival_player.has_passed) current_player = rival_player;
@@ -175,6 +187,8 @@ public partial class BattleManager
             default:
                 throw new Exception();
         }
+
+        sfx_playcard.Play();
 
         cursor.Move(Section.HAND);
 
@@ -454,8 +468,8 @@ public partial class BattleManager
                     !cursor.holding &&
                     Keyboard.GetState().IsKeyDown(Keys.Back)
                 ) {
+                    sfx_cancel.Play();
                     cursor.Move(Section.HAND, cursor.hand);
-                    cursor.hand = Cursor.NONE;
                 }
                 break;
 
@@ -497,8 +511,8 @@ public partial class BattleManager
                     !cursor.holding &&
                     Keyboard.GetState().IsKeyDown(Keys.Back)
                 ) {
+                    sfx_cancel.Play();
                     cursor.Move(Section.FIELD, cursor.field);
-                    cursor.field = Cursor.NONE;
                 }
                 break;
 
@@ -519,6 +533,7 @@ public partial class BattleManager
                     !cursor.holding &&
                     Keyboard.GetState().IsKeyDown(Keys.Back)
                 ) {
+                    sfx_cancel.Play();
                     cursor.Move(Section.HAND);
                 }
                 break;
@@ -622,6 +637,10 @@ public partial class BattleManager
             cursor.holding &&
             Keyboard.GetState().GetPressedKeyCount() == 0
         ) cursor.Release();
+
+        // Handle MediaPlayer
+        if (MediaPlayer.State == MediaState.Stopped) MediaPlayer.Play(bgm_playing1); 
+        else if (MediaPlayer.State == MediaState.Paused) MediaPlayer.Resume(); 
     }
 
 }
