@@ -46,6 +46,7 @@ Controls:
 Esc - Exit game
 F1 - Open/Close help
 F4 - Toggle Fullscreen/Window mode
+M - Mute music
 Arrow Keys - Move
 Enter - Accept
 Backspace - Return

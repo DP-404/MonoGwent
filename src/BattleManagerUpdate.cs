@@ -233,6 +233,16 @@ public partial class BattleManager
             help = !help;
         }
     }
+    private void UpdateMediaPlayer() {
+        // Await for input > Un/Mute music
+        if (
+            !cursor.holding &&
+            Keyboard.GetState().IsKeyDown(Keys.M)
+        ) {
+            cursor.Hold();
+            MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
+        }
+    }
     private void UpdateStartGame() {
         // Await for input > Start new game
         if (
@@ -600,6 +610,7 @@ public partial class BattleManager
 
     public void Update() {
         UpdateHelp();
+        UpdateMediaPlayer();
 
         if (!help) {
             switch (scene)
