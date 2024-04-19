@@ -26,6 +26,7 @@ public partial class BattleManager
         scene = Scene.START_PHASE;
         if (phase != REDRAW_PHASE) {
             victor = null;
+            ClearAllWeathers();
             player_1.Clear();
             player_2.Clear();
             player_1.ReceiveCard(Player.PHASE_DRAW_CARDS);
@@ -134,16 +135,11 @@ public partial class BattleManager
 
                     // Dispel All
                     if (card.types.Length == 0) {
-                        foreach (var row in Enum.GetValues(typeof(RowType)).Cast<RowType>()) {
-                            if (weathers[row].Item1 is not null)
-                                weathers[row].Item2.graveyard.Add(weathers[row].Item1);
-                                weathers[row] = new(null,null);
-                        }
+                        ClearAllWeathers();
                     }
                     // Dispel Single
                     else {
-                        weathers[field].Item2.graveyard.Add(weathers[field].Item1);
-                        weathers[field] = new(null,null);
+                        ClearWeather(field);
                     }
 
                 }
@@ -179,6 +175,18 @@ public partial class BattleManager
         }
 
         cursor.Move(Section.HAND);
+    }
+
+    private void ClearWeather(RowType row) {
+        if (weathers[row].Item1 is not null) {
+            weathers[row].Item2.graveyard.Add(weathers[row].Item1);
+            weathers[row] = new(null,null);
+        }
+    }
+
+    private void ClearAllWeathers() {
+        foreach (var row in Enum.GetValues(typeof(RowType)).Cast<RowType>())
+            ClearWeather(row);
     }
 
     private void UpdateStartGame() {
