@@ -44,7 +44,7 @@ public abstract class Card
     public static Dictionary<RowType,Texture2D> img_rows;
 
     public static Vector2 _GetRowPosition(int index, int count, int xpos, int ypos, int width) {
-        var xConsumed = count * WIDTH;
+        var xConsumed = ((count != 0)? count : 1) * WIDTH;
         var xUsed = width - xConsumed;
         var xFree = (xUsed < 0)? 0 : xUsed / 2;
         return new Vector2(
