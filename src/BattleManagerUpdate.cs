@@ -164,11 +164,12 @@ public partial class BattleManager
                 break;
 
             case CardBoost:
-                var current_boost = current_player.boosts[field];
+                var current_boost = current_player.boosts[(RowType)cursor.index];
                 if (current_boost is not null) {
                     current_player.graveyard.Add(current_boost);
                 }
-                current_player.boosts[field] = (CardBoost)card;
+                current_player.hand.Remove(card);
+                current_player.boosts[(RowType)cursor.index] = (CardBoost)card;
                 break;
 
             default:
