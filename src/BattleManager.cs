@@ -86,7 +86,7 @@ public partial class BattleManager
     private Player player_2 = new Player(PLAYER_2_NAME);
     private Player[] players {get => [player_1, player_2];}
     private Player current_player;
-    private Player rival_player {get => current_player==player_1? player_2 : player_1;}
+    private Player rival_player {get => GetOtherPlayer(current_player);}
     private Player highscore_player {
         get {
             var p1 = player_1.GetPower(weathers);
@@ -171,6 +171,10 @@ public partial class BattleManager
         fnt_message = gt.content.Load<SpriteFont>("Arial");
         foreach (var player in players) player.LoadContent(gt);
         CardsDump.LoadContent(gt);
+    }
+
+    private Player GetOtherPlayer(Player player) {
+        return player==player_1? player_2 : player_1;
     }
 
 }

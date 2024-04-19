@@ -58,6 +58,7 @@ public partial class BattleManager
             }
             if (player_1 != victor) player_1.health -= 1;
             if (player_2 != victor) player_2.health -= 1;
+            if (victor is not null) current_player = GetOtherPlayer(victor);
         }
         scene = Scene.END_PHASE;
     }
