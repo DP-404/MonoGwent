@@ -132,7 +132,7 @@ public class Player
     public void ReceiveCard(int count=1, bool skip_limit=false) {
         while (count > 0 && deck.Count != 0) {
             var card = deck.Pop();
-            if (hand.Count == HAND_CARDS_LIMIT && !skip_limit)
+            if (hand.Count >= HAND_CARDS_LIMIT && !skip_limit)
             {graveyard.Add(card);}
             else {hand.Add(card);}            
             count -= 1;

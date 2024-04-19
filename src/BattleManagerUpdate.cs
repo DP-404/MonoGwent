@@ -172,7 +172,7 @@ public partial class BattleManager
 
         switch (current_player.leader.effect) {
             case LeaderEffect.DRAW_EXTRA_CARD:
-                current_player.ReceiveCard(1, true);
+                current_player.ReceiveCard(1);
                 break;
             default:
                 throw new NotImplementedException();
