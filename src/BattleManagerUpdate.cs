@@ -51,12 +51,30 @@ public partial class BattleManager
     }
     private void EndPhase() {
         if (phase != REDRAW_PHASE) {
+            // Determine victor
             if (player_1.GetPower(weathers) > player_2.GetPower(weathers)) {
                 victor = player_1;
             }
             else if (player_1.GetPower(weathers) < player_2.GetPower(weathers)) {
                 victor = player_2;
             }
+
+            // If Draw, check leader effect
+            if (victor is null) {
+                if (player_1.leader.effect == LeaderEffect.WIN_ON_DRAW) {
+                    player_1.leader.used = true;
+                    victor = player_1;
+                }
+                if (player_2.leader.effect == LeaderEffect.WIN_ON_DRAW) {
+                    if (victor is null) {
+                        player_2.leader.used = true;
+                        victor = player_2;
+                    }
+                    else {victor = null;}
+                }
+            }
+
+            // Reduce health
             if (player_1 != victor) player_1.health -= 1;
             if (player_2 != victor) player_2.health -= 1;
             if (victor is not null) current_player = GetOtherPlayer(victor);

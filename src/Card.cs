@@ -15,6 +15,7 @@ public enum RowType {
 
 public enum LeaderEffect {
     DRAW_EXTRA_CARD,
+    WIN_ON_DRAW
 }
 
 public abstract class Card
