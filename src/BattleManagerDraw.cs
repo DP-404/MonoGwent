@@ -335,7 +335,7 @@ Copyright (c) 2024 DP-404
                     fnt_message,
                     card_name,
                     new Vector2(
-                        PREVIEW_CARD_XPOS + PREVIEW_CARD_WIDTH - card_name_size.X/2,
+                        PREVIEW_CARD_XPOS + PREVIEW_CARD_WIDTH/2 - card_name_size.X/2,
                         last_ypos
                     ),
                     Color.White

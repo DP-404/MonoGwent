@@ -153,34 +153,34 @@ public struct CardsDump {
     public static CardLeaderBlueprint card_0L = new() {
         name="The Pale King",
         description="No cost too great.",
-        image_name="0L",
+        image_name="graphics/cards/0L",
         effect=LeaderEffect.DRAW_EXTRA_CARD
     };
     public static CardUnitBlueprint card_0U1 = new() {
         name="The Knight",
         description="An enigmatic wanderer who descends into Hallownest carrying only a broken nail to fend off foes.",
-        image_name="0U1",
+        image_name="graphics/cards/0U1",
         types=[RowType.MELEE,RowType.SIEGE],
         power=3,
     };
     public static CardUnitBlueprint card_0U2 = new() {
         name="Hornet",
         description="Skilled protector of Hallownest's ruins. Wields a needle and thread.",
-        image_name="0U2",
+        image_name="graphics/cards/0U2",
         types=[RowType.MELEE,RowType.RANGE],
         power=3,
     };
     public static CardUnitBlueprint card_0U3 = new() {
         name="Mantis Lords",
         description="Leaders of the Mantis tribe and its finest warriors. They bear thin nail-lances and attack with blinding speed.",
-        image_name="0U3",
+        image_name="graphics/cards/0U3",
         types=[RowType.MELEE,RowType.RANGE],
         power=4,
     };
     public static CardUnitBlueprint card_0U4 = new() {
         name="Hollow Knight",
         description="Fully grown Vessel, carrying the plague's heart within its body.",
-        image_name="0U4",
+        image_name="graphics/cards/0U4",
         types=[RowType.MELEE],
         power=8,
         is_hero=true
@@ -188,24 +188,24 @@ public struct CardsDump {
     public static CardDecoyBlueprint card_0D1 = new() {
         name="Zote",
         description="A self-proclaimed Knight, of no renown. Wields a nail he carved from shellwood, named 'Life Ender.'",
-        image_name="0D1",
+        image_name="graphics/cards/0D1",
         types=[RowType.MELEE]
     };
     public static CardWeatherBlueprint card_0W1 = new() {
         name="City of Tears",
         description="The city looks to be built into an enormous cavern, and the rain pours down from cracks in the stone above. There must be a lot of water up there somewhere.",
-        image_name="0W1",
+        image_name="graphics/cards/0W1",
         types=[RowType.MELEE,RowType.RANGE]
     };
     public static CardDispelBlueprint card_0P1 = new() {
         name="Lake of Unn",
         description="The greater mind once dreamed of leaf and cast these caverns so. In every bush and every vine the mind of Unn reveals itself to us.",
-        image_name="0P1"
+        image_name="graphics/cards/0P1"
     };
     public static CardBoostBlueprint card_0B1 = new() {
         name="Grey Prince Zote",
         description="Figment of an obsessed mind. Lacks grace but becomes stronger with every defeat.",
-        image_name="0B1",
+        image_name="graphics/cards/0B1",
         types=[RowType.MELEE],
         bonus=1
     };

@@ -126,16 +126,16 @@ public partial class BattleManager
     }
 
     public void LoadContent(GameTools gt) {
-        Card.img_back = gt.content.Load<Texture2D>("card_back");
-        Card.img_power_normal = gt.content.Load<Texture2D>("card_power_normal");
-        Card.img_power_hero = gt.content.Load<Texture2D>("card_power_hero");
-        Card.img_weather = gt.content.Load<Texture2D>("card_weather");
-        Card.img_dispel = gt.content.Load<Texture2D>("card_dispel");
-        Card.img_boost = gt.content.Load<Texture2D>("card_boost");
-        Card.img_decoy = gt.content.Load<Texture2D>("card_decoy");
-        Card.img_melee = gt.content.Load<Texture2D>("melee");
-        Card.img_range = gt.content.Load<Texture2D>("range");
-        Card.img_siege = gt.content.Load<Texture2D>("siege");
+        Card.img_back = gt.content.Load<Texture2D>("graphics/img/card_back");
+        Card.img_power_normal = gt.content.Load<Texture2D>("graphics/img/card_power_normal");
+        Card.img_power_hero = gt.content.Load<Texture2D>("graphics/img/card_power_hero");
+        Card.img_weather = gt.content.Load<Texture2D>("graphics/img/card_weather");
+        Card.img_dispel = gt.content.Load<Texture2D>("graphics/img/card_dispel");
+        Card.img_boost = gt.content.Load<Texture2D>("graphics/img/card_boost");
+        Card.img_decoy = gt.content.Load<Texture2D>("graphics/img/card_decoy");
+        Card.img_melee = gt.content.Load<Texture2D>("graphics/img/melee");
+        Card.img_range = gt.content.Load<Texture2D>("graphics/img/range");
+        Card.img_siege = gt.content.Load<Texture2D>("graphics/img/siege");
         Card.img_rows = new() {
             {RowType.MELEE,Card.img_melee},
             {RowType.RANGE,Card.img_range},
@@ -162,14 +162,14 @@ public partial class BattleManager
         cursor.mark_row_hovered_disabled = new Texture2D(gt.graphics.GraphicsDevice, Player.ROW_WIDTH, Card.HEIGHT);
         cursor.mark_row_hovered_disabled.CreateBorder(5, Color.Red);
 
-        img_background = gt.content.Load<Texture2D>("desk");
-        img_dim_background = gt.content.Load<Texture2D>("dim_background");
-        img_round_start = gt.content.Load<Texture2D>("round_start");
-        img_turn_start = gt.content.Load<Texture2D>("turn_start");
-        img_turn_passed = gt.content.Load<Texture2D>("turn_passed");
-        img_victory = gt.content.Load<Texture2D>("victory");
-        img_draw = gt.content.Load<Texture2D>("draw");
-        fnt_message = gt.content.Load<SpriteFont>("Arial");
+        img_background = gt.content.Load<Texture2D>("graphics/img/desk");
+        img_dim_background = gt.content.Load<Texture2D>("graphics/img/dim_background");
+        img_round_start = gt.content.Load<Texture2D>("graphics/img/round_start");
+        img_turn_start = gt.content.Load<Texture2D>("graphics/img/turn_start");
+        img_turn_passed = gt.content.Load<Texture2D>("graphics/img/turn_passed");
+        img_victory = gt.content.Load<Texture2D>("graphics/img/victory");
+        img_draw = gt.content.Load<Texture2D>("graphics/img/draw");
+        fnt_message = gt.content.Load<SpriteFont>("font/Arial");
         foreach (var player in players) player.LoadContent(gt);
         CardsDump.LoadContent(gt);
     }

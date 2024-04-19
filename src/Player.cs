@@ -175,12 +175,12 @@ public class Player
     }
 
     public void LoadContent(GameTools gt) {
-        img_health_on = gt.content.Load<Texture2D>("health_on");
-        img_health_off = gt.content.Load<Texture2D>("health_off");
-        img_leader = gt.content.Load<Texture2D>("leader");
-        img_highscore = gt.content.Load<Texture2D>("highscore");
-        img_row_weather = gt.content.Load<Texture2D>("row_weather");
-        fnt_status = gt.content.Load<SpriteFont>("Arial");
+        img_health_on = gt.content.Load<Texture2D>("graphics/img/health_on");
+        img_health_off = gt.content.Load<Texture2D>("graphics/img/health_off");
+        img_leader = gt.content.Load<Texture2D>("graphics/img/leader");
+        img_highscore = gt.content.Load<Texture2D>("graphics/img/highscore");
+        img_row_weather = gt.content.Load<Texture2D>("graphics/img/row_weather");
+        fnt_status = gt.content.Load<SpriteFont>("font/Arial");
     }
 
     public static int GetRelativePosition(int pos, int offset, int relative, bool positive) {
