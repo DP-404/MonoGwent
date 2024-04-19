@@ -47,7 +47,6 @@ public class CardBlueprint {
 }
 
 public class CardUnitBlueprint : CardBlueprint {
-    public Type type;
     public int power;
     public bool is_hero = false;
     public int effect = 0;
@@ -95,7 +94,7 @@ public class CardLeaderBlueprint : CardBlueprint {
 }
 
 public class CardWeatherBlueprint : CardBlueprint {
-    public uint penalty = (uint)CardWeather.DEFAULT_PENALTY;
+    public uint penalty = CardWeather.DEFAULT_PENALTY;
 
     public override Card GetCard() {
         return new CardWeather {
@@ -142,25 +141,21 @@ public struct CardsDump {
         effect=LeaderEffect.DRAW_EXTRA_CARD
     };
     public static CardUnitBlueprint card_0U1 = new() {
-        type=typeof(CardUnit),
         image_name="0U1",
         types=[RowType.RANGE,RowType.SIEGE],
         power=3,
     };
     public static CardUnitBlueprint card_0U2 = new() {
-        type=typeof(CardUnit),
         image_name="0U2",
         types=[RowType.MELEE,RowType.RANGE],
         power=3,
     };
     public static CardUnitBlueprint card_0U3 = new() {
-        type=typeof(CardUnit),
         image_name="0U3",
         types=[RowType.MELEE],
         power=5,
     };
     public static CardUnitBlueprint card_0U4 = new() {
-        type=typeof(CardUnit),
         image_name="0U4",
         types=[RowType.MELEE],
         power=8,
