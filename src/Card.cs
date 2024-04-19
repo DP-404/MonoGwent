@@ -94,7 +94,7 @@ public class CardWeather : Card {
     public const int DISPEL_PENALTY = -1;
     public const int DEFAULT_PENALTY = 1;
 
-    public override string type_name {get => "Weather";}
+    public override string type_name {get => (!is_dispel)? "Weather" : "Dispel";}
     public int penalty = DEFAULT_PENALTY;
     public bool is_dispel {get => penalty == DISPEL_PENALTY;}
 
