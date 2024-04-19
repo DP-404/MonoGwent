@@ -21,7 +21,7 @@ public class Gwent : Game
 {
     private GraphicsDeviceManager graphics;
     private SpriteBatch spriteBatch;
-    private GraphicTools graphicTools;
+    private GameTools graphicTools;
 
     private Point gameResolution = new (1024,720);
     private RenderTarget2D renderTarget;
