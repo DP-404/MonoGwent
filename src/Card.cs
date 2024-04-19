@@ -73,6 +73,7 @@ public class CardUnit : Card {
     public bool is_decoy {get => power == POWER_DECOY? true : false;}
 
     public int GetPower(CardWeather weather, CardBoost boost) {
+        if (is_hero) return power;
         var actual_power = power;
         if (boost is not null) actual_power += boost.bonus;
         if (weather is not null) actual_power = Math.Min(actual_power, weather.penalty);
