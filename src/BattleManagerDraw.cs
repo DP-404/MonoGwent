@@ -8,6 +8,8 @@ namespace MonoGwent;
 
 public partial class BattleManager
 {
+    private const int WEATHER_CARD_XPOS = 6;
+    private const int WEATHER_CARD_YPOS = 320;
     private const int PREVIEW_CARD_XPOS = 800;
     private const int PREVIEW_CARD_YPOS = 0;
     private const int PREVIEW_CARD_WIDTH = 224;
@@ -27,6 +29,11 @@ public partial class BattleManager
     private const string TEXT_VICTORY = "The victor is {0}!";
     private const string TEXT_DRAW = "It's a draw. Players failed to decide a victor.";
     private const string TEXT_PRESS_ENTER = "Press Enter to continue.";
+    private const string TEXT_CARD_TYPE = "Card Type: {0}";
+    private const string TEXT_CARD_UNIT = "Unit";
+    private const string TEXT_CARD_LEADER = "Leader";
+    private const string TEXT_CARD_WEATHER = "Weather";
+    private const string TEXT_CARD_DISPEL = "Dispel";
 
     private void DrawBoard(GraphicTools gt) {
         gt.spriteBatch.Draw(img_background, new Vector2(0,0), Color.White);
@@ -35,6 +42,21 @@ public partial class BattleManager
         var show = scene == Scene.PLAY_TURN || scene == Scene.REDRAW;
         player_1.Draw(gt, weathers, current_player == player_1, highscore_player == player_1, show);
         player_2.Draw(gt, weathers, current_player == player_2, highscore_player == player_2, show);
+
+        var weather_xpos = WEATHER_CARD_XPOS;
+        foreach (var row in weathers) {
+            var weather = weathers[row.Key];
+            if (weather.Item1 is not null) {
+                gt.spriteBatch.Draw(
+                    weather.Item1.img,
+                    new Vector2(weather_xpos, WEATHER_CARD_YPOS),
+                    null,
+                    Color.White,
+                    Card.THUMB_SCALE
+                );
+            }
+            weather_xpos += Card.WIDTH;
+        }
     }
     private void DrawCursor(GraphicTools gt) {
         if (cursor.section == Section.HAND) {
@@ -76,6 +98,34 @@ public partial class BattleManager
                         Player.ROW_XPOS,
                         Player.ROW_YPOS + Player.ROW_YPOS_OFFSET[(RowType)cursor.index],
                         Player.ROW_WIDTH,
+                        Card.HEIGHT
+                    ),
+                    Color.White
+                );
+            }
+            else {
+                // Highlight Weathers
+                foreach (RowType row in Enum.GetValues(typeof(RowType))) {
+                    if ((int)row == cursor.index) continue;
+                    gt.spriteBatch.Draw(
+                        selected_card.types.Contains(row)? cursor.mark_card_enabled : cursor.mark_card_disabled,
+                        new Rectangle(
+                            WEATHER_CARD_XPOS + (int)row * Card.WIDTH,
+                            WEATHER_CARD_YPOS,
+                            Card.WIDTH,
+                            Card.HEIGHT
+                        ),
+                        Color.White
+                    );
+                }
+                // Hovered Weather
+                gt.spriteBatch.Draw(
+                    (selected_card.types.Contains((RowType)cursor.index) || selected_card.types.Length == 0)?
+                    cursor.mark_card_hovered : cursor.mark_card_hovered_disabled,
+                    new Rectangle(
+                        WEATHER_CARD_XPOS + cursor.index * Card.WIDTH,
+                        WEATHER_CARD_YPOS,
+                        Card.WIDTH,
                         Card.HEIGHT
                     ),
                     Color.White
@@ -128,18 +178,18 @@ public partial class BattleManager
                 );
 
                 // Draw Power Icon
-                Texture2D power_image = null;
+                Texture2D img_card_type = null;
                 if (card is CardUnit) {
                     Color power_color;
                     if (((CardUnit)card).is_hero) {
-                        power_image = Card.img_power_hero;
+                        img_card_type = Card.img_power_hero;
                         power_color = Color.White;
                     } else {
-                        power_image = Card.img_power_normal;
+                        img_card_type = Card.img_power_normal;
                         power_color = Color.Black;
                     }
                     gt.spriteBatch.Draw(
-                        power_image,
+                        img_card_type,
                         new Vector2(PREVIEW_CARD_XPOS, PREVIEW_CARD_YPOS),
                         null,
                         Color.White,
@@ -155,9 +205,21 @@ public partial class BattleManager
                         power_color
                     );
                 }
+                else if (card is CardWeather) {
+                    if (!((CardWeather)card).is_dispel) {img_card_type = Card.img_weather;}
+                    else {img_card_type = Card.img_dispel;}
+
+                    gt.spriteBatch.Draw(
+                        img_card_type,
+                        new Vector2(PREVIEW_CARD_XPOS, PREVIEW_CARD_YPOS),
+                        null,
+                        Color.White,
+                        PREVIEW_CARD_SCALE
+                    );
+                }
 
                 // Draw Row Types Icons
-                var last_ypos = PREVIEW_CARD_YPOS + (int)((power_image is null)? 0 : power_image.Height*PREVIEW_CARD_SCALE.Y);
+                var last_ypos = PREVIEW_CARD_YPOS + (int)((img_card_type is null)? 0 : img_card_type.Height*PREVIEW_CARD_SCALE.Y);
                 foreach (RowType row in Enum.GetValues(typeof(RowType))) {
                     if (card.types.Contains(row)) {
                         gt.spriteBatch.Draw(
@@ -170,6 +232,27 @@ public partial class BattleManager
                         last_ypos += (int)(Card.img_rows[row].Height * PREVIEW_CARD_SCALE.Y);
                     }
                 }
+
+                // Draw Card Info
+                string card_type;
+                if (card is CardUnit) {card_type = TEXT_CARD_UNIT;}
+                else if (card is CardLeader) {card_type = TEXT_CARD_LEADER;}
+                else if (card is CardWeather) {
+                    if (!((CardWeather)card).is_dispel) {card_type = TEXT_CARD_WEATHER;}
+                    else {card_type = TEXT_CARD_DISPEL;}
+                }
+                else {throw new Exception("Card type name not supported.");}
+
+                var card_type_size = fnt_message.MeasureString(card_type);
+                gt.spriteBatch.DrawString(
+                    fnt_message,
+                    string.Format(TEXT_CARD_TYPE, card_type),
+                    new Vector2(
+                        PREVIEW_CARD_POWER_XPOS,
+                        PREVIEW_CARD_YPOS + PREVIEW_CARD_HEIGHT + card_type_size.Y/2
+                    ),
+                    Color.White
+                );
             }
 
             switch (cursor.section) {

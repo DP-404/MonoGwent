@@ -94,6 +94,7 @@ public class Player
     private Texture2D img_health_off;
     private Texture2D img_leader;
     private Texture2D img_highscore;
+    private Texture2D img_row_weather;
     private SpriteFont fnt_status;
 
     public Player(string name) {
@@ -136,15 +137,15 @@ public class Player
     public Card GetFieldCard(RowType row, int index) {
         return rows[row][index];
     }
-    public int GetRowPower(RowType row_type, List<CardWeather> weathers) {
+    public int GetRowPower(RowType row_type, Tuple<CardWeather,Player> weather) {
         int row_power = 0;
         var row = rows[row_type];
         foreach (var card in row) {
-            row_power += card.ApplyWeathers(weathers);
+            row_power += card.ApplyWeather(weather.Item1);
         }
         return row_power;
     }
-    public int GetPower(Dictionary<RowType,List<CardWeather>> weathers) {
+    public int GetPower(Dictionary<RowType,Tuple<CardWeather,Player>> weathers) {
         int power = 0;
         foreach (var row in rows.Keys) {
             power += GetRowPower(row, weathers[row]);
@@ -169,6 +170,7 @@ public class Player
         img_health_off = gt.content.Load<Texture2D>("health_off");
         img_leader = gt.content.Load<Texture2D>("leader");
         img_highscore = gt.content.Load<Texture2D>("highscore");
+        img_row_weather = gt.content.Load<Texture2D>("row_weather");
         fnt_status = gt.content.Load<SpriteFont>("Arial");
     }
 
@@ -176,7 +178,7 @@ public class Player
         return pos + (positive? 1 : -1)*offset - (!positive? relative : 0);
     }
 
-    public void Draw(GraphicTools gt, Dictionary<RowType, List<CardWeather>> weathers, bool is_turn, bool highscore, bool show) {
+    public void Draw(GraphicTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
         // Draw Player Label
         int xpos = PLAYER_LABEL_XPOS;
         int ypos = (is_turn == true)? PLAYER_LABEL_PLAYER_YPOS : PLAYER_LABEL_RIVAL_YPOS;
@@ -277,7 +279,7 @@ public class Player
                 position,
                 null,
                 Color.White,
-                Card.SCALE
+                Card.THUMB_SCALE
             );
         }
 
@@ -300,7 +302,20 @@ public class Player
                     position,
                     null,
                     Color.White,
-                    Card.SCALE
+                    Card.THUMB_SCALE
+                );
+            }
+
+            // Draw Row Weather
+            if (weathers[row.Key].Item1 is not null) {
+                gt.spriteBatch.Draw(
+                    img_row_weather,
+                    new Vector2(
+                        ROW_XPOS,
+                        GetRelativePosition(ROW_YPOS, ROW_YPOS_OFFSET[row.Key], Card.HEIGHT, is_turn)
+                    ),
+                    null,
+                    Color.White
                 );
             }
 
@@ -327,7 +342,7 @@ public class Player
             ),
             null,
             Color.White,
-            Card.SCALE
+            Card.THUMB_SCALE
         );
         if (!leader.used) {
             gt.spriteBatch.Draw(
@@ -351,7 +366,7 @@ public class Player
                 ),
                 null,
                 Color.White,
-                Card.SCALE
+                Card.THUMB_SCALE
             );
         }
 
@@ -365,7 +380,7 @@ public class Player
                 ),
                 null,
                 Color.White,
-                Card.SCALE
+                Card.THUMB_SCALE
             );
         }
     }

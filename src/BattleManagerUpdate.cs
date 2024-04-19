@@ -77,12 +77,56 @@ public partial class BattleManager
             field = (RowType)cursor.field;
         }
 
-        if (!card.types.Contains(field)) return;
+        // If Field is not valid > Return
+        if (!card.types.Contains(field) && card.types.Length != 0) return;
 
         switch (card) {
             case CardWeather:
-                current_player.hand.Remove(card);
-                weathers[(RowType)cursor.index].Add((CardWeather)card);
+                // Card is Weather
+                if (!((CardWeather)card).is_dispel) {
+                    current_player.hand.Remove(card);
+                    var old_weather = weathers[field];
+                    if (old_weather.Item1 is not null) {
+                        old_weather.Item2.graveyard.Add(old_weather.Item1);
+                    }
+                    weathers[field] = new ((CardWeather)card, current_player);
+                }
+                // Card is Dispel
+                else {
+                    var exists_weather = false;
+                    var is_single = card.types.Length != 0;
+                    if (is_single) {
+                        exists_weather = weathers[field].Item1 is not null;
+                    } else {
+                        foreach (var row in Enum.GetValues(typeof(RowType)).Cast<RowType>()) {
+                            if (weathers[row].Item1 is not null) {
+                                exists_weather = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Exists Weather > Dispel
+                    if (!exists_weather) {return;}
+
+                    current_player.hand.Remove(card);
+                    current_player.graveyard.Add(card);
+
+                    // Dispel All
+                    if (card.types.Length == 0) {
+                        foreach (var row in Enum.GetValues(typeof(RowType)).Cast<RowType>()) {
+                            if (weathers[row].Item1 is not null)
+                                weathers[row].Item2.graveyard.Add(weathers[row].Item1);
+                                weathers[row] = new(null,null);
+                        }
+                    }
+                    // Dispel Single
+                    else {
+                        weathers[field].Item2.graveyard.Add(weathers[field].Item1);
+                        weathers[field] = new(null,null);
+                    }
+
+                }
                 break;
 
             case CardUnit:
@@ -283,13 +327,15 @@ public partial class BattleManager
                 if (
                     !cursor.holding &&
                     (
-                        hand_card is not CardWeather &&
-                        Keyboard.GetState().IsKeyDown(Keys.Down)
-                    )
-                        ||
-                    (
-                        hand_card is CardWeather &&
-                        Keyboard.GetState().IsKeyDown(Keys.Right)
+                        (
+                            hand_card is not CardWeather &&
+                            Keyboard.GetState().IsKeyDown(Keys.Down)
+                        )
+                            ||
+                        (
+                            hand_card is CardWeather &&
+                            Keyboard.GetState().IsKeyDown(Keys.Right)
+                        )
                     )
                 ) {
                     if (cursor.index == Enum.GetNames(typeof(RowType)).Length-1)

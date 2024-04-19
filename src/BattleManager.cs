@@ -20,6 +20,9 @@ public partial class BattleManager
 
         public Texture2D mark_card_hovered;
         public Texture2D mark_card_selected;
+        public Texture2D mark_card_enabled;
+        public Texture2D mark_card_disabled;
+        public Texture2D mark_card_hovered_disabled;
         public Texture2D mark_row_hovered;
         public Texture2D mark_row_enabled;
         public Texture2D mark_row_disabled;
@@ -97,8 +100,9 @@ public partial class BattleManager
         }
     }
     private Player victor = null;
-    private Dictionary<RowType,List<CardWeather>> weathers
-    = Enum.GetValues(typeof(RowType)).Cast<RowType>().ToDictionary(x => x, x => new List<CardWeather>());
+    private Dictionary<RowType,Tuple<CardWeather,Player>> weathers
+    = Enum.GetValues(typeof(RowType)).Cast<RowType>().ToDictionary(
+    x => x, x => new Tuple<CardWeather, Player>(null, null));
 
     private Texture2D img_background;
     private Texture2D img_dim_background;
@@ -122,8 +126,10 @@ public partial class BattleManager
 
     public void LoadContent(GraphicTools gt) {
         Card.img_back = gt.content.Load<Texture2D>("card_back");
-        Card.img_power_normal = gt.content.Load<Texture2D>("power_normal");
-        Card.img_power_hero = gt.content.Load<Texture2D>("power_hero");
+        Card.img_power_normal = gt.content.Load<Texture2D>("card_power_normal");
+        Card.img_power_hero = gt.content.Load<Texture2D>("card_power_hero");
+        Card.img_weather = gt.content.Load<Texture2D>("card_weather");
+        Card.img_dispel = gt.content.Load<Texture2D>("card_dispel");
         Card.img_melee = gt.content.Load<Texture2D>("melee");
         Card.img_range = gt.content.Load<Texture2D>("range");
         Card.img_siege = gt.content.Load<Texture2D>("siege");
@@ -137,6 +143,12 @@ public partial class BattleManager
         cursor.mark_card_hovered.CreateBorder(6, Color.Lime);
         cursor.mark_card_selected = new Texture2D(gt.graphics.GraphicsDevice, Card.WIDTH, Card.HEIGHT);
         cursor.mark_card_selected.CreateBorder(3, Color.DeepSkyBlue);
+        cursor.mark_card_enabled = new Texture2D(gt.graphics.GraphicsDevice, Card.WIDTH, Card.HEIGHT);
+        cursor.mark_card_enabled.CreateBorder(6, Color.Silver);
+        cursor.mark_card_disabled = new Texture2D(gt.graphics.GraphicsDevice, Card.WIDTH, Card.HEIGHT);
+        cursor.mark_card_disabled.CreateBorder(6, Color.Black);
+        cursor.mark_card_hovered_disabled = new Texture2D(gt.graphics.GraphicsDevice, Card.WIDTH, Card.HEIGHT);
+        cursor.mark_card_hovered_disabled.CreateBorder(5, Color.Red);
 
         cursor.mark_row_hovered = new Texture2D(gt.graphics.GraphicsDevice, Player.ROW_WIDTH, Card.HEIGHT);
         cursor.mark_row_hovered.CreateBorder(5, Color.Lime);

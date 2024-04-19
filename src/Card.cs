@@ -23,15 +23,18 @@ public class Card
     public const int ACTUAL_HEIGHT = 768;
     public const int WIDTH = 55;
     public const int HEIGHT = 80;
-    public static readonly Vector2 SCALE =
+    public static readonly Vector2 THUMB_SCALE =
     new Vector2((float)WIDTH/ACTUAL_WIDTH, (float)HEIGHT/ACTUAL_HEIGHT);
 
     public RowType[] types {get; init;}
 
+    public string img_name;
     public Texture2D img;
     public static Texture2D img_back;
     public static Texture2D img_power_normal;
     public static Texture2D img_power_hero;
+    public static Texture2D img_weather;
+    public static Texture2D img_dispel;
     public static Texture2D img_melee;
     public static Texture2D img_range;
     public static Texture2D img_siege;
@@ -62,10 +65,9 @@ public class CardUnit : Card {
 
     public bool is_decoy {get => power == 0? true : false;}
 
-    public int ApplyWeathers(List<CardWeather> weathers) {
-        int actual_power = power;
-        foreach (var weather in weathers) actual_power = Math.Min(actual_power, weather.penalty);
-        return actual_power;
+    public int ApplyWeather(CardWeather weather) {
+        if (weather is null) return power;
+        return Math.Min(power, weather.penalty);
     }
 }
 
@@ -75,9 +77,11 @@ public class CardLeader : Card {
 }
 
 public class CardWeather : Card {
+    public const int DISPEL_PENALTY = -1;
+    public const int DEFAULT_PENALTY = 1;
 
-    public int penalty;
-    public bool is_dispel;
+    public int penalty = DEFAULT_PENALTY;
+    public bool is_dispel {get => penalty == DISPEL_PENALTY;}
 
 }
 
