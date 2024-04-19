@@ -81,6 +81,25 @@ public partial class BattleManager
         if (!card.types.Contains(field) && card.types.Length != 0) return;
 
         switch (card) {
+
+            case CardUnit:
+                if (((CardUnit)card).is_decoy) {
+                    // Take field card to hand
+                    var takeback_card = (CardUnit)current_player.GetFieldCard((RowType)cursor.field, cursor.index);
+                    current_player.rows[(RowType)cursor.field].Remove(takeback_card);
+                    current_player.hand.Add(takeback_card);
+
+                    // Place card on field card's place
+                    current_player.hand.Remove(card);
+                    current_player.hand.Insert(cursor.index, card);
+                    break;
+                } else {
+                    // Place card on field
+                    current_player.hand.Remove(card);
+                    current_player.rows[(RowType)cursor.index].Add((CardUnit)card);
+                    break;
+                }
+
             case CardWeather:
                 // Card is Weather
                 if (!((CardWeather)card).is_dispel) {
@@ -129,23 +148,13 @@ public partial class BattleManager
                 }
                 break;
 
-            case CardUnit:
-                if (((CardUnit)card).is_decoy) {
-                    // Take field card to hand
-                    var takeback_card = (CardUnit)current_player.GetFieldCard((RowType)cursor.field, cursor.index);
-                    current_player.rows[(RowType)cursor.field].Remove(takeback_card);
-                    current_player.hand.Add(takeback_card);
-
-                    // Place card on field card's place
-                    current_player.hand.Remove(card);
-                    current_player.hand.Insert(cursor.index, card);
-                    break;
-                } else {
-                    // Place card on field
-                    current_player.hand.Remove(card);
-                    current_player.rows[(RowType)cursor.index].Add((CardUnit)card);
-                    break;
+            case CardBoost:
+                var current_boost = current_player.boosts[field];
+                if (current_boost is not null) {
+                    current_player.graveyard.Add(current_boost);
                 }
+                current_player.boosts[field] = (CardBoost)card;
+                break;
 
             default:
                 throw new Exception();
@@ -386,6 +395,15 @@ public partial class BattleManager
                 else if (
                     !cursor.holding &&
                     hand_card is CardWeather &&
+                    Keyboard.GetState().IsKeyDown(Keys.Enter)
+                ) {
+                    PlayCard();
+                }
+
+                // Selected card is Boost
+                else if (
+                    !cursor.holding &&
+                    hand_card is CardBoost &&
                     Keyboard.GetState().IsKeyDown(Keys.Enter)
                 ) {
                     PlayCard();

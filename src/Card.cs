@@ -17,7 +17,7 @@ public enum LeaderEffect {
     DRAW_EXTRA_CARD,
 }
 
-public class Card
+public abstract class Card
 {
     public const int ACTUAL_WIDTH = 520;
     public const int ACTUAL_HEIGHT = 768;
@@ -27,6 +27,7 @@ public class Card
     new Vector2((float)WIDTH/ACTUAL_WIDTH, (float)HEIGHT/ACTUAL_HEIGHT);
 
     public RowType[] types {get; init;}
+    public abstract string type_name {get;}
 
     public string img_name;
     public Texture2D img;
@@ -35,6 +36,7 @@ public class Card
     public static Texture2D img_power_hero;
     public static Texture2D img_weather;
     public static Texture2D img_dispel;
+    public static Texture2D img_boost;
     public static Texture2D img_melee;
     public static Texture2D img_range;
     public static Texture2D img_siege;
@@ -58,20 +60,26 @@ public class Card
 }
 
 public class CardUnit : Card {
+    private const string TYPE_UNIT_NAME = "Unit";
+    private const string TYPE_DECOY_NAME = "Decoy";
 
-    public virtual bool is_hero {get; init;}
-    public virtual int power {get; set;}
-    public virtual int effect {get; init;}
+    public override string type_name {get => (!is_decoy)? TYPE_UNIT_NAME : TYPE_DECOY_NAME;}
+    public bool is_hero {get; init;}
+    public int power {get; set;}
+    public int effect {get; init;}
 
     public bool is_decoy {get => power == 0? true : false;}
 
-    public int ApplyWeather(CardWeather weather) {
-        if (weather is null) return power;
-        return Math.Min(power, weather.penalty);
+    public int GetPower(CardWeather weather, CardBoost boost) {
+        var actual_power = power;
+        if (boost is not null) actual_power += boost.bonus;
+        if (weather is not null) actual_power = Math.Min(actual_power, weather.penalty);
+        return actual_power;
     }
 }
 
 public class CardLeader : Card {
+    public override string type_name {get => "Leader";}
     public LeaderEffect effect;
     public bool used = false;
 }
@@ -80,6 +88,7 @@ public class CardWeather : Card {
     public const int DISPEL_PENALTY = -1;
     public const int DEFAULT_PENALTY = 1;
 
+    public override string type_name {get => "Weather";}
     public int penalty = DEFAULT_PENALTY;
     public bool is_dispel {get => penalty == DISPEL_PENALTY;}
 
@@ -87,5 +96,6 @@ public class CardWeather : Card {
 
 public class CardBoost : Card {
 
+    public override string type_name {get => "Boost";}
     public int bonus;
 }

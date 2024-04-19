@@ -130,6 +130,7 @@ public partial class BattleManager
         Card.img_power_hero = gt.content.Load<Texture2D>("card_power_hero");
         Card.img_weather = gt.content.Load<Texture2D>("card_weather");
         Card.img_dispel = gt.content.Load<Texture2D>("card_dispel");
+        Card.img_boost = gt.content.Load<Texture2D>("card_boost");
         Card.img_melee = gt.content.Load<Texture2D>("melee");
         Card.img_range = gt.content.Load<Texture2D>("range");
         Card.img_siege = gt.content.Load<Texture2D>("siege");

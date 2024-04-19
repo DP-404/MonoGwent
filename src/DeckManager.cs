@@ -106,6 +106,20 @@ public class CardDispelBlueprint : CardBlueprint {
 
 }
 
+public class CardBoostBlueprint : CardBlueprint {
+    public int bonus;
+
+    public override Card GetCard() {
+        return new CardBoost {
+            img_name=image_name,
+            img=image,
+            types=types,
+            bonus=bonus
+        };
+    }
+
+}
+
 public struct CardsDump {
 
     public static CardLeaderBlueprint card_0L = new() {
@@ -144,6 +158,11 @@ public struct CardsDump {
     public static CardDispelBlueprint card_0P1 = new() {
         image_name="0P1"
     };
+    public static CardBoostBlueprint card_0B1 = new() {
+        image_name="0B1",
+        types=[RowType.MELEE],
+        bonus=1
+    };
 
     public static void LoadContent(GraphicTools gt) {
         var blueprints = typeof(CardsDump)
@@ -152,7 +171,8 @@ public struct CardsDump {
                 f.FieldType == typeof(CardUnitBlueprint) ||
                 f.FieldType == typeof(CardLeaderBlueprint) ||
                 f.FieldType == typeof(CardWeatherBlueprint) ||
-                f.FieldType == typeof(CardDispelBlueprint)
+                f.FieldType == typeof(CardDispelBlueprint) ||
+                f.FieldType == typeof(CardBoostBlueprint)
             )
             .ToDictionary(f => f.Name, f => (CardBlueprint) f.GetValue(null));
         foreach (var bp in blueprints.Values) {
@@ -171,12 +191,9 @@ public struct DecksDump {
                 CardsDump.card_0U1.GetCard(),
                 CardsDump.card_0U1.GetCard(),
                 CardsDump.card_0U1.GetCard(),
-                CardsDump.card_0U1.GetCard(),
                 CardsDump.card_0U2.GetCard(),
                 CardsDump.card_0U2.GetCard(),
                 CardsDump.card_0U2.GetCard(),
-                CardsDump.card_0U2.GetCard(),
-                CardsDump.card_0U3.GetCard(),
                 CardsDump.card_0U3.GetCard(),
                 CardsDump.card_0U3.GetCard(),
                 CardsDump.card_0U3.GetCard(),
@@ -185,6 +202,8 @@ public struct DecksDump {
                 CardsDump.card_0W1.GetCard(),
 
                 CardsDump.card_0P1.GetCard(),
+
+                CardsDump.card_0B1.GetCard(),
             };
             deck.leader = (CardLeader)CardsDump.card_0L.GetCard();
             return deck;

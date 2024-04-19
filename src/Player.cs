@@ -67,21 +67,28 @@ public class Player
     public const int ROW_XPOS = 293;
     public const int ROW_WIDTH = 430;
     public const int ROW_YPOS = 360;
-    public static Dictionary<RowType,int> ROW_YPOS_OFFSET = new Dictionary<RowType,int> {
+    public static readonly Dictionary<RowType,int> ROW_YPOS_OFFSET = new Dictionary<RowType,int> {
         {RowType.MELEE, 4},
         {RowType.RANGE, 94},
         {RowType.SIEGE, 184}
     };
+
 
     public const int ROW_POWER_XPOS = 210;
     public const int ROW_POWER_YPOS = 360;
     public static Dictionary<RowType,int> ROW_POWER_YPOS_OFFSET
     = ROW_YPOS_OFFSET.ToDictionary(x => x.Key, x => x.Value + Card.HEIGHT / 2);
 
+    public const int BOOST_XPOS = 228;
+    public const int BOOST_YPOS = 360;
+    public static readonly Dictionary<RowType,int> BOOST_YPOS_OFFSET = ROW_YPOS_OFFSET;
+
     public string name;
     public int health = DEFAULT_HEALTH;
     public readonly Dictionary<RowType, List<CardUnit>> rows
     = Enum.GetValues(typeof(RowType)).Cast<RowType>().ToDictionary(x => x, x => new List<CardUnit>());
+    public readonly Dictionary<RowType, CardBoost> boosts
+    = Enum.GetValues(typeof(RowType)).Cast<RowType>().ToDictionary(x => x, x => (CardBoost)null);
     public List<Card> hand = [];
     public Deck original_deck = new Deck();
     public Deck deck = new Deck();
@@ -141,7 +148,7 @@ public class Player
         int row_power = 0;
         var row = rows[row_type];
         foreach (var card in row) {
-            row_power += card.ApplyWeather(weather.Item1);
+            row_power += card.GetPower(weather.Item1, boosts[row_type]);
         }
         return row_power;
     }
@@ -158,6 +165,8 @@ public class Player
                 graveyard.Add(card);
             }
             row.Value.Clear();
+            if (boosts[row.Key] is not null) graveyard.Add(boosts[row.Key]);
+            boosts[row.Key] = null;
         }
     }
     public void Clear() {
@@ -178,8 +187,7 @@ public class Player
         return pos + (positive? 1 : -1)*offset - (!positive? relative : 0);
     }
 
-    public void Draw(GraphicTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
-        // Draw Player Label
+    public void DrawPlayerStatus(GraphicTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
         int xpos = PLAYER_LABEL_XPOS;
         int ypos = (is_turn == true)? PLAYER_LABEL_PLAYER_YPOS : PLAYER_LABEL_RIVAL_YPOS;
         gt.spriteBatch.DrawString(fnt_status, name, new Vector2(xpos, ypos), Color.White);
@@ -263,8 +271,8 @@ public class Player
             null,
             Color.White
         );
-
-        // Draw Player Hand
+    }
+    public void DrawHand(GraphicTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
         for (int i = 0; i<hand.Count; i++) {
             var card = hand[i];
             var position = card.GetRowPosition(
@@ -282,8 +290,8 @@ public class Player
                 Card.THUMB_SCALE
             );
         }
-
-        // Draw Player Rows
+    }
+    public void DrawRows(GraphicTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
         foreach (var row in rows) {
 
             // Draw Row Cards
@@ -300,6 +308,20 @@ public class Player
                 gt.spriteBatch.Draw(
                     card.img,
                     position,
+                    null,
+                    Color.White,
+                    Card.THUMB_SCALE
+                );
+            }
+
+            // Draw Row Boost
+            if (boosts[row.Key] is not null) {
+                gt.spriteBatch.Draw(
+                    boosts[row.Key].img,
+                    new Vector2(
+                        BOOST_XPOS,
+                        GetRelativePosition(BOOST_YPOS, BOOST_YPOS_OFFSET[row.Key], Card.HEIGHT, is_turn)
+                    ),
                     null,
                     Color.White,
                     Card.THUMB_SCALE
@@ -332,8 +354,8 @@ public class Player
                 Color.White
             );
         }
-
-        // Draw Player Leader
+    }
+    public void DrawLeader(GraphicTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
         gt.spriteBatch.Draw(
             leader.img,
             new Vector2(
@@ -355,8 +377,8 @@ public class Player
                 Color.White
             );
         }
-
-        // Draw Player Graveyard
+    }
+    public void DrawGraveyard(GraphicTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
         if (deck.Count != 0) {
             gt.spriteBatch.Draw(
                 Card.img_back,
@@ -369,8 +391,8 @@ public class Player
                 Card.THUMB_SCALE
             );
         }
-
-        // Draw Player Deck
+    }
+    public void DrawDeck(GraphicTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
         if (graveyard.Count != 0) {
             gt.spriteBatch.Draw(
                 graveyard[0].img,
@@ -383,6 +405,14 @@ public class Player
                 Card.THUMB_SCALE
             );
         }
+    }
+    public void Draw(GraphicTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
+        DrawPlayerStatus(gt, weathers, is_turn, highscore, show);
+        DrawHand(gt, weathers, is_turn, highscore, show);
+        DrawRows(gt, weathers, is_turn, highscore, show);
+        DrawLeader(gt, weathers, is_turn, highscore, show);
+        DrawGraveyard(gt, weathers, is_turn, highscore, show);
+        DrawDeck(gt, weathers, is_turn, highscore, show);
     }
 
 }
