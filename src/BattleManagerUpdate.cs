@@ -194,6 +194,8 @@ public partial class BattleManager
         }
 
         cursor.Move(Section.HAND);
+
+        EndTurn();
     }
 
     private void ClearWeather(RowType row) {
