@@ -28,7 +28,7 @@ public class Deck : Stack<Card> {
 
 public interface IDeckGetter
 {
-    private static readonly string name;
+    public static abstract string GetName();
     public static abstract Deck GetDeck();
 }
 
@@ -295,7 +295,7 @@ public struct CardsDump {
 public struct DecksDump {
 
     public class Deck1 : IDeckGetter {
-        public static string name = "Hallownest";
+        public static string GetName() => "Hallownest";
 
         public static Deck GetDeck() {
             var deck = new Deck
@@ -334,7 +334,7 @@ public struct DecksDump {
                 CardsDump.card_0D1.GetCard(),
                 CardsDump.card_0D2.GetCard(),
             };
-            deck.name = name;
+            deck.name = GetName();
             deck.leader = (CardLeader)CardsDump.card_0L.GetCard();
             return deck;
         }
