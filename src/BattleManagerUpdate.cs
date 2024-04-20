@@ -659,7 +659,14 @@ public partial class BattleManager
             player_1.IsDefeated() ||
             player_2.IsDefeated()
         ) {
-            EndGame();
+            // Await for input > Start next phase
+            if (
+                !cursor.holding &&
+                Keyboard.GetState().IsKeyDown(Keys.Enter)
+            ) {
+                cursor.Hold();
+                EndGame();
+            }
         } else {
             if (phase != REDRAW_PHASE) {
                 // Await for input > Start next phase
