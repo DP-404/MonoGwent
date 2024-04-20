@@ -380,7 +380,7 @@ public class Player
             );
         }
     }
-    public void DrawGraveyard(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
+    public void DrawDeck(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
         if (deck.Count != 0) {
             gt.spriteBatch.Draw(
                 Card.img_back,
@@ -394,10 +394,10 @@ public class Player
             );
         }
     }
-    public void DrawDeck(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
+    public void DrawGraveyard(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
         if (graveyard.Count != 0) {
             gt.spriteBatch.Draw(
-                graveyard[0].img,
+                graveyard[^1].img,
                 new Vector2(
                     GRAVEYARD_XPOS,
                     GetRelativePosition(GRAVEYARD_YPOS, GRAVEYARD_YPOS_OFFSET, Card.HEIGHT, is_turn)
