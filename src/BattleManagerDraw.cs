@@ -520,7 +520,7 @@ Copyright (c) 2024 DP-404
 
             switch (cursor.section) {
                 case Section.HAND:
-                    if (player_1.hand.Count != 0) DrawHoveredCard(current_player.hand[cursor.index]);
+                    if (current_player.hand.Count != 0) DrawHoveredCard(current_player.hand[cursor.index]);
                     break;
                 case Section.FIELD:
                     DrawHoveredCard(current_player.hand[cursor.hand]);
