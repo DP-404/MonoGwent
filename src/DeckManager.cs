@@ -53,7 +53,7 @@ public class CardBlueprint {
 public class CardUnitBlueprint : CardBlueprint {
     public int power;
     public bool is_hero = false;
-    public int effect = 0;
+    public UnitEffect effect = UnitEffect.NONE;
 
     public override Card GetCard() {
         return new CardUnit {
@@ -80,8 +80,7 @@ public class CardDecoyBlueprint : CardBlueprint {
             img=image,
             types=types,
             power=CardUnit.POWER_DECOY,
-            is_hero=false,
-            effect=0
+            is_hero=false
         };
     }
 
@@ -156,7 +155,7 @@ public struct CardsDump {
         name="The Pale King",
         description="No cost too great.",
         image_name="graphics/cards/0L",
-        effect=LeaderEffect.DRAW_EXTRA_CARD
+        effect=LeaderEffect.DRAW_CARD
     };
     public static CardUnitBlueprint card_0U1 = new() {
         name="The Knight",
@@ -208,7 +207,8 @@ public struct CardsDump {
         description="Skilled combatant living at the heart of the Waterways. Assails intruders with balls of compacted dung.",
         image_name="graphics/cards/0U7",
         types=[RowType.SIEGE],
-        power=4
+        power=4,
+        effect=UnitEffect.DRAW_CARD
     };
     public static CardUnitBlueprint card_0U8 = new() {
         name="White Defender",

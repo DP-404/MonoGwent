@@ -13,8 +13,13 @@ public enum RowType {
     SIEGE
 }
 
+public enum UnitEffect {
+    NONE,
+    DRAW_CARD,
+}
+
 public enum LeaderEffect {
-    DRAW_EXTRA_CARD,
+    DRAW_CARD,
     WIN_ON_DRAW
 }
 
@@ -74,8 +79,8 @@ public class CardUnit : Card {
     (!is_decoy)? (TYPE_UNIT_NAME + (is_hero? TYPE_GOLDEN_NAME : TYPE_SILVER_NAME))
     : TYPE_DECOY_NAME;}
     public bool is_hero {get; init;}
-    public int power {get; set;}
-    public int effect {get; init;}
+    public int power;
+    public UnitEffect effect = UnitEffect.NONE;
 
     public bool is_decoy {get => power == POWER_DECOY? true : false;}
 

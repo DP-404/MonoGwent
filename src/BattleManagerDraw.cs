@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -30,9 +31,16 @@ public partial class BattleManager
     private const string TEXT_DRAW = "It's a draw. Players failed to decide a victor.";
     private const string TEXT_PRESS_ENTER = "Press Enter to continue.";
     private const string TEXT_PRESS_F1 = "Press F1 for help.";
-    private const string TEXT_CARD_NAME = "{0}";
     private const string TEXT_CARD_TYPE = "Type: {0}";
     private const string TEXT_CARD_EFFECT = "Effect: {0}";
+    private Dictionary<UnitEffect,string> TEXT_UNIT_EFFECTS = new() {
+        {UnitEffect.NONE,""},
+        {UnitEffect.DRAW_CARD,"Draws an extra card."}
+    };
+    private Dictionary<LeaderEffect,string> TEXT_LEADER_EFFECTS = new() {
+        {LeaderEffect.DRAW_CARD,"Draws an extra card."},
+        {LeaderEffect.WIN_ON_DRAW,"Wins one draw round."}
+    };
     private const string TEXT_CARD_DESCRIPTION = "{0}";
     private const int HELP_XPOS = 20;
     private const int HELP_YPOS = 20;
@@ -329,6 +337,8 @@ Copyright (c) 2024 DP-404
                 }
 
                 // Draw Card Info
+
+                // Draw Card Info Name
                 var card_name = gt.WrapText(fnt_message, card.name, PREVIEW_CARD_WIDTH);
                 var card_name_size = fnt_message.MeasureString(card_name);
                 last_ypos = PREVIEW_CARD_YPOS + PREVIEW_CARD_HEIGHT;
@@ -343,6 +353,7 @@ Copyright (c) 2024 DP-404
                 );
                 last_ypos += (int)card_name_size.Y;
 
+                // Draw Card Info Type
                 var card_type = gt.WrapText(fnt_message, string.Format(TEXT_CARD_TYPE, card.type_name), PREVIEW_CARD_WIDTH);
                 var card_type_size = fnt_message.MeasureString(card_type);
                 gt.spriteBatch.DrawString(
@@ -356,6 +367,35 @@ Copyright (c) 2024 DP-404
                 );
                 last_ypos += (int)card_type_size.Y;
 
+                // Draw Card Info Effect
+                if (card is CardUnit || card is CardLeader) {
+                    string effect = null;
+                    switch (card) {
+                        case CardUnit:
+                            if (((CardUnit)card).effect == UnitEffect.NONE) break;
+                            effect = TEXT_UNIT_EFFECTS[((CardUnit)card).effect];
+                            break;
+                        case CardLeader:
+                            effect = TEXT_LEADER_EFFECTS[((CardLeader)card).effect];
+                            break;
+                    }
+                    if (effect is not null) {
+                        var card_effect = gt.WrapText(fnt_message, string.Format(TEXT_CARD_EFFECT, effect), PREVIEW_CARD_WIDTH);
+                        var card_effect_size = fnt_message.MeasureString(card_effect);
+                        gt.spriteBatch.DrawString(
+                            fnt_message,
+                            card_effect,
+                            new Vector2(
+                                PREVIEW_CARD_XPOS,
+                                last_ypos
+                            ),
+                            Color.White
+                        );
+                        last_ypos += (int)card_effect_size.Y;
+                    }
+                }
+
+                // Draw Card Info Description
                 var card_description = gt.WrapText(fnt_message, card.description, PREVIEW_CARD_WIDTH);
                 var card_description_size = fnt_message.MeasureString(card_description);
                 gt.spriteBatch.DrawString(

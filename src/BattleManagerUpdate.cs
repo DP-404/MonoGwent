@@ -188,6 +188,11 @@ public partial class BattleManager
                 throw new Exception();
         }
 
+        if (card is CardUnit) {
+            var card_unit = (CardUnit)card;
+            if (card_unit.effect is UnitEffect.DRAW_CARD) current_player.ReceiveCard();
+        }
+
         sfx_playcard.Play();
 
         cursor.Move(Section.HAND);
@@ -200,7 +205,7 @@ public partial class BattleManager
         current_player.leader.used = true;
 
         switch (current_player.leader.effect) {
-            case LeaderEffect.DRAW_EXTRA_CARD:
+            case LeaderEffect.DRAW_CARD:
                 current_player.ReceiveCard(1);
                 break;
             default:
