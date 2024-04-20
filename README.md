@@ -82,14 +82,14 @@ Content is managed through the [MonoGame Content Builder Tool (MGCB Editor)](htt
 - [x] Unit cards.
     * [x] Silver cards.
     * [x] Golden cards.
-    * [ ] Special effects.
+    * [x] Special effects.
 - [x] Leader cards.
-- [ ] Additional leader cards effects.
+- [x] Additional leader cards effects.
 - [x] Weather cards.
 - [x] Dispel cards.
 - [x] Boost cards.
 - [x] Decoy cards.
-- [ ] Build full fledged decks.
+- [x] Build full fledged decks.
 - [ ] Deck selection scene.
 - [x] Add music.
 - [x] Add sfx.
