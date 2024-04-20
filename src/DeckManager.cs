@@ -415,6 +415,130 @@ public struct CardsDump {
         bonus=1
     };
 
+
+    public static CardLeaderBlueprint card_2L = new() {
+        name="Asgore",
+        description="I so badly want to say, \"would you like a cup of tea?\" But...You know how it is.",
+        image_name="graphics/cards/2L",
+        effect=LeaderEffect.RECOVER_LAST_DISCARDED_CARD
+    };
+    public static CardUnitBlueprint card_2U1 = new() {
+        name="Toriel",
+        description="I am TORIEL, caretaker of the RUINS.",
+        image_name="graphics/cards/2U1",
+        types=[RowType.RANGE],
+        power=3,
+    };
+    public static CardUnitBlueprint card_2U2 = new() {
+        name="Sans",
+        description="it's a beautiful day outside.birds are singing, flowers are blooming... on days like these, kids like you... Should be burning in hell.",
+        image_name="graphics/cards/2U2",
+        types=[RowType.RANGE],
+        power=8,
+        is_hero=true
+    };
+    public static CardUnitBlueprint card_2U3 = new() {
+        name="Papyrus",
+        description="I WILL BE THE ONE! I MUST BE THE ONE! I WILL CAPTURE A HUMAN! THEN, I, THE GREAT PAPYRUS... WILL GET ALL THE THINGS I UTTERLY DESERVE!",
+        image_name="graphics/cards/2U3",
+        types=[RowType.MELEE],
+        power=3,
+        effect=UnitEffect.DRAW_CARD
+    };
+    public static CardUnitBlueprint card_2U4 = new() {
+        name="Undyne",
+        description="Now, human! Let's end this, right here, right now. I'll show you how determined monsters can be! Step forward when you're ready! Fuhuhuhu!",
+        image_name="graphics/cards/2U4",
+        types=[RowType.MELEE,RowType.RANGE],
+        power=5
+    };
+    public static CardUnitBlueprint card_2U5 = new() {
+        name="Undyne the Undying",
+        description="SCREW IT! WHY SHOULD I TELL THAT STORY WHEN YOU'RE ABOUT TO DIE!?! NGAAAHHHH!",
+        image_name="graphics/cards/2U5",
+        types=[RowType.MELEE],
+        power=7,
+        is_hero=true
+    };
+    public static CardUnitBlueprint card_2U6 = new() {
+        name="Mettaton",
+        description="I'M NOT GOING TO DESTROY YOU WITHOUT A LIVE TELEVISION AUDIENCE!!",
+        image_name="graphics/cards/2U6",
+        types=[RowType.RANGE,RowType.SIEGE],
+        power=4,
+    };
+    public static CardUnitBlueprint card_2U7 = new() {
+        name="Asriel",
+        description="Don't kill, and don't be killed, alright? That's the best you can strive for.",
+        image_name="graphics/cards/2U7",
+        types=[RowType.SIEGE],
+        power=6
+    };
+    public static CardUnitBlueprint card_2U8 = new() {
+        name="Photoshop Flowey",
+        description="In this world it's kill or be killed. This is all just a bad dream...And you're NEVER waking up!",
+        image_name="graphics/cards/2U8",
+        types=[RowType.SIEGE],
+        power=9,
+        is_hero=true
+    };
+    public static CardDecoyBlueprint card_2D1 = new() {
+        name="Flowey",
+        description="Howdy! I'm FLOWEY. FLOWEY the FLOWER!",
+        image_name="graphics/cards/2D1",
+        types=[RowType.MELEE]
+    };
+    public static CardDecoyBlueprint card_2D2 = new() {
+        name="Annoying Dog",
+        description="I'm not snoring, I'm cheering you on in my sleep!! ...Oh, you're still here? Don't you have anything better to do?",
+        image_name="graphics/cards/2D2",
+        types=[RowType.MELEE,RowType.RANGE,RowType.SIEGE]
+    };
+    public static CardWeatherBlueprint card_2W1 = new() {
+        name="Muffet",
+        description="Don't look so blue, my deary~... I think purple is a better look on you! Ahuhuhu~",
+        image_name="graphics/cards/2W1",
+        types=[RowType.MELEE]
+    };
+    public static CardWeatherBlueprint card_2W2 = new() {
+        name="It's Raining Somewhere",
+        description="Someone who sincerely likes bad jokes... has an integrity you can't say \"no\" to.",
+        image_name="graphics/cards/2W2",
+        types=[RowType.RANGE]
+    };
+    public static CardWeatherBlueprint card_2W3 = new() {
+        name="Amalgam",
+        description="Welcome to my special hell.",
+        image_name="graphics/cards/2W3",
+        types=[RowType.SIEGE]
+    };
+    public static CardDispelBlueprint card_2P1 = new() {
+        name="Barrier",
+        description="This is the barrier. This is what keeps us all trapped underground.",
+        image_name="graphics/cards/2P1"
+    };
+    public static CardBoostBlueprint card_2B1 = new() {
+        name="Soul",
+        description="See that heart? That is your SOUL, the very culmination of your being!",
+        image_name="graphics/cards/2B1",
+        types=[RowType.MELEE],
+        bonus=1
+    };
+    public static CardBoostBlueprint card_2B2 = new() {
+        name="Death by Glamour",
+        description="Lights! Camera! Action!",
+        image_name="graphics/cards/2B2",
+        types=[RowType.RANGE],
+        bonus=1
+    };
+    public static CardBoostBlueprint card_2B3 = new() {
+        name="Temmie",
+        description="hOI!!! i'm TEMMIE!!",
+        image_name="graphics/cards/2B3",
+        types=[RowType.SIEGE],
+        bonus=1
+    };
+
     public static void LoadContent(GameTools gt) {
         var blueprints = typeof(CardsDump)
             .GetFields(BindingFlags.Public | BindingFlags.Static)
@@ -535,10 +659,60 @@ public struct DecksDump {
 
     }
 
+    public class Deck3 : IDeckGetter {
+        public static string GetName() => "Undertale";
+        public static string GetImageName() => "graphics/cards/2";
+
+        public static Deck GetDeck() {
+            var deck = new Deck
+            {
+                // Total: 25
+                // Unit: 16
+                    // Silver: 13
+                    CardsDump.card_2U1.GetCard(),
+                    CardsDump.card_2U1.GetCard(),
+                    CardsDump.card_2U1.GetCard(),
+                    CardsDump.card_2U3.GetCard(),
+                    CardsDump.card_2U3.GetCard(),
+                    CardsDump.card_2U3.GetCard(),
+                    CardsDump.card_2U4.GetCard(),
+                    CardsDump.card_2U4.GetCard(),
+                    CardsDump.card_2U4.GetCard(),
+                    CardsDump.card_2U6.GetCard(),
+                    CardsDump.card_2U6.GetCard(),
+                    CardsDump.card_2U7.GetCard(),
+                    CardsDump.card_2U7.GetCard(),
+                    // Golden: 3
+                    CardsDump.card_2U2.GetCard(),
+                    CardsDump.card_2U5.GetCard(),
+                    CardsDump.card_2U8.GetCard(),
+                // Weather: 3
+                CardsDump.card_2W1.GetCard(),
+                CardsDump.card_2W2.GetCard(),
+                CardsDump.card_2W3.GetCard(),
+                // Dispel: 1
+                CardsDump.card_2P1.GetCard(),
+                // Boost: 3
+                CardsDump.card_2B1.GetCard(),
+                CardsDump.card_2B2.GetCard(),
+                CardsDump.card_2B3.GetCard(),
+                // Decoy: 2
+                CardsDump.card_2D1.GetCard(),
+                CardsDump.card_2D2.GetCard(),
+            };
+            deck.name = GetName();
+            deck.img_name = GetImageName();
+            deck.leader = (CardLeader)CardsDump.card_2L.GetCard();
+            return deck;
+        }
+
+    }
+
     public static void Initialize() {
         decks = [
             Deck1.GetDeck(),
-            Deck2.GetDeck()
+            Deck2.GetDeck(),
+            Deck3.GetDeck()
         ];
     }
 
