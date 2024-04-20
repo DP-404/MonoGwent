@@ -53,11 +53,11 @@ When any player has won twice, they win the game. If both players ended up with 
 Controls:
 Esc - Exit game
 F1 - Open/Close help
+F2 - Mute music
 F4 - Toggle Fullscreen/Window mode
-M - Mute music
 Arrow Keys - Move
-Enter - Accept
-Backspace - Return
+Enter - Accept/Use
+Back - Cancel/Return
 Right Shift - Select Leader
 Tab - Pass
 

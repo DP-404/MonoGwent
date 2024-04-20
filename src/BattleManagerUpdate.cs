@@ -243,7 +243,7 @@ public partial class BattleManager
         // Await for input > Un/Mute music
         if (
             !cursor.holding &&
-            Keyboard.GetState().IsKeyDown(Keys.M)
+            Keyboard.GetState().IsKeyDown(Keys.F2)
         ) {
             cursor.Hold();
             MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
