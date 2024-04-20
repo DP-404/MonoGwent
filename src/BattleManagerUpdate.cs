@@ -208,6 +208,12 @@ public partial class BattleManager
             case LeaderEffect.DRAW_CARD:
                 current_player.ReceiveCard(1);
                 break;
+            case LeaderEffect.RECOVER_LAST_DISCARDED_CARD:
+                if (current_player.graveyard.Count == 0) return;
+                if (current_player.hand.Count >= Player.HAND_CARDS_LIMIT) return;
+                current_player.hand.Add(current_player.graveyard[^1]);
+                current_player.graveyard.RemoveAt(current_player.graveyard.Count-1);
+                break;
             default:
                 return;
         }

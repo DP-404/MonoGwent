@@ -54,7 +54,8 @@ public partial class BattleManager
     };
     private Dictionary<LeaderEffect,string> TEXT_LEADER_EFFECTS = new() {
         {LeaderEffect.DRAW_CARD,"Draws an extra card."},
-        {LeaderEffect.WIN_ON_DRAW,"Wins one draw round."}
+        {LeaderEffect.WIN_ON_DRAW,"Wins one draw round."},
+        {LeaderEffect.RECOVER_LAST_DISCARDED_CARD,"Recovers the card on top of graveyard."}
     };
     private const string TEXT_CARD_DESCRIPTION = "{0}";
     private const int HELP_XPOS = 20;

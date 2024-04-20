@@ -20,7 +20,8 @@ public enum UnitEffect {
 
 public enum LeaderEffect {
     DRAW_CARD,
-    WIN_ON_DRAW
+    WIN_ON_DRAW,
+    RECOVER_LAST_DISCARDED_CARD
 }
 
 public abstract class Card
