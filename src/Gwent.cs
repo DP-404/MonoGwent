@@ -26,7 +26,7 @@ public class Gwent : Game
     private Point gameResolution = new (1024,720);
     private RenderTarget2D renderTarget;
     private Rectangle renderTargetDestination;
-    private Color clearColor = Color.Black;
+    private Color clearColor = Color.White;
 
     private BattleManager bm;
 
@@ -51,9 +51,7 @@ public class Gwent : Game
         // TODO: Add your initialization logic here
 
         base.Initialize();
-        var deck1 = DecksDump.Deck1.GetDeck();
-        var deck2 = DecksDump.Deck1.GetDeck();
-        bm.Initialize(deck1, deck2);
+        bm.Initialize();
     }
 
     protected override void LoadContent()

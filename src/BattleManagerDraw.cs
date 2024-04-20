@@ -9,6 +9,21 @@ namespace MonoGwent;
 
 public partial class BattleManager
 {
+    private const int ENTER_NAME_XPOS = 360;
+    private const int ENTER_NAME_YPOS = 50;
+    private const string TEXT_ENTER_NAME = "Enter player name:";
+    private const int NAME_XPOS = 360;
+    private const int NAME_YPOS = 70;
+    private const int CHOOSE_DECK_XPOS = 360;
+    private const int CHOOSE_DECK_YPOS = 150;
+    private const string TEXT_CHOOSE_DECK = "Use Left and Right Arrows to choose your deck:";
+    private const int CHOSEN_DECK_XPOS = 360;
+    private const int CHOSEN_DECK_YPOS = 170;
+    private const int CHOSEN_DECK_WIDTH = 224;
+    private const float CHOSEN_DECK_SCALE = (float)CHOSEN_DECK_WIDTH/Card.ACTUAL_WIDTH;
+    private const int CHOSEN_DECK_NAME_XPOS = 360;
+    private const int CHOSEN_DECK_NAME_YPOS = 530;
+
     private const int WEATHER_CARD_XPOS = 6;
     private const int WEATHER_CARD_YPOS = 320;
     private const int PREVIEW_CARD_XPOS = 800;
@@ -69,6 +84,99 @@ All assets used in this game belong to their respective owners.
 Licenced under MIT Licence
 Copyright (c) 2024 DP-404
 ";
+
+    private void DrawDeckSelection(GameTools gt) {
+        // Draw Background
+        gt.spriteBatch.Draw(
+            img_dim_background,
+            new Vector2(0,0),
+            null,
+            Color.Black
+        );
+
+        // Draw Enter your name
+        var enter_name_size = fnt_message.MeasureString(TEXT_ENTER_NAME);
+        gt.spriteBatch.DrawString(
+            fnt_message,
+            TEXT_ENTER_NAME,
+            new Vector2(
+                (gt.graphics.PreferredBackBufferWidth - enter_name_size.X) / 2,
+                ENTER_NAME_YPOS - enter_name_size.Y/2
+            ),
+            Color.White
+        );
+
+        // Draw Name
+        var name_size = fnt_message.MeasureString(current_player.name);
+        gt.spriteBatch.DrawString(
+            fnt_message,
+            current_player.name,
+            new Vector2(
+                (gt.graphics.PreferredBackBufferWidth - name_size.X) / 2,
+                NAME_YPOS - name_size.Y/2
+            ),
+            Color.White
+        );
+
+        // Draw Choose deck
+        var choose_deck_size = fnt_message.MeasureString(TEXT_CHOOSE_DECK);
+        gt.spriteBatch.DrawString(
+            fnt_message,
+            TEXT_CHOOSE_DECK,
+            new Vector2(
+                (gt.graphics.PreferredBackBufferWidth - choose_deck_size.X) / 2,
+                CHOOSE_DECK_YPOS - choose_deck_size.Y/2
+            ),
+            Color.White
+        );
+
+        // Draw Deck Preview
+        gt.spriteBatch.Draw(
+            current_player.original_deck.img,
+            new Vector2(
+                (gt.graphics.PreferredBackBufferWidth - CHOSEN_DECK_WIDTH) / 2,
+                CHOSEN_DECK_YPOS
+            ),
+            null,
+            Color.White,
+            CHOSEN_DECK_SCALE
+        );
+
+        // Draw chosen deck name
+        var chosen_deck_size = fnt_message.MeasureString(current_player.original_deck.name);
+        gt.spriteBatch.DrawString(
+            fnt_message,
+            current_player.original_deck.name,
+            new Vector2(
+                (gt.graphics.PreferredBackBufferWidth - chosen_deck_size.X) / 2,
+                CHOSEN_DECK_YPOS + PREVIEW_CARD_HEIGHT + chosen_deck_size.Y
+            ),
+            Color.White
+        );
+
+        // Draw Press Enter
+        var input_size = fnt_message.MeasureString(TEXT_PRESS_ENTER);
+        gt.spriteBatch.DrawString(
+            fnt_message,
+            TEXT_PRESS_ENTER,
+            new Vector2(
+                (gt.graphics.PreferredBackBufferWidth - input_size.X) / 2,
+                gt.graphics.PreferredBackBufferHeight * 5 / 6
+            ),
+            Color.White
+        );
+
+        var help_size = fnt_message.MeasureString(TEXT_PRESS_F1);
+        gt.spriteBatch.DrawString(
+            fnt_message,
+            TEXT_PRESS_F1,
+            new Vector2(
+                (gt.graphics.PreferredBackBufferWidth - help_size.X) / 2,
+                gt.graphics.PreferredBackBufferHeight * 6 / 7
+            ),
+            Color.White
+        );
+    }
 
     private void DrawBoard(GameTools gt) {
         gt.spriteBatch.Draw(img_background, new Vector2(0,0), Color.White);
@@ -445,6 +553,7 @@ Copyright (c) 2024 DP-404
             );
 
             if (help) return;
+            if (scene == Scene.DECK_SELECTION) return;
 
             var text_xpos = gt.graphics.PreferredBackBufferWidth / 4;
             var text_ypos = gt.graphics.PreferredBackBufferHeight / 2;
@@ -596,11 +705,15 @@ Copyright (c) 2024 DP-404
     }
 
     public void Draw(GameTools gt) {
-        DrawBoard(gt);
-        DrawFields(gt);
-        DrawCursor(gt);
-        DrawSelectedCards(gt);
-        DrawHoveredCardInfo(gt);
+        if (scene == Scene.DECK_SELECTION) {
+            DrawDeckSelection(gt);
+        } else {
+            DrawBoard(gt);
+            DrawFields(gt);
+            DrawCursor(gt);
+            DrawSelectedCards(gt);
+            DrawHoveredCardInfo(gt);
+        }
         DrawMessage(gt);
         DrawHelp(gt);
     }

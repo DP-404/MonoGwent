@@ -7,10 +7,11 @@ MonoGwent is a two-players card game. Each player is given a deck which they wil
 ## Key Bindings
 - Esc: exit game
 - F1: open/close help
+- F2: un/mute music
 - F4: toggle Fullscreen/Window mode
 - Arrow Keys: move
-- Enter: accept
-- Backspace: return
+- Enter: accept/use
+- Backs: cancel/return
 - Right Shift: select Leader
 - Tab: pass
 
@@ -60,21 +61,37 @@ dotnet restore
 dotnet run
 ```
 
-## Project Setup
-- `/`: settings and entry point file.
-- `/src`: code.
-- `/Content`: assets
-
 ## Workflow
 Within the `Gwent.cs`, the game is run through an instance of the `Gwent` class (child of `Microsoft.Xna.Framework.Game`, the heart of any Monogame project). This has 4 main methods:
 - Game Constructor: tells the project how to start.
 - `Initialize`: initialize the game upon its startup.
-- `Load` and `Unload` Content: used to add and remove assets from the running game from the Content project.
-- `Update`: called on a regular interval to update your game state, e.g. take player inputs or animate entities.
+- `Load` and `Unload` Content: used to add and remove assets from the running game from the Content project. This is called before running `Update` and `Draw`, so game assets to be used should be loaded before the method termination.
+- `Update`: called on a regular interval to update the game state, e.g. take player inputs or animate entities.
 - `Draw`: called on a regular interval to take the current game state and draw the game entities to the screen.
 
+Note: To know how Monogame projects work, please refer to the [Monogame Official Documentation](https://docs.monogame.net/).
+
+## Project Setup
+- `/`: settings and entry point file.
+- `/src`: game code.
+    * `BattleManager.cs` (partial `BattleManagerUpdate.cs` and `BattleManagerDraw,cs`): the core of the battle system and most likely the whole game, since all the `Update` and `Draw` logic is called through this root. The BM `Update` method evaluates according to the current `Scene`, which calls a specific `UpdateScene` method, this has different conditions with the `Cursor` indexes, the current/rival `Player` state and the `Keyboard` inputs to finally take the actions in the game, whereas the `Draw` while using the game status draws on screen.
+    * `DeckManager.cs`: cards and decks are loaded, generated and initialized here. `CardsDump` stores all created `CardBlueprint` (something like a plan to create the actual `Card` objects), while `DecksDump` stores the created `Deck`.
+    * `Player.cs`: defines the `Player` entity, with all the required game fields such as `name`,`deck`, `hand`, `graveyard`, etc.... Although a `Player` object does not have an `Update` method, it does have a `Draw` method. In-game, the fields flip according to the currently playing player in order to show their field in the lower part of the battlefield. Therefore, its drawing methods, which include the positions of all drawn assets, are relative to the `is_turn` bool (meaning, if `is_turn` is true, the field is drawn below).
+    * `Card.cs`: defines the base `Card` class, from which all the other card classes inherit. There is also the `CardUnit` (represents Silver/Golden unit cards and Decoy cards), `CardLeader`, `CardWeather` (represents Weather cards and Dispel cards) and `CardBoost`.
+    * `Gwent.cs`: the `Gwent` class that represents the game is here. Inheriting from `Microsoft.Xna.Framework.Game`, it includes all sorts of utilities to develop and run a game. Application logic should be put here.
+- `/Content`: game assets. Read the respective section.
+
 ## Content
-Content is managed through the [MonoGame Content Builder Tool (MGCB Editor)](https://docs.monogame.net/articles/tools/mgcb_editor.html).
+Content is placed on the `Content` folder and managed through the [MonoGame Content Builder Tool (MGCB Editor)](https://docs.monogame.net/articles/tools/mgcb_editor.html).
+
+- `font`: store game `spritefont` files.
+- `graphics`: store game image files (`.png`,`.jpg`,`.jpeg`,etc...)
+    * `cards`: store only decks cards.
+    * `img`: store all other game related images.
+- `music`: store game music files (`.mp3`,`.ogg`,`.wav`,etc...)
+    * Note: `Song` files should be named `bgm_backgroundmusicname.ogg`
+    * Note: `SoundEffect` files should be named `sfx_soundeffectname.ogg`
+
 
 ## TODO
 - [x] Game can be won.
@@ -90,6 +107,15 @@ Content is managed through the [MonoGame Content Builder Tool (MGCB Editor)](htt
 - [x] Boost cards.
 - [x] Decoy cards.
 - [x] Build full fledged decks.
-- [ ] Deck selection scene.
+- [x] Deck selection scene.
 - [x] Add music.
 - [x] Add sfx.
+
+# Credits
+Developed by: [DP-404](https://github.com/DP-404)
+Made with: [MonoGame](https://docs.monogame.net/)
+
+All assets used in this project belong to their respective users.
+
+Licenced under MIT Licence
+Copyright (c) 2024 DP-404

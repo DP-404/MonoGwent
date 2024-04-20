@@ -8,7 +8,15 @@ namespace MonoGwent;
 
 public class Deck : Stack<Card> {
     public string name;
+    public string img_name;
     public CardLeader leader;
+
+    public Texture2D img;
+
+    public void LoadContent(GameTools gt) {
+        img = gt.content.Load<Texture2D>(img_name);
+    }
+
     public void Add(Card card) {
         Push(card);
     }
@@ -29,6 +37,7 @@ public class Deck : Stack<Card> {
 public interface IDeckGetter
 {
     public static abstract string GetName();
+    public static abstract string GetImageName();
     public static abstract Deck GetDeck();
 }
 
@@ -274,6 +283,130 @@ public struct CardsDump {
         bonus=1
     };
 
+
+    public static CardLeaderBlueprint card_1L = new() {
+        name="Moon Lord",
+        description="The mastermind behind all terrors which befall the world, freed from his lunar prison. Practically a god, his power knows no limits.",
+        image_name="graphics/cards/1L",
+        effect=LeaderEffect.WIN_ON_DRAW
+    };
+    public static CardUnitBlueprint card_1U1 = new() {
+        name="Eye of Cthulhu",
+        description="A piece of Cthulhu ripped from his body centuries ago in a bloody war. It wanders the night seeking its host body... and revenge!",
+        image_name="graphics/cards/1U1",
+        types=[RowType.RANGE],
+        power=3,
+    };
+    public static CardUnitBlueprint card_1U2 = new() {
+        name="King Slime",
+        description="Slimes normally aren't intelligent, but occasionally they merge together to become a powerful force to swallow all things.",
+        image_name="graphics/cards/1U2",
+        types=[RowType.MELEE,RowType.SIEGE],
+        power=3,
+    };
+    public static CardUnitBlueprint card_1U3 = new() {
+        name="Eater of Worlds",
+        description="Conceived from the bottomless malice of the Corruption, this mighty abyssal worm tunnels wildly to devour all in its path.",
+        image_name="graphics/cards/1U3",
+        types=[RowType.MELEE],
+        power=4,
+        effect=UnitEffect.DRAW_CARD
+    };
+    public static CardUnitBlueprint card_1U4 = new() {
+        name="Wall of Flesh",
+        description="Serving as the world's core and guardian, the towering demon lord exists to keep powerful ancient spirits sealed away. The Wall of Flesh's many mouths, attached by bloody veins. As a last resort, they can tear away and hungrily chase down threats.",
+        image_name="graphics/cards/1U4",
+        types=[RowType.SIEGE],
+        power=7,
+        is_hero=true
+    };
+    public static CardUnitBlueprint card_1U5 = new() {
+        name="Brain of Cthulhu",
+        description="A piece of Cthulhu torn asunder, this vile mastermind pulses with agony and aids the Crimson in an attempt to avenge its master.",
+        image_name="graphics/cards/1U5",
+        types=[RowType.RANGE,RowType.SIEGE],
+        power=5,
+    };
+    public static CardUnitBlueprint card_1U6 = new() {
+        name="Plantera",
+        description="A dormant, yet powerful floral guardian awoken by the fallout of Cthulhu's destroyed machinations. Its reach spans the entire jungle.",
+        image_name="graphics/cards/1U6",
+        types=[RowType.MELEE,RowType.SIEGE],
+        power=5,
+    };
+    public static CardUnitBlueprint card_1U7 = new() {
+        name="Golem",
+        description="A remarkable display of ingenuity constructed by the Lihzahrd clan. Powered by solar energy cells, it is ready to guard the Temple.",
+        image_name="graphics/cards/1U7",
+        types=[RowType.MELEE],
+        power=8,
+        is_hero=true
+    };
+    public static CardUnitBlueprint card_1U8 = new() {
+        name="Lunatic Cultist",
+        description="A fanatical leader hell-bent on bringing about the apocalypse by reviving the great Cthulhu through behind-the-scenes scheming.",
+        image_name="graphics/cards/1U8",
+        types=[RowType.RANGE],
+        power=9,
+        is_hero=true
+    };
+    public static CardDecoyBlueprint card_1D1 = new() {
+        name="Goldfish",
+        description="A seemingly ordinary goldfish, until it decides to rain.",
+        image_name="graphics/cards/1D1",
+        types=[RowType.RANGE]
+    };
+    public static CardDecoyBlueprint card_1D2 = new() {
+        name="Bunny",
+        description="Fuzzy wuzzy creatures that prefer safe, friendly locations.",
+        image_name="graphics/cards/1D2",
+        types=[RowType.MELEE]
+    };
+    public static CardWeatherBlueprint card_1W1 = new() {
+        name="Blood Moon",
+        description="The Blood Moon is rising... You can tell a Blood Moon is out when the sky turns red. There is something about it that causes monsters to swarm.",
+        image_name="graphics/cards/1W1",
+        types=[RowType.MELEE,RowType.RANGE]
+    };
+    public static CardWeatherBlueprint card_1W2 = new() {
+        name="Solar Eclipse",
+        description="A solar eclipse is happening! A day darker than night filled with creatures of horror.",
+        image_name="graphics/cards/1W2",
+        types=[RowType.SIEGE]
+    };
+    public static CardWeatherBlueprint card_1W3 = new() {
+        name="Slime Rain",
+        description="Slime is falling from the sky! It's a slime rain, where gelatinous organisms fall from the sky in droves.",
+        image_name="graphics/cards/1W3",
+        types=[RowType.RANGE]
+    };
+    public static CardDispelBlueprint card_1P1 = new() {
+        name="Journey's End",
+        description="After all the long roads, culmination is eventually reached. This is this Journey's End.",
+        image_name="graphics/cards/1P1"
+    };
+    public static CardBoostBlueprint card_1B1 = new() {
+        name="The Destroyer",
+        description="A mechanical simulacrum of Cthulhu's spine decorated in laser-armed probes, which detach from its body when damaged.",
+        image_name="graphics/cards/1B1",
+        types=[RowType.MELEE],
+        bonus=1
+    };
+    public static CardBoostBlueprint card_1B2 = new() {
+        name="The Twins",
+        description="Belonging to a pair of mechanically recreated Eyes of Cthulhu, one focuses its energy into firing powerful lasers, while the other chases at high speed, exhaling cursed flames..",
+        image_name="graphics/cards/1B2",
+        types=[RowType.RANGE],
+        bonus=1
+    };
+    public static CardBoostBlueprint card_1B3 = new() {
+        name="Skeletron Prime",
+        description="Mechanically reconstructed for reviving Cthulhu, this Skeletron has more arms than ever before, and a variety of fierce weapons.",
+        image_name="graphics/cards/1B3",
+        types=[RowType.SIEGE],
+        bonus=1
+    };
+
     public static void LoadContent(GameTools gt) {
         var blueprints = typeof(CardsDump)
             .GetFields(BindingFlags.Public | BindingFlags.Static)
@@ -294,8 +427,11 @@ public struct CardsDump {
 
 public struct DecksDump {
 
+    public static Deck[] decks;
+
     public class Deck1 : IDeckGetter {
         public static string GetName() => "Hallownest";
+        public static string GetImageName() => "graphics/cards/0";
 
         public static Deck GetDeck() {
             var deck = new Deck
@@ -335,10 +471,73 @@ public struct DecksDump {
                 CardsDump.card_0D2.GetCard(),
             };
             deck.name = GetName();
+            deck.img_name = GetImageName();
             deck.leader = (CardLeader)CardsDump.card_0L.GetCard();
             return deck;
         }
 
+    }
+
+    public class Deck2 : IDeckGetter {
+        public static string GetName() => "Terraria";
+        public static string GetImageName() => "graphics/cards/1";
+
+        public static Deck GetDeck() {
+            var deck = new Deck
+            {
+                // Total: 25
+                // Unit: 16
+                    // Silver: 13
+                    CardsDump.card_1U1.GetCard(),
+                    CardsDump.card_1U1.GetCard(),
+                    CardsDump.card_1U1.GetCard(),
+                    CardsDump.card_1U2.GetCard(),
+                    CardsDump.card_1U2.GetCard(),
+                    CardsDump.card_1U2.GetCard(),
+                    CardsDump.card_1U3.GetCard(),
+                    CardsDump.card_1U3.GetCard(),
+                    CardsDump.card_1U3.GetCard(),
+                    CardsDump.card_1U5.GetCard(),
+                    CardsDump.card_1U5.GetCard(),
+                    CardsDump.card_1U6.GetCard(),
+                    CardsDump.card_1U6.GetCard(),
+                    // Golden: 3
+                    CardsDump.card_1U4.GetCard(),
+                    CardsDump.card_1U7.GetCard(),
+                    CardsDump.card_1U8.GetCard(),
+                // Weather: 3
+                CardsDump.card_1W1.GetCard(),
+                CardsDump.card_1W2.GetCard(),
+                CardsDump.card_1W3.GetCard(),
+                // Dispel: 1
+                CardsDump.card_1P1.GetCard(),
+                // Boost: 3
+                CardsDump.card_1B1.GetCard(),
+                CardsDump.card_1B2.GetCard(),
+                CardsDump.card_1B3.GetCard(),
+                // Decoy: 2
+                CardsDump.card_1D1.GetCard(),
+                CardsDump.card_1D2.GetCard(),
+            };
+            deck.name = GetName();
+            deck.img_name = GetImageName();
+            deck.leader = (CardLeader)CardsDump.card_1L.GetCard();
+            return deck;
+        }
+
+    }
+
+    public static void Initialize() {
+        decks = [
+            Deck1.GetDeck(),
+            Deck2.GetDeck()
+        ];
+    }
+
+    public static void LoadContent(GameTools gt) {
+        foreach (var deck in decks) {
+            deck.LoadContent(gt);
+        }
     }
 
 }

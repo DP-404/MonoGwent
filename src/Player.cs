@@ -8,6 +8,7 @@ namespace MonoGwent;
 
 public class Player
 {
+    public const int MAX_NAME_LENGTH = 12;
     public const int DEFAULT_HEALTH = 2;
     public const int DEFEATED_HEALTH = 0;
     public const int STARTING_CARDS = 10;
@@ -90,8 +91,8 @@ public class Player
     public readonly Dictionary<RowType, CardBoost> boosts
     = Enum.GetValues(typeof(RowType)).Cast<RowType>().ToDictionary(x => x, x => (CardBoost)null);
     public List<Card> hand = [];
-    public Deck original_deck = new Deck();
-    public Deck deck = new Deck();
+    public Deck original_deck;
+    public Deck deck = new();
     public readonly List<Card> graveyard = [];
     public readonly List<Card> selected = [];
     public CardLeader leader {get => deck.leader;}

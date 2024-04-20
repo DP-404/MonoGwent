@@ -59,6 +59,7 @@ public partial class BattleManager
     }
 
     private enum Scene {
+        DECK_SELECTION,
         START_GAME,
         REDRAW,
         START_PHASE,
@@ -81,7 +82,7 @@ public partial class BattleManager
     private const int LOSE_HEALTH = 0;
 
     private int phase = REDRAW_PHASE;
-    private Scene scene = Scene.START_GAME;
+    private Scene scene = Scene.DECK_SELECTION;
     private bool help = false;
     private Cursor cursor = new ();
     private Player player_1 = new Player(PLAYER_1_NAME);
@@ -114,10 +115,12 @@ public partial class BattleManager
     private Texture2D img_victory;
     private Texture2D img_draw;
     private SpriteFont fnt_message;
+    private Song bgm_startup;
     private Song bgm_playing1;
     private Song bgm_playing2;
     private Song bgm_playing3;
     private SoundEffect sfx_playcard;
+    private SoundEffect sfx_select;
     private SoundEffect sfx_cancel;
 
     public void InitializePlayers() {
@@ -125,12 +128,12 @@ public partial class BattleManager
         player_2.Initialize();
         current_player = (Random.Shared.Next(2)==0)? player_1 : player_2;
     }
-    public void Initialize(Deck deck1, Deck deck2) {
-        MediaPlayer.Play(bgm_playing1);
+    public void Initialize() {
+        MediaPlayer.Play(bgm_startup);
         MediaPlayer.IsRepeating = true;
         current_player = player_1;
-        player_1.Initialize(deck1);
-        player_2.Initialize(deck2);
+        player_1.original_deck = DecksDump.decks[cursor.index];
+        player_2.original_deck = DecksDump.decks[cursor.index];
     }
 
     public void LoadContent(GameTools gt) {
@@ -178,13 +181,17 @@ public partial class BattleManager
         img_victory = gt.content.Load<Texture2D>("graphics/img/victory");
         img_draw = gt.content.Load<Texture2D>("graphics/img/draw");
         fnt_message = gt.content.Load<SpriteFont>("font/Arial");
+        bgm_startup = gt.content.Load<Song>("music/bgm_startup");
         bgm_playing1 = gt.content.Load<Song>("music/bgm_playing1");
         bgm_playing2 = gt.content.Load<Song>("music/bgm_playing2");
         bgm_playing3 = gt.content.Load<Song>("music/bgm_playing3");
         sfx_playcard = gt.content.Load<SoundEffect>("music/sfx_playcard");
+        sfx_select = gt.content.Load<SoundEffect>("music/sfx_select");
         sfx_cancel = gt.content.Load<SoundEffect>("music/sfx_cancel");
         foreach (var player in players) player.LoadContent(gt);
         CardsDump.LoadContent(gt);
+        DecksDump.Initialize();
+        DecksDump.LoadContent(gt);
     }
 
     private Player GetOtherPlayer(Player player) {

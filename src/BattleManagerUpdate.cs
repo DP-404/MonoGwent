@@ -16,6 +16,7 @@ public partial class BattleManager
         scene = Scene.START_GAME;
     }
     private void StartGame() {
+        MediaPlayer.Play(bgm_playing1);
         ClearAllWeathers();
         InitializePlayers();
         phase = REDRAW_PHASE;
@@ -249,6 +250,74 @@ public partial class BattleManager
             MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
         }
     }
+    private void UpdateDeckSelection() {
+        // Await for input
+        if (
+            !cursor.holding &&
+            current_player.name.Length != 0 &&
+            Keyboard.GetState().IsKeyDown(Keys.Enter)
+        ) {
+            cursor.Hold();
+            if (current_player == player_1) {
+                current_player = rival_player;
+            } else {
+                InitializePlayers();
+                scene = Scene.START_GAME;
+            }
+        }
+        // Erase
+        else if (
+            !cursor.holding &&
+            current_player.name.Length != 0 &&
+            Keyboard.GetState().IsKeyDown(Keys.Back)
+        ) {
+            cursor.Hold();
+            current_player.name = current_player.name.Remove(current_player.name.Length-1);
+        }
+        // Move Right
+        else if (
+            !cursor.holding &&
+            Keyboard.GetState().IsKeyDown(Keys.Right)
+        ) {
+            sfx_select.Play();
+            if (cursor.index == DecksDump.decks.Length-1)
+            {cursor.Move(0);} else {cursor.Move(cursor.index+1);}
+            current_player.original_deck = DecksDump.decks[cursor.index];
+        }
+        // Move Left
+        else if (
+            !cursor.holding &&
+            Keyboard.GetState().IsKeyDown(Keys.Left)
+        ) {
+            sfx_select.Play();
+            if (cursor.index == 0)
+            {cursor.Move(DecksDump.decks.Length-1);} else {cursor.Move(cursor.index-1);}
+            current_player.original_deck = DecksDump.decks[cursor.index];
+        }
+        // Read Keys
+        else if (
+            !cursor.holding &&
+            current_player.name.Length != Player.MAX_NAME_LENGTH &&
+            Keyboard.GetState().GetPressedKeys().Length != 0
+        ) {
+            var key_string = Keyboard.GetState().GetPressedKeys()[0].ToString();
+            if (key_string.Length == 1) {
+                var key = key_string[0];
+                if (char.IsLetter(key)) {
+                    cursor.Hold();
+                    if (
+                        Keyboard.GetState().IsKeyDown(Keys.LeftShift) ||
+                        Keyboard.GetState().IsKeyDown(Keys.RightShift)
+                    ) {
+                        key = char.ToUpper(key);
+                    } else {
+                        key = char.ToLower(key);
+                    }
+                    current_player.name += key;
+                }
+            }
+        }
+    }
     private void UpdateStartGame() {
         // Await for input > Start new game
         if (
@@ -383,6 +452,7 @@ public partial class BattleManager
                     current_player.hand.Count != 0 &&
                     Keyboard.GetState().IsKeyDown(Keys.Enter)
                 ) {
+                    sfx_select.Play();
                     cursor.hand = cursor.index;
                     cursor.Move(Section.FIELD);
                 }
@@ -392,6 +462,7 @@ public partial class BattleManager
                     cursor.section == Section.HAND &&
                     Keyboard.GetState().IsKeyDown(Keys.RightShift)
                 ) {
+                    sfx_select.Play();
                     cursor.Move(Section.LEADER);
                 }
 
@@ -450,6 +521,7 @@ public partial class BattleManager
                         ((CardUnit)hand_card).is_decoy
                     ) {
                         if (hand_card.types.Contains((RowType)cursor.index)) {
+                            sfx_select.Play();
                             cursor.field = cursor.index;
                             cursor.Move(Section.ROW);
                         }
@@ -623,6 +695,9 @@ public partial class BattleManager
         if (!help) {
             switch (scene)
             {
+                case Scene.DECK_SELECTION:
+                    UpdateDeckSelection();
+                    break;
                 case Scene.START_GAME:
                     UpdateStartGame();
                     break;
