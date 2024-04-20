@@ -507,6 +507,7 @@ public partial class BattleManager
                 // Move Right
                 if (
                     !cursor.holding &&
+                    current_player.rows[(RowType)cursor.field].Count != 0 &&
                     Keyboard.GetState().IsKeyDown(Keys.Right)
                 ) {
                     if (cursor.index == current_player.rows[(RowType)cursor.field].Count-1)
@@ -515,6 +516,7 @@ public partial class BattleManager
                 // Move Left
                 else if (
                     !cursor.holding &&
+                    current_player.rows[(RowType)cursor.field].Count != 0 &&
                     Keyboard.GetState().IsKeyDown(Keys.Left)
                 ) {
                     if (cursor.index == 0)
