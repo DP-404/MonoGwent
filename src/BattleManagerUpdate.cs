@@ -202,7 +202,6 @@ public partial class BattleManager
 
     private void UseLeaderEffect() {
         if (current_player.leader.used) return;
-        current_player.leader.used = true;
 
         switch (current_player.leader.effect) {
             case LeaderEffect.DRAW_CARD:
@@ -211,6 +210,7 @@ public partial class BattleManager
             default:
                 return;
         }
+        current_player.leader.used = true;
 
         cursor.Move(Section.HAND);
 
