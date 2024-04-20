@@ -30,7 +30,15 @@ public class Deck : Stack<Card> {
     public void Copy(Deck deck) {
         Clear();
         foreach (var i in deck) Add(i);
-        leader = deck.leader;
+        leader = new() {
+            name=deck.leader.name,
+            description=deck.leader.description,
+            img_name=deck.leader.img_name,
+            img=deck.leader.img,
+            types=deck.leader.types,
+            effect=deck.leader.effect,
+            used=deck.leader.used
+        };
     }
 }
 
