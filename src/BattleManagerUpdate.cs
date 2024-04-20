@@ -73,13 +73,13 @@ public partial class BattleManager
 
             // If Draw, check leader effect
             if (victor is null) {
-                if (player_1.leader.effect == LeaderEffect.WIN_ON_DRAW) {
+                if (player_1.leader.effect == LeaderEffect.WIN_ON_DRAW && !player_1.leader.used) {
                     player_1.leader.used = true;
                     victor = player_1;
                 }
-                if (player_2.leader.effect == LeaderEffect.WIN_ON_DRAW) {
+                if (player_2.leader.effect == LeaderEffect.WIN_ON_DRAW && !player_2.leader.used) {
+                    player_2.leader.used = true;
                     if (victor is null) {
-                        player_2.leader.used = true;
                         victor = player_2;
                     }
                     else {victor = null;}
