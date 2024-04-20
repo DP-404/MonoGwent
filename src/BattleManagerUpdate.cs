@@ -209,7 +209,7 @@ public partial class BattleManager
                 current_player.ReceiveCard(1);
                 break;
             default:
-                throw new NotImplementedException();
+                return;
         }
 
         cursor.Move(Section.HAND);
