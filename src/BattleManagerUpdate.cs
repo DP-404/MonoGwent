@@ -257,7 +257,7 @@ public partial class BattleManager
             current_player.name.Length != 0 &&
             Keyboard.GetState().IsKeyDown(Keys.Enter)
         ) {
-            cursor.Hold();
+            cursor.Move(0);
             if (current_player == player_1) {
                 current_player = rival_player;
             } else {
