@@ -122,6 +122,7 @@ public partial class BattleManager
     private SoundEffect sfx_playcard;
     private SoundEffect sfx_select;
     private SoundEffect sfx_cancel;
+    private SoundEffect sfx_win;
 
     public void InitializePlayers() {
         player_1.Initialize();
@@ -188,6 +189,8 @@ public partial class BattleManager
         sfx_playcard = gt.content.Load<SoundEffect>("music/sfx_playcard");
         sfx_select = gt.content.Load<SoundEffect>("music/sfx_select");
         sfx_cancel = gt.content.Load<SoundEffect>("music/sfx_cancel");
+        sfx_win = gt.content.Load<SoundEffect>("music/sfx_win");
+
         foreach (var player in players) player.LoadContent(gt);
         CardsDump.LoadContent(gt);
         DecksDump.Initialize();

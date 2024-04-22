@@ -14,11 +14,10 @@ public partial class BattleManager
     private void NewGame() {
         MediaPlayer.Play(bgm_playing1);
         scene = Scene.START_GAME;
-    }
-    private void StartGame() {
-        MediaPlayer.Play(bgm_playing1);
         ClearAllWeathers();
         InitializePlayers();
+    }
+    private void StartGame() {
         phase = REDRAW_PHASE;
         scene = Scene.START_TURN;
         cursor.Move(Section.HAND, false);
@@ -98,6 +97,8 @@ public partial class BattleManager
         if (player_1.IsDefeated() && !player_2.IsDefeated()) {victor = player_2;}
         else if (player_2.IsDefeated() && !player_1.IsDefeated()) {victor = player_1;}
         else {victor = null;}
+        MediaPlayer.Pause();
+        if (victor is not null) sfx_win.Play();
         scene = Scene.END_GAME;
     }
 
@@ -162,20 +163,16 @@ public partial class BattleManager
                         }
                     }
 
-                    // Exists Weather > Dispel
                     if (!exists_weather) {return;}
 
                     current_player.hand.Remove(card);
                     current_player.graveyard.Add(card);
 
                     // Dispel All
-                    if (card.types.Length == 0) {
-                        ClearAllWeathers();
-                    }
+                    if (card.types.Length == 0)
+                    {ClearAllWeathers();}
                     // Dispel Single
-                    else {
-                        ClearWeather(field);
-                    }
+                    else {ClearWeather(field);}
 
                 }
                 break;
@@ -271,12 +268,12 @@ public partial class BattleManager
             current_player.name.Length != 0 &&
             Keyboard.GetState().IsKeyDown(Keys.Enter)
         ) {
+            sfx_select.Play();
             cursor.Move(0);
             if (current_player == player_1) {
                 current_player = rival_player;
             } else {
-                InitializePlayers();
-                scene = Scene.START_GAME;
+                NewGame();
             }
         }
         // Erase
