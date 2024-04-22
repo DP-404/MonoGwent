@@ -217,15 +217,15 @@ public struct CardsDump {
         image_name="graphics/cards/0U6",
         types=[RowType.SIEGE],
         power=9,
-        is_hero=true
+        is_hero=true,
+        effect=UnitEffect.DRAW_CARD
     };
     public static CardUnitBlueprint card_0U7 = new() {
         name="Dung Defender",
         description="Skilled combatant living at the heart of the Waterways. Assails intruders with balls of compacted dung.",
         image_name="graphics/cards/0U7",
         types=[RowType.SIEGE],
-        power=4,
-        effect=UnitEffect.DRAW_CARD
+        power=4
     };
     public static CardUnitBlueprint card_0U8 = new() {
         name="White Defender",
@@ -317,8 +317,7 @@ public struct CardsDump {
         description="Conceived from the bottomless malice of the Corruption, this mighty abyssal worm tunnels wildly to devour all in its path.",
         image_name="graphics/cards/1U3",
         types=[RowType.MELEE],
-        power=4,
-        effect=UnitEffect.DRAW_CARD
+        power=4
     };
     public static CardUnitBlueprint card_1U4 = new() {
         name="Wall of Flesh",
@@ -348,7 +347,8 @@ public struct CardsDump {
         image_name="graphics/cards/1U7",
         types=[RowType.MELEE],
         power=8,
-        is_hero=true
+        is_hero=true,
+        effect=UnitEffect.DRAW_CARD
     };
     public static CardUnitBlueprint card_1U8 = new() {
         name="Lunatic Cultist",
@@ -442,8 +442,7 @@ public struct CardsDump {
         description="I WILL BE THE ONE! I MUST BE THE ONE! I WILL CAPTURE A HUMAN! THEN, I, THE GREAT PAPYRUS... WILL GET ALL THE THINGS I UTTERLY DESERVE!",
         image_name="graphics/cards/2U3",
         types=[RowType.MELEE],
-        power=3,
-        effect=UnitEffect.DRAW_CARD
+        power=3
     };
     public static CardUnitBlueprint card_2U4 = new() {
         name="Undyne",
@@ -480,7 +479,8 @@ public struct CardsDump {
         image_name="graphics/cards/2U8",
         types=[RowType.SIEGE],
         power=9,
-        is_hero=true
+        is_hero=true,
+        effect=UnitEffect.DRAW_CARD
     };
     public static CardDecoyBlueprint card_2D1 = new() {
         name="Flowey",
