@@ -117,8 +117,12 @@ public partial class BattleManager
 
             case CardUnit:
                 if (((CardUnit)card).is_decoy) {
-                    // Take field card to hand
                     var takeback_card = (CardUnit)current_player.GetFieldCard((RowType)cursor.field, cursor.index);
+
+                    // If takeback card is Hero > Return
+                    if (takeback_card.is_hero) return;
+
+                    // Take field card to hand
                     current_player.rows[(RowType)cursor.field].Remove(takeback_card);
                     current_player.hand.Add(takeback_card);
 
