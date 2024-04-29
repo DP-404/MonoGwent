@@ -275,7 +275,8 @@ Copyright (c) 2024 DP-404
                 foreach (RowType row in Enum.GetValues(typeof(RowType))) {
                     if ((int)row == cursor.index) continue;
                     gt.spriteBatch.Draw(
-                        selected_card.types.Contains(row)? cursor.mark_card_enabled : cursor.mark_card_disabled,
+                        (selected_card.types.Contains(row) || selected_card.types.Length == 0)?
+                        cursor.mark_card_enabled : cursor.mark_card_disabled,
                         new Vector2(
                             WEATHER_CARD_XPOS + (int)row * Card.WIDTH,
                             WEATHER_CARD_YPOS

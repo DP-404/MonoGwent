@@ -94,8 +94,8 @@ Content is placed on the `Content` folder and managed through the [MonoGame Cont
 
 
 ## TODO
+### Gameplay
 - [x] Game can be won.
-- [x] Enhanced GUI.
 - [x] Unit cards.
     * [x] Silver cards.
     * [x] Golden cards.
@@ -106,10 +106,13 @@ Content is placed on the `Content` folder and managed through the [MonoGame Cont
 - [x] Dispel cards.
 - [x] Boost cards.
 - [x] Decoy cards.
+### QoL
+- [x] Enhance GUI.
 - [x] Build full fledged decks.
 - [x] Deck selection scene.
 - [x] Add music.
 - [x] Add sfx.
+- [ ] Add AI.
 
 # Credits
 Developed by: [DP-404](https://github.com/DP-404)

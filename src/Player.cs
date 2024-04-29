@@ -114,12 +114,10 @@ public class Player
     public void Initialize(Deck d=null) {
         health = DEFAULT_HEALTH;
         has_passed = false;
-        if (d is null) {
-            deck.Copy(original_deck);
-        } else {
+        if (d is not null) {
             original_deck = d;
-            deck.Copy(original_deck);
         }
+        deck.Copy(original_deck);
         deck.Shuffle();
         graveyard.Clear();
         hand.Clear();
@@ -128,12 +126,11 @@ public class Player
             rows[row.Key].Clear();
             boosts[row.Key] = null;
         }
-
         ReceiveCard(STARTING_CARDS);
     }
     public void ReceiveCard(int count=1, bool skip_limit=false) {
         while (count > 0 && deck.Count != 0) {
-            var card = deck.Pop();
+            var card = deck.Take();
             if (hand.Count >= HAND_CARDS_LIMIT && !skip_limit)
             {graveyard.Add(card);}
             else {hand.Add(card);}            
@@ -189,7 +186,7 @@ public class Player
         return pos + (positive? 1 : -1)*offset - (!positive? relative : 0);
     }
 
-    public void DrawPlayerStatus(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
+    public void DrawPlayerStatus(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore) {
         int xpos = PLAYER_LABEL_XPOS;
         int ypos = (is_turn == true)? PLAYER_LABEL_PLAYER_YPOS : PLAYER_LABEL_RIVAL_YPOS;
         gt.spriteBatch.DrawString(fnt_status, name, new Vector2(xpos, ypos), Color.White);
@@ -274,7 +271,7 @@ public class Player
             Color.White
         );
     }
-    public void DrawHand(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
+    public void DrawHand(GameTools gt, bool is_turn, bool show) {
         for (int i = 0; i<hand.Count; i++) {
             var card = hand[i];
             var position = card.GetRowPosition(
@@ -293,7 +290,7 @@ public class Player
             );
         }
     }
-    public void DrawRows(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
+    public void DrawRows(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn) {
         foreach (var row in rows) {
 
             // Draw Row Cards
@@ -357,7 +354,7 @@ public class Player
             );
         }
     }
-    public void DrawLeader(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
+    public void DrawLeader(GameTools gt, bool is_turn) {
         gt.spriteBatch.Draw(
             leader.img,
             new Vector2(
@@ -380,7 +377,7 @@ public class Player
             );
         }
     }
-    public void DrawDeck(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
+    public void DrawDeck(GameTools gt, bool is_turn) {
         if (deck.Count != 0) {
             gt.spriteBatch.Draw(
                 Card.img_back,
@@ -394,7 +391,7 @@ public class Player
             );
         }
     }
-    public void DrawGraveyard(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
+    public void DrawGraveyard(GameTools gt, bool is_turn) {
         if (graveyard.Count != 0) {
             gt.spriteBatch.Draw(
                 graveyard[^1].img,
@@ -409,12 +406,12 @@ public class Player
         }
     }
     public void Draw(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
-        DrawPlayerStatus(gt, weathers, is_turn, highscore, show);
-        DrawHand(gt, weathers, is_turn, highscore, show);
-        DrawRows(gt, weathers, is_turn, highscore, show);
-        DrawLeader(gt, weathers, is_turn, highscore, show);
-        DrawGraveyard(gt, weathers, is_turn, highscore, show);
-        DrawDeck(gt, weathers, is_turn, highscore, show);
+        DrawPlayerStatus(gt, weathers, is_turn, highscore);
+        DrawHand(gt, is_turn, show);
+        DrawRows(gt, weathers, is_turn);
+        DrawLeader(gt, is_turn);
+        DrawGraveyard(gt, is_turn);
+        DrawDeck(gt, is_turn);
     }
 
 }

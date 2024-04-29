@@ -21,7 +21,7 @@ public class Gwent : Game
 {
     private GraphicsDeviceManager graphics;
     private SpriteBatch spriteBatch;
-    private GameTools graphicTools;
+    private GameTools gameTools;
 
     private Point gameResolution = new (1024,720);
     private RenderTarget2D renderTarget;
@@ -51,20 +51,23 @@ public class Gwent : Game
         // TODO: Add your initialization logic here
 
         base.Initialize();
+        DecksDump.Initialize();
         bm.Initialize();
     }
 
     protected override void LoadContent()
     {
         spriteBatch = new SpriteBatch(GraphicsDevice);
-        graphicTools = new GameTools(graphics, spriteBatch, Content);
+        gameTools = new GameTools(graphics, spriteBatch, Content);
 
         renderTarget = new RenderTarget2D(GraphicsDevice, gameResolution.X, gameResolution.Y);
         renderTargetDestination = GetRenderTargetDestination(gameResolution, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
         // TODO: use this.Content to load your game content here
 
-        bm.LoadContent(graphicTools);
+        CardsDump.LoadContent(gameTools);
+        DecksDump.LoadContent(gameTools);
+        bm.LoadContent(gameTools);
     }
 
     protected override void Update(GameTime gameTime)
@@ -88,9 +91,9 @@ public class Gwent : Game
 
         // TODO: Add your drawing code here
 
-        graphicTools.spriteBatch.Begin();
-        bm.Draw(graphicTools);
-        graphicTools.spriteBatch.End();
+        gameTools.spriteBatch.Begin();
+        bm.Draw(gameTools);
+        gameTools.spriteBatch.End();
 
         GraphicsDevice.SetRenderTarget(null);
         GraphicsDevice.Clear(clearColor);

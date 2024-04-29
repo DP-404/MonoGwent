@@ -155,12 +155,10 @@ public partial class BattleManager
                     if (is_single) {
                         exists_weather = weathers[field].Item1 is not null;
                     } else {
-                        foreach (var row in Enum.GetValues(typeof(RowType)).Cast<RowType>()) {
-                            if (weathers[row].Item1 is not null) {
-                                exists_weather = true;
-                                break;
-                            }
-                        }
+                        exists_weather = Enum.GetValues(typeof(RowType))
+                            .Cast<RowType>()
+                            .Select(row => weathers[row].Item1)
+                            .Any(w => w is not null);
                     }
 
                     if (!exists_weather) {return;}
@@ -291,9 +289,9 @@ public partial class BattleManager
             Keyboard.GetState().IsKeyDown(Keys.Right)
         ) {
             sfx_select.Play();
-            if (cursor.index == DecksDump.decks.Length-1)
+            if (cursor.index == DecksDump.Count-1)
             {cursor.Move(0);} else {cursor.Move(cursor.index+1);}
-            current_player.original_deck = DecksDump.decks[cursor.index];
+            current_player.original_deck = DecksDump.GetDeck(cursor.index);
         }
         // Move Left
         else if (
@@ -302,8 +300,8 @@ public partial class BattleManager
         ) {
             sfx_select.Play();
             if (cursor.index == 0)
-            {cursor.Move(DecksDump.decks.Length-1);} else {cursor.Move(cursor.index-1);}
-            current_player.original_deck = DecksDump.decks[cursor.index];
+            {cursor.Move(DecksDump.Count-1);} else {cursor.Move(cursor.index-1);}
+            current_player.original_deck = DecksDump.GetDeck(cursor.index);
         }
         // Read Keys
         else if (

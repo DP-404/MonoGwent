@@ -133,8 +133,8 @@ public partial class BattleManager
         MediaPlayer.Play(bgm_startup);
         MediaPlayer.IsRepeating = true;
         current_player = player_1;
-        player_1.original_deck = DecksDump.decks[cursor.index];
-        player_2.original_deck = DecksDump.decks[cursor.index];
+        player_1.original_deck = DecksDump.GetDeck();
+        player_2.original_deck = DecksDump.GetDeck();
     }
 
     public void LoadContent(GameTools gt) {
@@ -192,9 +192,6 @@ public partial class BattleManager
         sfx_win = gt.content.Load<SoundEffect>("music/sfx_win");
 
         foreach (var player in players) player.LoadContent(gt);
-        CardsDump.LoadContent(gt);
-        DecksDump.Initialize();
-        DecksDump.LoadContent(gt);
     }
 
     private Player GetOtherPlayer(Player player) {
