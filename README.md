@@ -106,19 +106,19 @@ Content is placed on the `Content` folder and managed through the [MonoGame Cont
 - [x] Dispel cards.
 - [x] Boost cards.
 - [x] Decoy cards.
+- [ ] Add AI.
 ### QoL
 - [x] Enhance GUI.
 - [x] Build full fledged decks.
 - [x] Deck selection scene.
 - [x] Add music.
 - [x] Add sfx.
-- [ ] Add AI.
 
 # Credits
 Developed by: [DP-404](https://github.com/DP-404)
 Made with: [MonoGame](https://docs.monogame.net/)
 
-All assets used in this project belong to their respective users.
+All assets used in this project belong to their respective owners.
 
 Licenced under MIT Licence
 Copyright (c) 2024 DP-404
