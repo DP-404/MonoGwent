@@ -19,7 +19,7 @@ public class EffectLeaderRecoverLastDiscardedCard : IEffect {
         return true;
     }
     public void Use(BattleManager bm) {
-        bm.EffectPlayer.hand.Add(bm.EffectPlayer.graveyard[^1]);
+        bm.EffectPlayer.Retrieve(bm.EffectPlayer.graveyard[^1]);
         bm.EffectPlayer.graveyard.RemoveAt(bm.EffectPlayer.graveyard.Count-1);
     }
 }

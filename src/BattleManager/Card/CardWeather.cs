@@ -25,7 +25,7 @@ public class CardWeather : Card {
             bm.Current.hand.Remove(this);
             var old_weather = bm.Weathers[field];
             if (old_weather.Item1 is not null) {
-                old_weather.Item2.graveyard.Add(old_weather.Item1);
+                old_weather.Item2.DisposeOf(old_weather.Item1);
             }
             bm.Weathers[field] = new (this, bm.Current);
         }
@@ -44,7 +44,7 @@ public class CardWeather : Card {
 
             if (!exists_weather) return false;
 
-            bm.Current.graveyard.Add(this);
+            bm.Current.DisposeOf(this);
             bm.Current.hand.Remove(this);
 
             // Dispel All

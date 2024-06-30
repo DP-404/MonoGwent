@@ -38,7 +38,7 @@ public class CardUnit : Card {
 
             // Take field card to hand
             bm.Current.rows[(RowType)bm.Cursor.field].Remove(takeback_card);
-            bm.Current.hand.Add(takeback_card);
+            bm.Current.Retrieve(takeback_card);
 
             // Place card on field card's place
             bm.Current.rows[(RowType)bm.Cursor.field].Insert(bm.Cursor.index, this);

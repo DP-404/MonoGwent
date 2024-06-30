@@ -133,9 +133,12 @@ public class Player
     public void ReceiveCard(int count=1, bool skip_limit=false) {
         while (count > 0 && deck.Count != 0) {
             var card = deck.Take();
-            if (hand.Count >= HAND_CARDS_LIMIT && !skip_limit)
-            {graveyard.Add(card);}
-            else {hand.Add(card);}            
+            if (hand.Count >= HAND_CARDS_LIMIT && !skip_limit) {
+                DisposeOf(card);
+            }
+            else {
+                Retrieve(card);
+            }            
             count -= 1;
         }
     }
@@ -162,6 +165,14 @@ public class Player
     }
     public bool HasBoost(RowType row) {
         return boosts[row] is not null;
+    }
+    public void Retrieve(Card card) {
+        card.Dispose();
+        hand.Add(card);
+    }
+    public void DisposeOf(Card card) {
+        card.Dispose();
+        graveyard.Add(card);
     }
     public void ClearField() {
         foreach (var row in rows) {

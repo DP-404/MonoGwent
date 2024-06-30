@@ -27,6 +27,6 @@ public class EffectRemoveStrongest : IEffect {
         if (card is null) return;
         if (card.Item3 == bm.HandCard) return;
         card.Item1.rows[card.Item2].Remove(card.Item3);
-        card.Item1.graveyard.Add(card.Item3);
+        card.Item1.DisposeOf(card.Item3);
     }
 }

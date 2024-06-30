@@ -58,6 +58,10 @@ public abstract class Card
         return _GetRowPosition(index, count, xpos, ypos, width);
     }
 
+    public virtual void Dispose() {
+        return;
+    }
+
     public abstract bool PlayCard(BattleManager bm);
 
 }

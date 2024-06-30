@@ -248,7 +248,7 @@ public partial class BattleManager
 
     public void ClearWeather(RowType row) {
         if (ExistsWeather(row)) {
-            weathers[row].Item2.graveyard.Add(weathers[row].Item1);
+            weathers[row].Item2.DisposeOf(weathers[row].Item1);
             weathers[row] = new(null,null);
         }
     }

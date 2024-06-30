@@ -24,6 +24,6 @@ public class EffectRemoveRivalWeakest : IEffect {
 
         if (card is null) return;
         bm.Rival.rows[card.Item1].Remove(card.Item2);
-        bm.Rival.graveyard.Add(card.Item2);
+        bm.Rival.DisposeOf(card.Item2);
     }
 }
