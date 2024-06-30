@@ -497,7 +497,8 @@ public struct CardsDump {
         image_name="graphics/cards/2U5",
         types=[RowType.MELEE],
         power=7,
-        is_hero=true
+        is_hero=true,
+        effect=new EffectRemoveStrongest()
     };
     public static CardUnitBlueprint c2U6 = new() {
         name="Mettaton",
