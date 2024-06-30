@@ -294,6 +294,7 @@ public partial class BattleManager
         // If not Pass > Start next turn
         if (!rival_player.has_passed) current_player = rival_player;
         current_player.has_played = false;
+        rival_player.has_played = false;
         cursor.Move(Section.HAND);
         scene = new SceneStartTurn();
     }
