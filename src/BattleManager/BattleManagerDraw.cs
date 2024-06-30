@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace MonoGwent;
 
@@ -183,7 +182,7 @@ Copyright (c) 2024 DP-404
         gt.spriteBatch.Draw(img_background, new Vector2(0,0), Color.White);
     }
     private void DrawFields(GameTools gt) {
-        var show = scene == Scene.PLAY_TURN || scene == Scene.REDRAW;
+        var show = scene is SceneRedraw || scene is ScenePlayTurn;
         player_1.Draw(gt, weathers, current_player == player_1, highscore_player == player_1, show);
         player_2.Draw(gt, weathers, current_player == player_2, highscore_player == player_2, show);
 
@@ -360,8 +359,8 @@ Copyright (c) 2024 DP-404
     private void DrawHoveredCardInfo(GameTools gt) {
         if (
             (
-                scene == Scene.REDRAW ||
-                scene == Scene.PLAY_TURN
+                scene is SceneRedraw ||
+                scene is ScenePlayTurn
             ) &&
             cursor.index != Cursor.NONE
         ) {
@@ -539,12 +538,12 @@ Copyright (c) 2024 DP-404
     }
     private void DrawMessage(GameTools gt) {
         if (
-            scene == Scene.START_GAME ||
-            scene == Scene.START_PHASE ||
-            scene == Scene.START_TURN ||
-            scene == Scene.END_TURN ||
-            scene == Scene.END_PHASE ||
-            scene == Scene.END_GAME ||
+            scene is SceneStartGame ||
+            scene is SceneStartPhase ||
+            scene is SceneStartTurn ||
+            scene is SceneEndTurn ||
+            scene is SceneEndPhase ||
+            scene is SceneEndGame ||
             help
         ) {
             gt.spriteBatch.Draw(
@@ -555,7 +554,7 @@ Copyright (c) 2024 DP-404
             );
 
             if (help) return;
-            if (scene == Scene.DECK_SELECTION) return;
+            if (scene is SceneDeckSelection) return;
 
             var text_xpos = gt.graphics.PreferredBackBufferWidth / 4;
             var text_ypos = gt.graphics.PreferredBackBufferHeight / 2;
@@ -565,7 +564,7 @@ Copyright (c) 2024 DP-404
             bool input = true;
 
             switch (scene) {
-                case Scene.START_GAME:
+                case SceneStartGame:
                     text = TEXT_START_GAME;
                     size = fnt_message.MeasureString(text);
                     gt.spriteBatch.DrawString(
@@ -580,7 +579,7 @@ Copyright (c) 2024 DP-404
                         Color.White
                     );
                     break;
-                case Scene.START_PHASE:
+                case SceneStartPhase:
                     text = TEXT_START_PHASE;
                     size = fnt_message.MeasureString(text);
                     gt.spriteBatch.DrawString(
@@ -595,7 +594,7 @@ Copyright (c) 2024 DP-404
                         Color.White
                     );
                     break;
-                case Scene.START_TURN:
+                case SceneStartTurn:
                     text = string.Format(TEXT_START_TURN, current_player.name);
                     size = fnt_message.MeasureString(text);
                     gt.spriteBatch.DrawString(
@@ -610,7 +609,7 @@ Copyright (c) 2024 DP-404
                         Color.White
                     );
                     break;
-                case Scene.END_TURN:
+                case SceneEndTurn:
                     if (!current_player.has_passed) {
                         input = false;
                         break;
@@ -630,7 +629,7 @@ Copyright (c) 2024 DP-404
                         Color.White
                     );
                     break;
-                case Scene.END_PHASE:
+                case SceneEndPhase:
                     text = string.Format(TEXT_END_PHASE, 
                         (victor is not null)? string.Format(TEXT_VICTORY, victor.name) : TEXT_DRAW
                     );
@@ -647,7 +646,7 @@ Copyright (c) 2024 DP-404
                         Color.White
                     );
                     break;
-                case Scene.END_GAME:
+                case SceneEndGame:
                     text = string.Format(TEXT_END_GAME, 
                         (victor is not null)? string.Format(TEXT_VICTORY, victor.name) : TEXT_DRAW
                     );
@@ -707,7 +706,7 @@ Copyright (c) 2024 DP-404
     }
 
     public void Draw(GameTools gt) {
-        if (scene == Scene.DECK_SELECTION) {
+        if (scene is SceneDeckSelection) {
             DrawDeckSelection(gt);
         } else {
             DrawBoard(gt);

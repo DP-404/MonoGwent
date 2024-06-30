@@ -10,79 +10,14 @@ namespace MonoGwent;
 
 public partial class BattleManager
 {
-    private class Cursor {
-        private const int DEFAULT_INDEX = 0;
-        public const int NONE = -1;
-        public Section section = Section.HAND;
-        public int index = DEFAULT_INDEX;
-        public int hand = NONE;
-        public int field = NONE;
-        public bool holding = false;
 
-        public Texture2D mark_card_hovered;
-        public Texture2D mark_card_selected;
-        public Texture2D mark_card_enabled;
-        public Texture2D mark_card_disabled;
-        public Texture2D mark_card_hovered_disabled;
-        public Texture2D mark_row_hovered;
-        public Texture2D mark_row_enabled;
-        public Texture2D mark_row_disabled;
-        public Texture2D mark_row_hovered_disabled;
-
-        public void Move(Section s, int i, int h, int f, bool hold=true) {
-            section = s;
-            index = i;
-            hand = h;
-            field = f;
-            if (hold) Hold();
-        }
-        public void Move(Section s, int i, bool hold=true) {
-            var f = NONE;
-            var h = NONE;
-            if (s == Section.FIELD) {
-                h = hand;
-            }
-            else if (s == Section.ROW) {
-                f = field;
-                h = hand;
-            }
-            Move(s, i, h, f, hold);
-        }
-        public void Move(Section s, bool hold=true) {
-            Move(s, DEFAULT_INDEX, hold);
-        }
-        public void Move(int i, bool hold=true) {
-            Move(section, i, hand, field, hold);
-        }
-        public void Hold() {holding = true;}
-        public void Release() {holding = false;}
-    }
-
-    private enum Scene {
-        DECK_SELECTION,
-        START_GAME,
-        REDRAW,
-        START_PHASE,
-        START_TURN,
-        PLAY_TURN,
-        END_TURN,
-        END_PHASE,
-        END_GAME
-    }
-    private enum Section {
-        HAND,
-        FIELD,
-        ROW,
-        LEADER,
-    }
-
-    private const string PLAYER_1_NAME = "Radiant";
-    private const string PLAYER_2_NAME = "Dire";
-    private const int REDRAW_PHASE = 0;
-    private const int LOSE_HEALTH = 0;
+    public const string PLAYER_1_NAME = "Radiant";
+    public const string PLAYER_2_NAME = "Dire";
+    public const int REDRAW_PHASE = 0;
+    public const int LOSE_HEALTH = 0;
 
     private int phase = REDRAW_PHASE;
-    private Scene scene = Scene.DECK_SELECTION;
+    private IScene scene = new SceneDeckSelection();
     private bool help = false;
     private Cursor cursor = new ();
     private Player player_1 = new Player(PLAYER_1_NAME);
@@ -107,6 +42,29 @@ public partial class BattleManager
     = Enum.GetValues(typeof(RowType)).Cast<RowType>().ToDictionary(
     x => x, x => new Tuple<CardWeather, Player>(null, null));
 
+    // BattleManager public accessors
+    public int Phase {get => phase;}
+    public IScene Scene {get => scene; set => scene = value;}
+    public Cursor Cursor {get => cursor;}
+    public Player Player1 {get => player_1;}
+    public Player Player2 {get => player_2;}
+    public Player[] Players {get => [player_1,player_2];}
+    public Player Current {get => current_player; set => current_player = value;}
+    public Player Rival {get => rival_player;}
+    public Player Highscore {get => highscore_player;}
+    public Dictionary<RowType,Tuple<CardWeather,Player>> Weathers {get => weathers;}
+    public Card HandCard {
+        get {
+            if (
+                cursor.section == Section.FIELD ||
+                cursor.section == Section.ROW
+            ) {
+                return current_player.GetHandCard(cursor.hand);
+            }
+            return null;
+        }
+    }
+
     private Texture2D img_background;
     private Texture2D img_dim_background;
     private Texture2D img_round_start;
@@ -123,6 +81,23 @@ public partial class BattleManager
     private SoundEffect sfx_select;
     private SoundEffect sfx_cancel;
     private SoundEffect sfx_win;
+
+    public Texture2D ImgBackground {get => img_background;}
+    public Texture2D ImgDimBackground {get => img_dim_background;}
+    public Texture2D ImgRoundStart {get => img_round_start;}
+    public Texture2D ImgTurnStart {get => img_turn_start;}
+    public Texture2D ImgTurnPassed {get => img_turn_passed;}
+    public Texture2D ImgVictory {get => img_victory;}
+    public Texture2D ImgDraw {get => img_draw;}
+    public SpriteFont FntMessage {get => fnt_message;}
+    public Song BgmStartup {get => bgm_startup;}
+    public Song BgmPlaying1 {get => bgm_playing1;}
+    public Song BgmPlaying2 {get => bgm_playing2;}
+    public Song BgmPlaying3 {get => bgm_playing3;}
+    public SoundEffect SfxPlaycard {get => sfx_playcard;}
+    public SoundEffect SfxSelect {get => sfx_select;}
+    public SoundEffect SfxCancel {get => sfx_cancel;}
+    public SoundEffect SfxWin {get => sfx_win;}
 
     public void InitializePlayers() {
         player_1.Initialize();
@@ -194,7 +169,7 @@ public partial class BattleManager
         foreach (var player in players) player.LoadContent(gt);
     }
 
-    private Player GetOtherPlayer(Player player) {
+    public Player GetOtherPlayer(Player player) {
         return player==player_1? player_2 : player_1;
     }
 
