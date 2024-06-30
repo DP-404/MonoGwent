@@ -365,7 +365,8 @@ public struct CardsDump {
         image_name="graphics/cards/1U4",
         types=[RowType.SIEGE],
         power=7,
-        is_hero=true
+        is_hero=true,
+        effect=new EffectRemoveRivalWeakest()
     };
     public static CardUnitBlueprint c1U5 = new() {
         name="Brain of Cthulhu",
