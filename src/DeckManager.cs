@@ -258,7 +258,7 @@ public struct CardsDump {
         types=[RowType.SIEGE],
         power=9,
         is_hero=true,
-        effect=new EffectDrawCard()
+        effect=new EffectSetBoost(RowType.SIEGE)
     };
     public static CardUnitBlueprint c0U7 = new() {
         name="Dung Defender",
@@ -320,14 +320,14 @@ public struct CardsDump {
         name="The Grimm Troupe",
         description="Shadows dream of endless fire,\nFlames devour and embers swoop,\nOne will light the Nightmare Lantern,\nCall and serve in Grimm's dread Troupe.",
         image_name="graphics/cards/0B2",
-        types=[RowType.RANGE],
+        types=[RowType.SIEGE],
         bonus=1
     };
     public static CardBoostBlueprint c0B3 = new() {
         name="White Lady",
         description="These bindings about me, I've chosen to erect. There is some shame I feel from my own part in the deed, and this method guarantees it cease.",
         image_name="graphics/cards/0B3",
-        types=[RowType.SIEGE],
+        types=[RowType.RANGE],
         bonus=1
     };
 

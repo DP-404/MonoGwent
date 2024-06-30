@@ -158,6 +158,9 @@ public class Player
         }
         return power;
     }
+    public bool HasBoost(RowType row) {
+        return boosts[row] is not null;
+    }
     public void ClearField() {
         foreach (var row in rows) {
             foreach (var card in row.Value) {
