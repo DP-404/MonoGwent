@@ -8,7 +8,7 @@ public class SceneEndTurn : IScene {
     public void Update(BattleManager bm) {
         // Not Pass or Redraw > Start next turn
         if (
-            !bm.Current.has_passed ||
+            bm.Current.has_played ||
             bm.Phase == BattleManager.REDRAW_PHASE
         ) {
             bm.StartTurn();

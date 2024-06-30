@@ -32,10 +32,11 @@ public class Player
     public const int PLAYER_HIGHSCORE_XPOS = 137;
     public const int PLAYER_HIGHSCORE_YPOS = 360;
     public const int PLAYER_HIGHSCORE_YPOS_OFFSET = 68;
-    public const int PLAYER_PASSED_XPOS = 162;
-    public const int PLAYER_PASSED_PLAYER_YPOS = 486;
-    public const int PLAYER_PASSED_RIVAL_YPOS = 309;
+    public const int PLAYER_STATE_XPOS = 162;
+    public const int PLAYER_STATE_PLAYER_YPOS = 486;
+    public const int PLAYER_STATE_RIVAL_YPOS = 309;
     public const string TEXT_PLAYER_PASS = "Pass";
+    public const string TEXT_PLAYER_PLAYED = "Played";
 
     public const int HEALTH_XPOS = 50;
     public const int HEALTH_XPOS_RIM = 50;
@@ -86,6 +87,8 @@ public class Player
 
     public string name;
     public int health = DEFAULT_HEALTH;
+    public bool has_passed = false;
+    public bool has_played = false;
     public readonly Dictionary<RowType, List<CardUnit>> rows
     = Enum.GetValues(typeof(RowType)).Cast<RowType>().ToDictionary(x => x, x => new List<CardUnit>());
     public readonly Dictionary<RowType, CardBoost> boosts
@@ -96,7 +99,6 @@ public class Player
     public readonly List<Card> graveyard = [];
     public readonly List<Card> selected = [];
     public CardLeader leader {get => deck.leader;}
-    public bool has_passed = false;
 
     private Texture2D img_health_on;
     private Texture2D img_health_off;
@@ -189,9 +191,9 @@ public class Player
         return pos + (positive? 1 : -1)*offset - (!positive? relative : 0);
     }
 
-    public void DrawPlayerStatus(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore) {
+    public void DrawPlayerStatus(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_focus, bool highscore) {
         int xpos = PLAYER_LABEL_XPOS;
-        int ypos = (is_turn == true)? PLAYER_LABEL_PLAYER_YPOS : PLAYER_LABEL_RIVAL_YPOS;
+        int ypos = (is_focus == true)? PLAYER_LABEL_PLAYER_YPOS : PLAYER_LABEL_RIVAL_YPOS;
         gt.spriteBatch.DrawString(fnt_status, name, new Vector2(xpos, ypos), Color.White);
 
         var deck_count = deck.Count.ToString();
@@ -201,7 +203,7 @@ public class Player
             deck_count,
             new Vector2(
                 PLAYER_DECK_COUNT_XPOS - deck_count_size.X / 2,
-                GetRelativePosition(PLAYER_DECK_COUNT_YPOS, PLAYER_DECK_COUNT_YPOS_OFFSET, PLAYER_DECK_COUNT_YPOS_RELATIVE, is_turn) - deck_count_size.Y/2
+                GetRelativePosition(PLAYER_DECK_COUNT_YPOS, PLAYER_DECK_COUNT_YPOS_OFFSET, PLAYER_DECK_COUNT_YPOS_RELATIVE, is_focus) - deck_count_size.Y/2
             ),
             Color.White
         );
@@ -213,7 +215,7 @@ public class Player
             hand_count,
             new Vector2(
                 PLAYER_HAND_COUNT_XPOS - hand_count_size.X / 2,
-                GetRelativePosition(PLAYER_HAND_COUNT_YPOS, PLAYER_HAND_COUNT_YPOS_OFFSET, PLAYER_HAND_COUNT_YPOS_RELATIVE, is_turn) - hand_count_size.Y/2
+                GetRelativePosition(PLAYER_HAND_COUNT_YPOS, PLAYER_HAND_COUNT_YPOS_OFFSET, PLAYER_HAND_COUNT_YPOS_RELATIVE, is_focus) - hand_count_size.Y/2
             ),
             Color.White
         );
@@ -225,7 +227,7 @@ public class Player
             total_power,
             new Vector2(
                 PLAYER_POWER_XPOS - total_power_size.X / 2,
-                GetRelativePosition(PLAYER_POWER_YPOS, PLAYER_POWER_YPOS_OFFSET, 0, is_turn) - total_power_size.Y/2
+                GetRelativePosition(PLAYER_POWER_YPOS, PLAYER_POWER_YPOS_OFFSET, 0, is_focus) - total_power_size.Y/2
             ),
             Color.White
         );
@@ -235,7 +237,7 @@ public class Player
                 img_highscore,
                 new Vector2(
                     PLAYER_HIGHSCORE_XPOS,
-                    GetRelativePosition(PLAYER_HIGHSCORE_YPOS, PLAYER_HIGHSCORE_YPOS_OFFSET, img_highscore.Height, is_turn)
+                    GetRelativePosition(PLAYER_HIGHSCORE_YPOS, PLAYER_HIGHSCORE_YPOS_OFFSET, img_highscore.Height, is_focus)
                 ),
                 Color.White
             );
@@ -247,10 +249,22 @@ public class Player
                 fnt_status,
                 TEXT_PLAYER_PASS,
                 new Vector2(
-                    PLAYER_PASSED_XPOS - passed_size.X/2,
-                    (is_turn? PLAYER_PASSED_PLAYER_YPOS : PLAYER_PASSED_RIVAL_YPOS) - passed_size.Y/2
+                    PLAYER_STATE_XPOS - passed_size.X/2,
+                    (is_focus? PLAYER_STATE_PLAYER_YPOS : PLAYER_STATE_RIVAL_YPOS) - passed_size.Y/2
                 ),
                 Color.Orange
+            );
+        }
+        else if (has_played) {
+            var played_size = fnt_status.MeasureString(TEXT_PLAYER_PLAYED);
+            gt.spriteBatch.DrawString(
+                fnt_status,
+                TEXT_PLAYER_PLAYED,
+                new Vector2(
+                    PLAYER_STATE_XPOS - played_size.X/2,
+                    (is_focus? PLAYER_STATE_PLAYER_YPOS : PLAYER_STATE_RIVAL_YPOS) - played_size.Y/2
+                ),
+                Color.LimeGreen
             );
         }
 
@@ -259,7 +273,7 @@ public class Player
             (health > 0)? img_health_on : img_health_off,
             new Vector2(
                 HEALTH_XPOS,
-                GetRelativePosition(HEALTH_YPOS, HEALTH_YPOS_OFFSET, HEALTH_HEIGHT, is_turn)
+                GetRelativePosition(HEALTH_YPOS, HEALTH_YPOS_OFFSET, HEALTH_HEIGHT, is_focus)
             ),
             null,
             Color.White
@@ -268,24 +282,24 @@ public class Player
             (health > 1)? img_health_on : img_health_off,
             new Vector2(
                 HEALTH_XPOS + HEALTH_XPOS_RIM,
-                GetRelativePosition(HEALTH_YPOS, HEALTH_YPOS_OFFSET, HEALTH_HEIGHT, is_turn)
+                GetRelativePosition(HEALTH_YPOS, HEALTH_YPOS_OFFSET, HEALTH_HEIGHT, is_focus)
             ),
             null,
             Color.White
         );
     }
-    public void DrawHand(GameTools gt, bool is_turn, bool show) {
+    public void DrawHand(GameTools gt, bool is_focus, bool show) {
         for (int i = 0; i<hand.Count; i++) {
             var card = hand[i];
             var position = card.GetRowPosition(
                 i,
                 hand.Count,
                 HAND_XPOS,
-                GetRelativePosition(HAND_YPOS, HAND_YPOS_OFFSET, Card.HEIGHT, is_turn),
+                GetRelativePosition(HAND_YPOS, HAND_YPOS_OFFSET, Card.HEIGHT, is_focus),
                 HAND_WIDTH 
             );
             gt.spriteBatch.Draw(
-                (is_turn && show)? card.img : Card.img_back,
+                (is_focus && show)? card.img : Card.img_back,
                 position,
                 null,
                 Color.White,
@@ -293,7 +307,7 @@ public class Player
             );
         }
     }
-    public void DrawRows(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn) {
+    public void DrawRows(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_focus) {
         foreach (var row in rows) {
 
             // Draw Row Cards
@@ -304,7 +318,7 @@ public class Player
                     i,
                     cards.Count,
                     ROW_XPOS,
-                    GetRelativePosition(ROW_YPOS, ROW_YPOS_OFFSET[row.Key], Card.HEIGHT, is_turn),
+                    GetRelativePosition(ROW_YPOS, ROW_YPOS_OFFSET[row.Key], Card.HEIGHT, is_focus),
                     ROW_WIDTH 
                 );
                 gt.spriteBatch.Draw(
@@ -322,7 +336,7 @@ public class Player
                     boosts[row.Key].img,
                     new Vector2(
                         BOOST_XPOS,
-                        GetRelativePosition(BOOST_YPOS, BOOST_YPOS_OFFSET[row.Key], Card.HEIGHT, is_turn)
+                        GetRelativePosition(BOOST_YPOS, BOOST_YPOS_OFFSET[row.Key], Card.HEIGHT, is_focus)
                     ),
                     null,
                     Color.White,
@@ -336,7 +350,7 @@ public class Player
                     img_row_weather,
                     new Vector2(
                         ROW_XPOS,
-                        GetRelativePosition(ROW_YPOS, ROW_YPOS_OFFSET[row.Key], Card.HEIGHT, is_turn)
+                        GetRelativePosition(ROW_YPOS, ROW_YPOS_OFFSET[row.Key], Card.HEIGHT, is_focus)
                     ),
                     null,
                     Color.White
@@ -351,18 +365,18 @@ public class Player
                 row_power.ToString(),
                 new Vector2(
                     ROW_POWER_XPOS - size.X / 2,
-                    GetRelativePosition(ROW_POWER_YPOS, ROW_POWER_YPOS_OFFSET[row.Key], 0, is_turn) - size.Y/2
+                    GetRelativePosition(ROW_POWER_YPOS, ROW_POWER_YPOS_OFFSET[row.Key], 0, is_focus) - size.Y/2
                 ),
                 Color.White
             );
         }
     }
-    public void DrawLeader(GameTools gt, bool is_turn) {
+    public void DrawLeader(GameTools gt, bool is_focus) {
         gt.spriteBatch.Draw(
             leader.img,
             new Vector2(
                 LEADER_XPOS,
-                GetRelativePosition(LEADER_YPOS, LEADER_YPOS_OFFSET, Card.HEIGHT, is_turn)
+                GetRelativePosition(LEADER_YPOS, LEADER_YPOS_OFFSET, Card.HEIGHT, is_focus)
             ),
             null,
             Color.White,
@@ -373,20 +387,20 @@ public class Player
                 img_leader,
                 new Vector2(
                     LEADER_ACTIVE_XPOS,
-                    GetRelativePosition(LEADER_ACTIVE_YPOS, LEADER_ACTIVE_YPOS_OFFSET, LEADER_ACTIVE_HEIGHT, is_turn)
+                    GetRelativePosition(LEADER_ACTIVE_YPOS, LEADER_ACTIVE_YPOS_OFFSET, LEADER_ACTIVE_HEIGHT, is_focus)
                 ),
                 null,
                 Color.White
             );
         }
     }
-    public void DrawDeck(GameTools gt, bool is_turn) {
+    public void DrawDeck(GameTools gt, bool is_focus) {
         if (deck.Count != 0) {
             gt.spriteBatch.Draw(
                 Card.img_back,
                 new Vector2(
                     DECK_XPOS,
-                    GetRelativePosition(DECK_YPOS, DECK_YPOS_OFFSET, Card.HEIGHT, is_turn)
+                    GetRelativePosition(DECK_YPOS, DECK_YPOS_OFFSET, Card.HEIGHT, is_focus)
                 ),
                 null,
                 Color.White,
@@ -394,13 +408,13 @@ public class Player
             );
         }
     }
-    public void DrawGraveyard(GameTools gt, bool is_turn) {
+    public void DrawGraveyard(GameTools gt, bool is_focus) {
         if (graveyard.Count != 0) {
             gt.spriteBatch.Draw(
                 graveyard[^1].img,
                 new Vector2(
                     GRAVEYARD_XPOS,
-                    GetRelativePosition(GRAVEYARD_YPOS, GRAVEYARD_YPOS_OFFSET, Card.HEIGHT, is_turn)
+                    GetRelativePosition(GRAVEYARD_YPOS, GRAVEYARD_YPOS_OFFSET, Card.HEIGHT, is_focus)
                 ),
                 null,
                 Color.White,
@@ -408,13 +422,13 @@ public class Player
             );
         }
     }
-    public void Draw(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_turn, bool highscore, bool show) {
-        DrawPlayerStatus(gt, weathers, is_turn, highscore);
-        DrawHand(gt, is_turn, show);
-        DrawRows(gt, weathers, is_turn);
-        DrawLeader(gt, is_turn);
-        DrawGraveyard(gt, is_turn);
-        DrawDeck(gt, is_turn);
+    public void Draw(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_focus, bool highscore, bool show) {
+        DrawPlayerStatus(gt, weathers, is_focus, highscore);
+        DrawHand(gt, is_focus, show);
+        DrawRows(gt, weathers, is_focus);
+        DrawLeader(gt, is_focus);
+        DrawGraveyard(gt, is_focus);
+        DrawDeck(gt, is_focus);
     }
 
 }

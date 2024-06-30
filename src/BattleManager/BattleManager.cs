@@ -86,6 +86,7 @@ public partial class BattleManager
     private Song bgm_playing2;
     private Song bgm_playing3;
     private SoundEffect sfx_playcard;
+    private SoundEffect sfx_pass;
     private SoundEffect sfx_select;
     private SoundEffect sfx_cancel;
     private SoundEffect sfx_win;
@@ -176,6 +177,7 @@ public partial class BattleManager
         bgm_playing2 = gt.content.Load<Song>("music/bgm_playing2");
         bgm_playing3 = gt.content.Load<Song>("music/bgm_playing3");
         sfx_playcard = gt.content.Load<SoundEffect>("music/sfx_playcard");
+        sfx_pass = gt.content.Load<SoundEffect>("music/sfx_pass");
         sfx_select = gt.content.Load<SoundEffect>("music/sfx_select");
         sfx_cancel = gt.content.Load<SoundEffect>("music/sfx_cancel");
         sfx_win = gt.content.Load<SoundEffect>("music/sfx_win");
@@ -220,6 +222,8 @@ public partial class BattleManager
     }
 
     public void PlayCard() {
+        if (current_player.has_played) return;
+
         // If Field is not valid > Return
         if (!HandCard.types.Contains((RowType)FieldType) && HandCard.types.Length != 0) return;
 
@@ -228,7 +232,8 @@ public partial class BattleManager
 
         sfx_playcard.Play();
         cursor.Move(Section.HAND);
-        EndTurn();
+
+        current_player.has_played = true;
     }
 
     public void UseCardEffect(Player player, Card card) {
@@ -241,13 +246,14 @@ public partial class BattleManager
     }
 
     public void UseLeaderEffect() {
+        if (current_player.has_played) return;
         if (current_player.leader.used) return;
         UseCardEffect(current_player, current_player.leader);
         if (!current_player.leader.used) return;
 
         current_player.leader.PlayCard(this);
         cursor.Move(Section.HAND);
-        EndTurn();
+        current_player.has_played = true;
     }
 
     public bool ExistsWeather(RowType row) {
@@ -301,6 +307,7 @@ public partial class BattleManager
     public void StartTurn() {
         // If not Pass > Start next turn
         if (!rival_player.has_passed) current_player = rival_player;
+        current_player.has_played = false;
         cursor.Move(Section.HAND);
         scene = new SceneStartTurn();
     }
@@ -312,6 +319,7 @@ public partial class BattleManager
             scene = new ScenePlayTurn();
     }
     public void EndTurn() {
+        sfx_pass.Play();
         scene = new SceneEndTurn();
     }
     public void EndPhase() {

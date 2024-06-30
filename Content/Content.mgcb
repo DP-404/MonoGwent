@@ -1016,6 +1016,12 @@
 /processorParam:Quality=Best
 /build:music/sfx_playcard.ogg
 
+#begin music/sfx_pass.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:music/sfx_pass.ogg
+
 #begin music/sfx_select.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

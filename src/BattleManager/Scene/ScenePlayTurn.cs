@@ -21,7 +21,7 @@ public class ScenePlayTurn : IScene {
                         bm.Scene is not SceneEndTurn &&
                         Keyboard.GetState().IsKeyDown(Keys.Tab)
                     ) {
-                        bm.Current.has_passed = true;
+                        if (!bm.Current.has_played) bm.Current.has_passed = true;
                         bm.EndTurn();
                     }
 
