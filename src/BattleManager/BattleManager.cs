@@ -235,7 +235,7 @@ public partial class BattleManager
         effect_player = player;
         if (card.effect.Eval(this)) {
             card.effect.Use(this);
-            if (card is CardLeader) ((CardLeader)card).used = true;
+            if (card is CardLeader leader) leader.used = true;
         }
         effect_player = null;
     }
@@ -250,8 +250,12 @@ public partial class BattleManager
         EndTurn();
     }
 
+    public bool ExistsWeather(RowType row) {
+        return weathers[row].Item1 is not null;
+    }
+
     public void ClearWeather(RowType row) {
-        if (weathers[row].Item1 is not null) {
+        if (ExistsWeather(row)) {
             weathers[row].Item2.graveyard.Add(weathers[row].Item1);
             weathers[row] = new(null,null);
         }

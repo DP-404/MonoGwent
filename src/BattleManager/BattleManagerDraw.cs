@@ -47,7 +47,7 @@ public partial class BattleManager
     private const string TEXT_PRESS_F1 = "Press F1 for help.";
     private const string TEXT_CARD_TYPE = "Type: {0}";
     private const string TEXT_CARD_EFFECT = "Effect: {0}";
-    private const string TEXT_CARD_DESCRIPTION = "{0}";
+    private const string TEXT_CARD_DESCRIPTION = "\n{0}";
     private const int HELP_XPOS = 20;
     private const int HELP_YPOS = 20;
     private const string TEXT_HELP = @"MonoGwent Help
@@ -315,7 +315,7 @@ Copyright (c) 2024 DP-404
                 Player.ROW_WIDTH
             );
             gt.spriteBatch.Draw(
-                cursor.mark_card_hovered,
+                row.Count != 0? cursor.mark_card_hovered : cursor.mark_card_hovered_disabled,
                 position,
                 Color.White
             );
@@ -367,13 +367,13 @@ Copyright (c) 2024 DP-404
 
                 // Draw Power Icon
                 Texture2D img_card_type = null;
-                if (card is CardUnit) {
+                if (card is CardUnit unit) {
                     Color power_color;
-                    if (((CardUnit)card).is_decoy) {
+                    if (unit.is_decoy) {
                         img_card_type = Card.img_decoy;
                         power_color = Color.Black;
                     }
-                    else if (((CardUnit)card).is_hero) {
+                    else if (unit.is_hero) {
                         img_card_type = Card.img_power_hero;
                         power_color = Color.White;
                     } else {
@@ -388,7 +388,7 @@ Copyright (c) 2024 DP-404
                         PREVIEW_CARD_SCALE
                     );
 
-                    var power = ((CardUnit)card).power.ToString();
+                    var power = unit.power.ToString();
                     var power_size = fnt_message.MeasureString(power);
                     gt.spriteBatch.DrawString(
                         fnt_message,
@@ -397,8 +397,8 @@ Copyright (c) 2024 DP-404
                         power_color
                     );
                 }
-                else if (card is CardWeather) {
-                    if (!((CardWeather)card).is_dispel) {img_card_type = Card.img_weather;}
+                else if (card is CardWeather weather) {
+                    if (!weather.is_dispel) {img_card_type = Card.img_weather;}
                     else {img_card_type = Card.img_dispel;}
 
                     gt.spriteBatch.Draw(
@@ -486,7 +486,7 @@ Copyright (c) 2024 DP-404
                 }
 
                 // Draw Card Info Description
-                var card_description = gt.WrapText(fnt_message, card.description, PREVIEW_CARD_WIDTH);
+                var card_description = gt.WrapText(fnt_message, string.Format(TEXT_CARD_DESCRIPTION, card.description), PREVIEW_CARD_WIDTH);
                 var card_description_size = fnt_message.MeasureString(card_description);
                 gt.spriteBatch.DrawString(
                     fnt_message,

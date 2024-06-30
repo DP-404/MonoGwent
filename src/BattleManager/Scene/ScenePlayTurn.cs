@@ -156,8 +156,8 @@ public class ScenePlayTurn : IScene {
 
                     // Selected card is Decoy > Play Card
                     if (
-                        bm.HandCard is CardUnit &&
-                        ((CardUnit)bm.HandCard).is_decoy &&
+                        bm.HandCard is CardUnit cardUnit &&
+                        cardUnit.is_decoy &&
                         bm.Current.rows[(RowType)bm.Cursor.field].Count != 0 &&
                         !((CardUnit)bm.Current.GetFieldCard((RowType)bm.Cursor.field, bm.Cursor.index)).is_decoy &&
                         Keyboard.GetState().IsKeyDown(Keys.Enter)

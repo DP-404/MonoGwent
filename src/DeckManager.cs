@@ -15,9 +15,10 @@ public class Deck {
     private CardLeaderBlueprint leader_blueprint;
 
     public CardLeader leader;
-    private Stack<Card> stack = new();
+    private List<Card> cards = new();
 
-    public int Count {get => stack.Count;}
+    public List<Card> Cards {get => cards;}
+    public int Count {get => cards.Count;}
 
     public Texture2D img;
 
@@ -30,7 +31,7 @@ public class Deck {
     }
 
     public void Populate() {
-        stack = new();
+        cards = new();
         foreach (var c in card_blueprints) {
             for (int i = c.Value; i > 0; i--) {
                 Add(c.Key.GetCard());
@@ -39,21 +40,26 @@ public class Deck {
         leader = (CardLeader)leader_blueprint.GetCard();
     }
     public void Add(Card card) {
-        stack.Push(card);
+        cards.Add(card);
     }
     public Card Take() {
-        return stack.Pop();
+        var c = cards[^1];
+        cards.Remove(c);
+        return c;
+    }
+    public void Remove(Card card) {
+        cards.Remove(card);
     }
     public void Shuffle() {
         var shuffled = new Deck();
-        foreach (var c in stack.OrderBy(x=>Random.Shared.Next())) shuffled.Add(c);
+        foreach (var c in cards.OrderBy(x=>Random.Shared.Next())) shuffled.Add(c);
         shuffled.leader = leader;
         Copy(shuffled);
     }
 
     public void Copy(Deck deck) {
-        stack.Clear();
-        foreach (var i in deck.stack) Add(i);
+        cards.Clear();
+        foreach (var i in deck.cards) Add(i);
         leader = new() {
             name=deck.leader.name,
             description=deck.leader.description,
@@ -205,7 +211,7 @@ public struct CardsDump {
         name="The Pale King",
         description="No cost too great.",
         image_name="graphics/cards/0L",
-        effect=new EffectDrawExtraCard()
+        effect=new EffectDrawCard()
     };
     public static CardUnitBlueprint c0U1 = new() {
         name="The Knight",
@@ -251,7 +257,7 @@ public struct CardsDump {
         types=[RowType.SIEGE],
         power=9,
         is_hero=true,
-        effect=new EffectDrawExtraCard()
+        effect=new EffectDrawCard()
     };
     public static CardUnitBlueprint c0U7 = new() {
         name="Dung Defender",
@@ -329,7 +335,7 @@ public struct CardsDump {
         name="Moon Lord",
         description="The mastermind behind all terrors which befall the world, freed from his lunar prison. Practically a god, his power knows no limits.",
         image_name="graphics/cards/1L",
-        effect=new EffectLeaderWinOnMatch()
+        effect=new EffectLeaderWinMatch()
     };
     public static CardUnitBlueprint c1U1 = new() {
         name="Eye of Cthulhu",
@@ -381,7 +387,7 @@ public struct CardsDump {
         types=[RowType.MELEE],
         power=8,
         is_hero=true,
-        effect=new EffectDrawExtraCard()
+        effect=new EffectDrawCard()
     };
     public static CardUnitBlueprint c1U8 = new() {
         name="Lunatic Cultist",
@@ -453,7 +459,7 @@ public struct CardsDump {
         name="Asgore",
         description="I so badly want to say, \"would you like a cup of tea?\" But...You know how it is.",
         image_name="graphics/cards/2L",
-        effect=new EffectRecoverLastDiscardedCard()
+        effect=new EffectLeaderRecoverLastDiscardedCard()
     };
     public static CardUnitBlueprint c2U1 = new() {
         name="Toriel",
@@ -513,7 +519,7 @@ public struct CardsDump {
         types=[RowType.SIEGE],
         power=9,
         is_hero=true,
-        effect=new EffectDrawExtraCard()
+        effect=new EffectDrawCard()
     };
     public static CardDecoyBlueprint c2D1 = new() {
         name="Flowey",
