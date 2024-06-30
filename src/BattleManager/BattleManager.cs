@@ -91,22 +91,8 @@ public partial class BattleManager
     private SoundEffect sfx_cancel;
     private SoundEffect sfx_win;
 
-    public Texture2D ImgBackground {get => img_background;}
-    public Texture2D ImgDimBackground {get => img_dim_background;}
-    public Texture2D ImgRoundStart {get => img_round_start;}
-    public Texture2D ImgTurnStart {get => img_turn_start;}
-    public Texture2D ImgTurnPassed {get => img_turn_passed;}
-    public Texture2D ImgVictory {get => img_victory;}
-    public Texture2D ImgDraw {get => img_draw;}
-    public SpriteFont FntMessage {get => fnt_message;}
-    public Song BgmStartup {get => bgm_startup;}
-    public Song BgmPlaying1 {get => bgm_playing1;}
-    public Song BgmPlaying2 {get => bgm_playing2;}
-    public Song BgmPlaying3 {get => bgm_playing3;}
-    public SoundEffect SfxPlaycard {get => sfx_playcard;}
     public SoundEffect SfxSelect {get => sfx_select;}
     public SoundEffect SfxCancel {get => sfx_cancel;}
-    public SoundEffect SfxWin {get => sfx_win;}
 
     public BattleManager() {
         for (int i = 0; i < phase_victors.Length; i++) {
