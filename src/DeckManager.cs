@@ -240,7 +240,8 @@ public struct CardsDump {
         image_name="graphics/cards/0U4",
         types=[RowType.MELEE],
         power=7,
-        is_hero=true
+        is_hero=true,
+        effect=new EffectSetWeather(RowType.MELEE)
     };
     public static CardUnitBlueprint c0U5 = new() {
         name="Radiance",
