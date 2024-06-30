@@ -197,6 +197,7 @@ public class ScenePlayTurn : IScene {
                     // Use Leader
                     if (
                         !bm.Current.leader.used &&
+                        bm.Current.leader.effect.Type is EffectType.ON_USE &&
                         Keyboard.GetState().IsKeyDown(Keys.Enter)
                     ) {
                         bm.UseLeaderEffect();
@@ -204,7 +205,6 @@ public class ScenePlayTurn : IScene {
 
                     // Cancelling
                     else if (
-                        !bm.Cursor.holding &&
                         Keyboard.GetState().IsKeyDown(Keys.Back)
                     ) {
                         bm.SfxCancel.Play();

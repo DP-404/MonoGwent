@@ -103,7 +103,7 @@ public class CardBlueprint {
 public class CardUnitBlueprint : CardBlueprint {
     public int power;
     public bool is_hero = false;
-    public UnitEffect effect = UnitEffect.NONE;
+    public IEffect effect = new EffectNone();
 
     public override Card GetCard() {
         return new CardUnit {
@@ -137,7 +137,7 @@ public class CardDecoyBlueprint : CardBlueprint {
 }
 
 public class CardLeaderBlueprint : CardBlueprint {
-    public LeaderEffect effect;
+    public IEffect effect;
 
     public override Card GetCard() {
         return new CardLeader {
@@ -205,7 +205,7 @@ public struct CardsDump {
         name="The Pale King",
         description="No cost too great.",
         image_name="graphics/cards/0L",
-        effect=LeaderEffect.DRAW_CARD
+        effect=new EffectDrawExtraCard()
     };
     public static CardUnitBlueprint c0U1 = new() {
         name="The Knight",
@@ -251,7 +251,7 @@ public struct CardsDump {
         types=[RowType.SIEGE],
         power=9,
         is_hero=true,
-        effect=UnitEffect.DRAW_CARD
+        effect=new EffectDrawExtraCard()
     };
     public static CardUnitBlueprint c0U7 = new() {
         name="Dung Defender",
@@ -329,7 +329,7 @@ public struct CardsDump {
         name="Moon Lord",
         description="The mastermind behind all terrors which befall the world, freed from his lunar prison. Practically a god, his power knows no limits.",
         image_name="graphics/cards/1L",
-        effect=LeaderEffect.WIN_ON_DRAW
+        effect=new EffectLeaderWinOnMatch()
     };
     public static CardUnitBlueprint c1U1 = new() {
         name="Eye of Cthulhu",
@@ -381,7 +381,7 @@ public struct CardsDump {
         types=[RowType.MELEE],
         power=8,
         is_hero=true,
-        effect=UnitEffect.DRAW_CARD
+        effect=new EffectDrawExtraCard()
     };
     public static CardUnitBlueprint c1U8 = new() {
         name="Lunatic Cultist",
@@ -453,7 +453,7 @@ public struct CardsDump {
         name="Asgore",
         description="I so badly want to say, \"would you like a cup of tea?\" But...You know how it is.",
         image_name="graphics/cards/2L",
-        effect=LeaderEffect.RECOVER_LAST_DISCARDED_CARD
+        effect=new EffectRecoverLastDiscardedCard()
     };
     public static CardUnitBlueprint c2U1 = new() {
         name="Toriel",
@@ -513,7 +513,7 @@ public struct CardsDump {
         types=[RowType.SIEGE],
         power=9,
         is_hero=true,
-        effect=UnitEffect.DRAW_CARD
+        effect=new EffectDrawExtraCard()
     };
     public static CardDecoyBlueprint c2D1 = new() {
         name="Flowey",

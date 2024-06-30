@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Audio;
 
@@ -13,7 +14,7 @@ public partial class BattleManager
 
     public const string PLAYER_1_NAME = "Radiant";
     public const string PLAYER_2_NAME = "Dire";
-    public const int REDRAW_PHASE = 0;
+    public const int REDRAW_PHASE = -1;
     public const int LOSE_HEALTH = 0;
 
     private int phase = REDRAW_PHASE;
@@ -37,10 +38,13 @@ public partial class BattleManager
             {return null;}
         }
     }
+    private Player effect_player = null;
+    private List<Player>[] phase_victors = new List<Player>[Player.DEFAULT_HEALTH+1];
     private Player victor = null;
     private Dictionary<RowType,Tuple<CardWeather,Player>> weathers
     = Enum.GetValues(typeof(RowType)).Cast<RowType>().ToDictionary(
     x => x, x => new Tuple<CardWeather, Player>(null, null));
+    private Card hand_card = null;
 
     // BattleManager public accessors
     public int Phase {get => phase;}
@@ -52,16 +56,20 @@ public partial class BattleManager
     public Player Current {get => current_player; set => current_player = value;}
     public Player Rival {get => rival_player;}
     public Player Highscore {get => highscore_player;}
+    public Player EffectPlayer {get => effect_player;}
+    public Player Victor {get => victor;}
     public Dictionary<RowType,Tuple<CardWeather,Player>> Weathers {get => weathers;}
-    public Card HandCard {
+    public Card HandCard {get => hand_card;}
+    public RowType? FieldType {
         get {
-            if (
-                cursor.section == Section.FIELD ||
-                cursor.section == Section.ROW
-            ) {
-                return current_player.GetHandCard(cursor.hand);
+            if (cursor.hand == Cursor.NONE) {
+                return null;
             }
-            return null;
+            else if (cursor.field == Cursor.NONE) {
+                return (RowType)cursor.index;
+            } else {
+                return (RowType)cursor.field;
+            }
         }
     }
 
@@ -98,6 +106,12 @@ public partial class BattleManager
     public SoundEffect SfxSelect {get => sfx_select;}
     public SoundEffect SfxCancel {get => sfx_cancel;}
     public SoundEffect SfxWin {get => sfx_win;}
+
+    public BattleManager() {
+        for (int i = 0; i < phase_victors.Length; i++) {
+            phase_victors[i] = new();
+        }
+    }
 
     public void InitializePlayers() {
         player_1.Initialize();
@@ -171,6 +185,208 @@ public partial class BattleManager
 
     public Player GetOtherPlayer(Player player) {
         return player==player_1? player_2 : player_1;
+    }
+
+    public void UpdateHandCard() {
+        if (
+            (
+                cursor.section == Section.FIELD
+                || cursor.section == Section.ROW
+            )
+            && cursor.hand < current_player.hand.Count()
+        ) {
+            hand_card = current_player.GetHandCard(cursor.hand);
+        } else {
+            hand_card = null;
+        }
+    }
+
+    public void AddVictor(Player player) {
+        phase_victors[phase].Add(player);
+    }
+
+    public bool IsVictor(Player player, int phase) {
+        return phase_victors[phase].Contains(player);
+    }
+
+    public void ClearVictor(int? phase=null) {
+        if (phase is null) {
+            foreach (var l in phase_victors) l.Clear();
+            victor = null;
+        } else {
+            phase_victors[(int)phase].Clear();
+            if (phase == this.phase) victor = null;
+        }
+    }
+
+    public void PlayCard() {
+        // If Field is not valid > Return
+        if (!HandCard.types.Contains((RowType)FieldType) && HandCard.types.Length != 0) return;
+
+        var played = HandCard.PlayCard(this);
+        if (!played) return;
+
+        sfx_playcard.Play();
+        cursor.Move(Section.HAND);
+        EndTurn();
+    }
+
+    public void UseCardEffect(Player player, Card card) {
+        effect_player = player;
+        if (card.effect.Eval(this)) {
+            card.effect.Use(this);
+            if (card is CardLeader) ((CardLeader)card).used = true;
+        }
+        effect_player = null;
+    }
+
+    public void UseLeaderEffect() {
+        if (current_player.leader.used) return;
+        UseCardEffect(current_player, current_player.leader);
+        if (!current_player.leader.used) return;
+
+        current_player.leader.PlayCard(this);
+        cursor.Move(Section.HAND);
+        EndTurn();
+    }
+
+    public void ClearWeather(RowType row) {
+        if (weathers[row].Item1 is not null) {
+            weathers[row].Item2.graveyard.Add(weathers[row].Item1);
+            weathers[row] = new(null,null);
+        }
+    }
+
+    public void ClearAllWeathers() {
+        foreach (var row in Enum.GetValues(typeof(RowType)).Cast<RowType>())
+            ClearWeather(row);
+    }
+
+    public void NewGame() {
+        MediaPlayer.Play(bgm_playing1);
+        Scene = new SceneStartGame();
+        ClearAllWeathers();
+        InitializePlayers();
+    }
+    public void StartGame() {
+        phase = REDRAW_PHASE;
+        scene = new SceneStartTurn();
+        cursor.Move(Section.HAND, false);
+        ClearVictor();
+    }
+    public void StartPhase() {
+        scene = new SceneStartPhase();
+        if (phase != REDRAW_PHASE) {
+            ClearVictor(phase);
+            ClearAllWeathers();
+            player_1.Clear();
+            player_2.Clear();
+            player_1.ReceiveCard(Player.PHASE_DRAW_CARDS);
+            player_2.ReceiveCard(Player.PHASE_DRAW_CARDS);
+        }
+        phase += 1;
+        switch (phase) {
+            case REDRAW_PHASE+2:
+                MediaPlayer.Play(bgm_playing2);
+                break;
+            case REDRAW_PHASE+3:
+                MediaPlayer.Play(bgm_playing3);
+                break;
+        }
+    }
+    public void StartTurn() {
+        // If not Pass > Start next turn
+        if (!rival_player.has_passed) current_player = rival_player;
+        cursor.Move(Section.HAND);
+        scene = new SceneStartTurn();
+    }
+    public void PlayTurn() {
+        // Redraw or Play according to phase
+        if (phase == REDRAW_PHASE) 
+            scene = new SceneRedraw();
+        else
+            scene = new ScenePlayTurn();
+    }
+    public void EndTurn() {
+        scene = new SceneEndTurn();
+    }
+    public void EndPhase() {
+        if (phase != REDRAW_PHASE) {
+            // Determine victor
+            if (player_1.GetPower(weathers) > player_2.GetPower(weathers)) {
+                victor = player_1;
+            }
+            else if (player_1.GetPower(weathers) < player_2.GetPower(weathers)) {
+                victor = player_2;
+            }
+
+            // Check leader effect
+            foreach (var p in players) {
+                if (
+                    p.leader.effect.Type == EffectType.ON_PHASE_END &&
+                    !p.leader.used
+                ) {
+                    UseCardEffect(p, p.leader);
+                }
+            }
+
+            // Double check victor existance
+            if (victor is not null) {
+                AddVictor(victor);
+            }
+            else if (phase_victors[phase].Count == 1) {
+                victor = phase_victors[phase][0];
+            }
+
+            // Reduce health
+            if (player_1 != victor) player_1.health -= 1;
+            if (player_2 != victor) player_2.health -= 1;
+            if (victor is not null) current_player = GetOtherPlayer(victor);
+        }
+        scene = new SceneEndPhase();
+    }
+    public void EndGame() {
+        if (player_1.IsDefeated() && !player_2.IsDefeated()) {victor = player_2;}
+        else if (player_2.IsDefeated() && !player_1.IsDefeated()) {victor = player_1;}
+        else {victor = null;}
+        MediaPlayer.Pause();
+        if (victor is not null) sfx_win.Play();
+        scene = new SceneEndGame();
+    }
+
+    private void UpdateHelp() {
+        // Await for input > Toggle Help
+        if (
+            !cursor.holding &&
+            Keyboard.GetState().IsKeyDown(Keys.F1)
+        ) {
+            cursor.Hold();
+            help = !help;
+        }
+    }
+    private void UpdateMediaPlayer() {
+        // Await for input > Un/Mute music
+        if (
+            !cursor.holding &&
+            Keyboard.GetState().IsKeyDown(Keys.F2)
+        ) {
+            cursor.Hold();
+            MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
+        }
+    }
+
+    public void Update() {
+        UpdateHelp();
+        UpdateMediaPlayer();
+        UpdateHandCard();
+
+        if (!help) scene.Update(this);
+
+        // Release Cursor
+        if (
+            cursor.holding &&
+            Keyboard.GetState().GetPressedKeyCount() == 0
+        ) cursor.Release();
     }
 
 }

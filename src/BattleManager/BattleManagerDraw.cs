@@ -47,15 +47,6 @@ public partial class BattleManager
     private const string TEXT_PRESS_F1 = "Press F1 for help.";
     private const string TEXT_CARD_TYPE = "Type: {0}";
     private const string TEXT_CARD_EFFECT = "Effect: {0}";
-    private Dictionary<UnitEffect,string> TEXT_UNIT_EFFECTS = new() {
-        {UnitEffect.NONE,""},
-        {UnitEffect.DRAW_CARD,"Draws an extra card."}
-    };
-    private Dictionary<LeaderEffect,string> TEXT_LEADER_EFFECTS = new() {
-        {LeaderEffect.DRAW_CARD,"Draws an extra card."},
-        {LeaderEffect.WIN_ON_DRAW,"Wins one draw round."},
-        {LeaderEffect.RECOVER_LAST_DISCARDED_CARD,"Recovers the card on top of graveyard."}
-    };
     private const string TEXT_CARD_DESCRIPTION = "{0}";
     private const int HELP_XPOS = 20;
     private const int HELP_YPOS = 20;
@@ -478,18 +469,8 @@ Copyright (c) 2024 DP-404
 
                 // Draw Card Info Effect
                 if (card is CardUnit || card is CardLeader) {
-                    string effect = null;
-                    switch (card) {
-                        case CardUnit:
-                            if (((CardUnit)card).effect == UnitEffect.NONE) break;
-                            effect = TEXT_UNIT_EFFECTS[((CardUnit)card).effect];
-                            break;
-                        case CardLeader:
-                            effect = TEXT_LEADER_EFFECTS[((CardLeader)card).effect];
-                            break;
-                    }
-                    if (effect is not null) {
-                        var card_effect = gt.WrapText(fnt_message, string.Format(TEXT_CARD_EFFECT, effect), PREVIEW_CARD_WIDTH);
+                    if (card.effect is not EffectNone) {
+                        var card_effect = gt.WrapText(fnt_message, string.Format(TEXT_CARD_EFFECT, card.effect.Description), PREVIEW_CARD_WIDTH);
                         var card_effect_size = fnt_message.MeasureString(card_effect);
                         gt.spriteBatch.DrawString(
                             fnt_message,
@@ -559,55 +540,26 @@ Copyright (c) 2024 DP-404
             var text_xpos = gt.graphics.PreferredBackBufferWidth / 4;
             var text_ypos = gt.graphics.PreferredBackBufferHeight / 2;
             var color = Color.White;
-            string text;
-            Vector2 size;
+            string text = "";
+            Vector2 size = new();
+            Texture2D image = null;
             bool input = true;
 
             switch (scene) {
                 case SceneStartGame:
                     text = TEXT_START_GAME;
                     size = fnt_message.MeasureString(text);
-                    gt.spriteBatch.DrawString(
-                        fnt_message,
-                        text,
-                        new Vector2(text_xpos, text_ypos - size.Y / 2),
-                        color
-                    );
-                    gt.spriteBatch.Draw(
-                        img_round_start,
-                        new Vector2(IMAGE_TEXT_XPOS, IMAGE_TEXT_YPOS),
-                        Color.White
-                    );
+                    image = img_round_start;
                     break;
                 case SceneStartPhase:
                     text = TEXT_START_PHASE;
                     size = fnt_message.MeasureString(text);
-                    gt.spriteBatch.DrawString(
-                        fnt_message,
-                        text,
-                        new Vector2(text_xpos, text_ypos - size.Y / 2),
-                        color
-                    );
-                    gt.spriteBatch.Draw(
-                        img_round_start,
-                        new Vector2(IMAGE_TEXT_XPOS, IMAGE_TEXT_YPOS),
-                        Color.White
-                    );
+                    image = img_round_start;
                     break;
                 case SceneStartTurn:
                     text = string.Format(TEXT_START_TURN, current_player.name);
                     size = fnt_message.MeasureString(text);
-                    gt.spriteBatch.DrawString(
-                        fnt_message,
-                        text,
-                        new Vector2(text_xpos, text_ypos - size.Y / 2),
-                        color
-                    );
-                    gt.spriteBatch.Draw(
-                        img_turn_start,
-                        new Vector2(IMAGE_TEXT_XPOS, IMAGE_TEXT_YPOS),
-                        Color.White
-                    );
+                    image = img_turn_start;
                     break;
                 case SceneEndTurn:
                     if (!current_player.has_passed) {
@@ -617,51 +569,27 @@ Copyright (c) 2024 DP-404
 
                     text = string.Format(TEXT_END_TURN, current_player.name);
                     size = fnt_message.MeasureString(text);
-                    gt.spriteBatch.DrawString(
-                        fnt_message,
-                        text,
-                        new Vector2(text_xpos, text_ypos - size.Y / 2),
-                        color
-                    );
-                    gt.spriteBatch.Draw(
-                        img_turn_passed,
-                        new Vector2(IMAGE_TEXT_XPOS, IMAGE_TEXT_YPOS),
-                        Color.White
-                    );
+                    image = img_turn_passed;
                     break;
                 case SceneEndPhase:
-                    text = string.Format(TEXT_END_PHASE, 
-                        (victor is not null)? string.Format(TEXT_VICTORY, victor.name) : TEXT_DRAW
+                    text = string.Format(
+                        TEXT_END_PHASE, 
+                        (victor is not null)?
+                            string.Format(TEXT_VICTORY, victor.name)
+                            : TEXT_DRAW
                     );
                     size = fnt_message.MeasureString(text);
-                    gt.spriteBatch.DrawString(
-                        fnt_message,
-                        text,
-                        new Vector2(text_xpos, text_ypos - size.Y / 2),
-                        color
-                    );
-                    gt.spriteBatch.Draw(
-                        (victor is not null)? img_victory : img_draw,
-                        new Vector2(IMAGE_TEXT_XPOS, IMAGE_TEXT_YPOS),
-                        Color.White
-                    );
+                    image = (victor is not null)? img_victory : img_draw;
                     break;
                 case SceneEndGame:
-                    text = string.Format(TEXT_END_GAME, 
-                        (victor is not null)? string.Format(TEXT_VICTORY, victor.name) : TEXT_DRAW
+                    text = string.Format(
+                        TEXT_END_GAME, 
+                        (victor is not null)?
+                            string.Format(TEXT_VICTORY, victor.name)
+                            : TEXT_DRAW
                     );
                     size = fnt_message.MeasureString(text);
-                    gt.spriteBatch.DrawString(
-                        fnt_message,
-                        text,
-                        new Vector2(text_xpos, text_ypos - size.Y / 2),
-                        color
-                    );
-                    gt.spriteBatch.Draw(
-                        (victor is not null)? img_victory : img_draw,
-                        new Vector2(IMAGE_TEXT_XPOS, IMAGE_TEXT_YPOS),
-                        Color.White
-                    );
+                    image = (victor is not null)? img_victory : img_draw;
                     break;
                 default:
                     input = false;
@@ -669,6 +597,18 @@ Copyright (c) 2024 DP-404
             }
 
             if (input) {
+                gt.spriteBatch.DrawString(
+                    fnt_message,
+                    text,
+                    new Vector2(text_xpos, text_ypos - size.Y / 2),
+                    color
+                );
+                gt.spriteBatch.Draw(
+                    image,
+                    new Vector2(IMAGE_TEXT_XPOS, IMAGE_TEXT_YPOS),
+                    Color.White
+                );
+
                 var input_size = fnt_message.MeasureString(TEXT_PRESS_ENTER);
                 gt.spriteBatch.DrawString(
                     fnt_message,
