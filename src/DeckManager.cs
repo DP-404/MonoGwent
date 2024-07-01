@@ -397,7 +397,8 @@ public struct CardsDump {
         image_name="graphics/cards/1U8",
         types=[RowType.RANGE],
         power=9,
-        is_hero=true
+        is_hero=true,
+        effect=new EffectAveragePower()
     };
     public static CardDecoyBlueprint c1D1 = new() {
         name="Goldfish",

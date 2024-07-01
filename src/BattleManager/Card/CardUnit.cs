@@ -18,7 +18,7 @@ public class CardUnit : Card {
     public int modified_power = DEFAULT_MODIFIED_POWER;
     public bool is_decoy {get => power == POWER_DECOY? true : false;}
 
-    public int ActualPower {get => modified_power != DEFAULT_MODIFIED_POWER? modified_power : power;}
+    public int ActualPower {get => is_decoy? POWER_DECOY : (modified_power != DEFAULT_MODIFIED_POWER? modified_power : power);}
 
     public int GetPower(CardWeather weather, CardBoost boost) {
         if (is_hero) return ActualPower;
