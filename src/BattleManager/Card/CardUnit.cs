@@ -4,6 +4,7 @@ namespace MonoGwent;
 
 public class CardUnit : Card {
     public const int POWER_DECOY = 0;
+    public const int DEFAULT_MODIFIED_POWER = -1;
     private const string TYPE_UNIT_NAME = "Unit";
     private const string TYPE_SILVER_NAME = " (Silver)";
     private const string TYPE_GOLDEN_NAME = " (Golden)";
@@ -14,17 +15,21 @@ public class CardUnit : Card {
     : TYPE_DECOY_NAME;}
     public bool is_hero {get; init;}
     public int power;
-
+    public int modified_power = DEFAULT_MODIFIED_POWER;
     public bool is_decoy {get => power == POWER_DECOY? true : false;}
 
-    public int GetPower(CardWeather weather, CardBoost boost) {
-        if (is_hero) return power;
-        var actual_power = power;
-        if (boost is not null) actual_power += boost.bonus;
-        if (weather is not null) actual_power = Math.Min(actual_power, weather.penalty);
-        return actual_power;
-    }
+    public int ActualPower {get => modified_power != DEFAULT_MODIFIED_POWER? modified_power : power;}
 
+    public int GetPower(CardWeather weather, CardBoost boost) {
+        if (is_hero) return ActualPower;
+        var final_power = ActualPower;
+        if (boost is not null) final_power += boost.bonus;
+        if (weather is not null) final_power = Math.Min(final_power, weather.penalty);
+        return final_power;
+    }
+    public override void Dispose() {
+        modified_power = DEFAULT_MODIFIED_POWER;
+    }
     public override bool PlayCard(BattleManager bm)
     {
         if (is_decoy) {

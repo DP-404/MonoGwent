@@ -388,7 +388,7 @@ Copyright (c) 2024 DP-404
                         PREVIEW_CARD_SCALE
                     );
 
-                    var power = unit.power.ToString();
+                    var power = unit.ActualPower.ToString();
                     var power_size = fnt_message.MeasureString(power);
                     gt.spriteBatch.DrawString(
                         fnt_message,
