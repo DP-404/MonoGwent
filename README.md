@@ -102,6 +102,7 @@ Content is placed on the `Content` folder and managed through the [MonoGame Cont
     * [x] Special effects.
 - [x] Leader cards.
 - [x] Additional leader cards effects.
+- [x] Additional unit cards effects.
 - [x] Weather cards.
 - [x] Dispel cards.
 - [x] Boost cards.
