@@ -476,7 +476,8 @@ public struct CardsDump {
         image_name="graphics/cards/2U2",
         types=[RowType.RANGE],
         power=8,
-        is_hero=true
+        is_hero=true,
+        effect=new EffectClearEmptiestRow()
     };
     public static CardUnitBlueprint c2U3 = new() {
         name="Papyrus",
