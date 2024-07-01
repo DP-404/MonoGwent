@@ -467,7 +467,7 @@ public struct CardsDump {
         name="Toriel",
         description="I am TORIEL, caretaker of the RUINS.",
         image_name="graphics/cards/2U1",
-        types=[RowType.RANGE],
+        types=[RowType.RANGE,RowType.SIEGE],
         power=3,
     };
     public static CardUnitBlueprint c2U2 = new() {
@@ -483,7 +483,8 @@ public struct CardsDump {
         description="I WILL BE THE ONE! I MUST BE THE ONE! I WILL CAPTURE A HUMAN! THEN, I, THE GREAT PAPYRUS... WILL GET ALL THE THINGS I UTTERLY DESERVE!",
         image_name="graphics/cards/2U3",
         types=[RowType.MELEE],
-        power=3
+        power=3,
+        effect=new EffectSetNthMultPower()
     };
     public static CardUnitBlueprint c2U4 = new() {
         name="Undyne",
@@ -505,8 +506,9 @@ public struct CardsDump {
         name="Mettaton",
         description="I'M NOT GOING TO DESTROY YOU WITHOUT A LIVE TELEVISION AUDIENCE!!",
         image_name="graphics/cards/2U6",
-        types=[RowType.RANGE,RowType.SIEGE],
+        types=[RowType.RANGE],
         power=4,
+        effect=new EffectSetBoost(RowType.RANGE)
     };
     public static CardUnitBlueprint c2U7 = new() {
         name="Asriel",
@@ -675,9 +677,9 @@ public struct DecksDump {
             // Unit: 16
                 // Silver: 13
                 {c2U1,3},
-                {c2U3,3},
+                {c2U3,4},
                 {c2U4,3},
-                {c2U6,2},
+                {c2U6,1},
                 {c2U7,2},
                 // Golden: 3
                 {c2U2,1},
