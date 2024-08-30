@@ -120,6 +120,7 @@ public class Player
             original_deck = d;
         }
         deck.Copy(original_deck);
+        deck.SetOwner(name);
         deck.Shuffle();
         graveyard.Clear();
         hand.Clear();
@@ -147,6 +148,15 @@ public class Player
     }
     public Card GetFieldCard(RowType row, int index) {
         return rows[row][index];
+    }
+    public List<Card> GetFieldCards() {
+        List<Card> cards = new();
+        foreach (var row in rows.Keys) {
+            foreach (Card c in rows[row]) {
+                cards.Add(c);
+            }
+        }
+        return cards;
     }
     public int GetRowPower(RowType row_type, Tuple<CardWeather,Player> weather) {
         int row_power = 0;

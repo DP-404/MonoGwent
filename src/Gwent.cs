@@ -51,7 +51,6 @@ public class Gwent : Game
         // TODO: Add your initialization logic here
 
         base.Initialize();
-        DecksDump.Initialize();
         bm.Initialize();
     }
 
@@ -66,6 +65,7 @@ public class Gwent : Game
         // TODO: use this.Content to load your game content here
 
         CardsDump.LoadContent(gameTools);
+        DecksDump.Initialize();
         DecksDump.LoadContent(gameTools);
         bm.LoadContent(gameTools);
     }

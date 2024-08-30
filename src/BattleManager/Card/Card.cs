@@ -1,10 +1,8 @@
-using System;
-using System.Linq;
 using System.Collections.Generic;
 
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
+using System.IO;
 
 namespace MonoGwent;
 
@@ -20,14 +18,19 @@ public abstract class Card
     public const int ACTUAL_HEIGHT = 768;
     public const int WIDTH = 55;
     public const int HEIGHT = 80;
+    public const string NEUTRAL_FACTION = "Neutral";
+    public static string IMAGES_PATH = Path.Join("graphics","cards");
+    public const string DEFAULT_IMAGE = "default";
     public static readonly Vector2 THUMB_SCALE =
     new Vector2((float)WIDTH/ACTUAL_WIDTH, (float)HEIGHT/ACTUAL_HEIGHT);
 
     public string name;
     public string description;
+    public string faction = NEUTRAL_FACTION;
+    public string owner;
     public RowType[] types {get; init;}
     public abstract string type_name {get;}
-    public IEffect effect = new EffectNone();
+    public List<IEffect> effects = new ();
 
     public string img_name;
     public Texture2D img;

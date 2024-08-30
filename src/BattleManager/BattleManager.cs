@@ -174,6 +174,21 @@ public partial class BattleManager
     public Player GetOtherPlayer(Player player) {
         return player==player_1? player_2 : player_1;
     }
+    public Player GetPlayerByName(string name) {
+        if (player_1.name == name)
+            return player_1;
+        else if (player_2.name == name)
+            return player_2;
+        else
+            throw new Exception($"Wrong player name: {name}. Must be either '{player_1.name}' or '{player_2.name}'.");
+    }
+    public List<Card> GetWeathers() {
+        List<Card> cards = new();
+        foreach (var row in weathers.Keys) {
+            cards.Add(weathers[row].Item1);
+        }
+        return cards;
+    }
 
     public void UpdateHandCard() {
         if (
@@ -224,11 +239,13 @@ public partial class BattleManager
 
     public void UseCardEffect(Player player, Card card) {
         effect_player = player;
-        if (card.effect.Eval(this)) {
-            card.effect.Use(this);
-            if (card is CardLeader leader) leader.used = true;
+        foreach (var e in card.effects) {
+            if (e.Eval(this)) {
+                e.Use(this);
+                if (card is CardLeader leader) leader.used = true;
+            }
+            effect_player = null;
         }
-        effect_player = null;
     }
 
     public void UseLeaderEffect() {
@@ -322,7 +339,7 @@ public partial class BattleManager
             // Check leader effect
             foreach (var p in players) {
                 if (
-                    p.leader.effect.Type == EffectType.ON_PHASE_END &&
+                    p.leader.effects[0].Type == EffectType.ON_PHASE_END &&
                     !p.leader.used
                 ) {
                     UseCardEffect(p, p.leader);

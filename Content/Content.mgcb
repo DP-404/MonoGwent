@@ -20,7 +20,7 @@
 /processorParam:TextureFormat=Compressed
 /build:font/Arial.spritefont
 
-#begin graphics/cards/0.png
+#begin graphics/cards/default_boost.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -30,9 +30,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0.png
+/build:graphics/cards/default_boost.png
 
-#begin graphics/cards/0B1.png
+#begin graphics/cards/default_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -42,9 +42,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0B1.png
+/build:graphics/cards/default_cover.png
 
-#begin graphics/cards/0B2.png
+#begin graphics/cards/default_decoy.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -54,9 +54,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0B2.png
+/build:graphics/cards/default_decoy.png
 
-#begin graphics/cards/0B3.png
+#begin graphics/cards/default_dispel.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -66,9 +66,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0B3.png
+/build:graphics/cards/default_dispel.png
 
-#begin graphics/cards/0D1.png
+#begin graphics/cards/default_leader.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -78,9 +78,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0D1.png
+/build:graphics/cards/default_leader.png
 
-#begin graphics/cards/0D2.png
+#begin graphics/cards/default_unit.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -90,9 +90,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0D2.png
+/build:graphics/cards/default_unit.png
 
-#begin graphics/cards/0L.png
+#begin graphics/cards/default_weather.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -102,9 +102,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0L.png
+/build:graphics/cards/default_weather.png
 
-#begin graphics/cards/0P1.png
+#begin graphics/cards/hallownest_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -114,9 +114,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0P1.png
+/build:graphics/cards/hallownest_cover.png
 
-#begin graphics/cards/0U1.png
+#begin graphics/cards/hallownest_boost_grey-prince-zote.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -126,9 +126,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0U1.png
+/build:graphics/cards/hallownest_boost_grey-prince-zote.png
 
-#begin graphics/cards/0U2.png
+#begin graphics/cards/hallownest_boost_the-grimm-troupe.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -138,9 +138,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0U2.png
+/build:graphics/cards/hallownest_boost_the-grimm-troupe.png
 
-#begin graphics/cards/0U3.png
+#begin graphics/cards/hallownest_boost_white-lady.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -150,9 +150,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0U3.png
+/build:graphics/cards/hallownest_boost_white-lady.png
 
-#begin graphics/cards/0U4.png
+#begin graphics/cards/hallownest_decoy_zote.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -162,9 +162,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0U4.png
+/build:graphics/cards/hallownest_decoy_zote.png
 
-#begin graphics/cards/0U5.png
+#begin graphics/cards/hallownest_decoy_false-knight.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -174,9 +174,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0U5.png
+/build:graphics/cards/hallownest_decoy_false-knight.png
 
-#begin graphics/cards/0U6.png
+#begin graphics/cards/hallownest_leader_the-pale-king.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -186,9 +186,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0U6.png
+/build:graphics/cards/hallownest_leader_the-pale-king.png
 
-#begin graphics/cards/0U7.png
+#begin graphics/cards/hallownest_dispel_lake-of-unn.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -198,9 +198,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0U7.png
+/build:graphics/cards/hallownest_dispel_lake-of-unn.png
 
-#begin graphics/cards/0U8.png
+#begin graphics/cards/hallownest_unit_the-knight.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -210,9 +210,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0U8.png
+/build:graphics/cards/hallownest_unit_the-knight.png
 
-#begin graphics/cards/0W1.png
+#begin graphics/cards/hallownest_unit_hornet.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -222,9 +222,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0W1.png
+/build:graphics/cards/hallownest_unit_hornet.png
 
-#begin graphics/cards/0W2.png
+#begin graphics/cards/hallownest_unit_mantis-lords.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -234,9 +234,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0W2.png
+/build:graphics/cards/hallownest_unit_mantis-lords.png
 
-#begin graphics/cards/0W3.png
+#begin graphics/cards/hallownest_unit_hollow-knight.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -246,9 +246,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/0W3.png
+/build:graphics/cards/hallownest_unit_hollow-knight.png
 
-#begin graphics/cards/1.png
+#begin graphics/cards/hallownest_unit_radiance.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -258,9 +258,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1.png
+/build:graphics/cards/hallownest_unit_radiance.png
 
-#begin graphics/cards/1B1.png
+#begin graphics/cards/hallownest_unit_nightmare-king-grimm.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -270,9 +270,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1B1.png
+/build:graphics/cards/hallownest_unit_nightmare-king-grimm.png
 
-#begin graphics/cards/1B2.png
+#begin graphics/cards/hallownest_unit_dung-defender.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -282,9 +282,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1B2.png
+/build:graphics/cards/hallownest_unit_dung-defender.png
 
-#begin graphics/cards/1B3.png
+#begin graphics/cards/hallownest_unit_white-defender.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -294,9 +294,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1B3.png
+/build:graphics/cards/hallownest_unit_white-defender.png
 
-#begin graphics/cards/1D1.png
+#begin graphics/cards/hallownest_weather_city-of-tears.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -306,9 +306,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1D1.png
+/build:graphics/cards/hallownest_weather_city-of-tears.png
 
-#begin graphics/cards/1D2.png
+#begin graphics/cards/hallownest_weather_kingdom's-edge.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -318,9 +318,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1D2.png
+/build:graphics/cards/hallownest_weather_kingdom's-edge.png
 
-#begin graphics/cards/1L.png
+#begin graphics/cards/hallownest_weather_the-infection.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -330,9 +330,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1L.png
+/build:graphics/cards/hallownest_weather_the-infection.png
 
-#begin graphics/cards/1P1.png
+#begin graphics/cards/terraria_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -342,9 +342,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1P1.png
+/build:graphics/cards/terraria_cover.png
 
-#begin graphics/cards/1U1.png
+#begin graphics/cards/terraria_boost_the-destroyer.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -354,9 +354,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1U1.png
+/build:graphics/cards/terraria_boost_the-destroyer.png
 
-#begin graphics/cards/1U2.png
+#begin graphics/cards/terraria_boost_the-twins.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -366,9 +366,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1U2.png
+/build:graphics/cards/terraria_boost_the-twins.png
 
-#begin graphics/cards/1U3.png
+#begin graphics/cards/terraria_boost_skeletron-prime.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -378,9 +378,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1U3.png
+/build:graphics/cards/terraria_boost_skeletron-prime.png
 
-#begin graphics/cards/1U4.png
+#begin graphics/cards/terraria_decoy_goldfish.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -390,9 +390,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1U4.png
+/build:graphics/cards/terraria_decoy_goldfish.png
 
-#begin graphics/cards/1U5.png
+#begin graphics/cards/terraria_decoy_bunny.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -402,9 +402,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1U5.png
+/build:graphics/cards/terraria_decoy_bunny.png
 
-#begin graphics/cards/1U6.png
+#begin graphics/cards/terraria_leader_moon-lord.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -414,9 +414,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1U6.png
+/build:graphics/cards/terraria_leader_moon-lord.png
 
-#begin graphics/cards/1U7.png
+#begin graphics/cards/terraria_dispel_journey's-end.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -426,9 +426,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1U7.png
+/build:graphics/cards/terraria_dispel_journey's-end.png
 
-#begin graphics/cards/1U8.png
+#begin graphics/cards/terraria_unit_eye-of-cthulhu.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -438,9 +438,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1U8.png
+/build:graphics/cards/terraria_unit_eye-of-cthulhu.png
 
-#begin graphics/cards/1W1.png
+#begin graphics/cards/terraria_unit_king-slime.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -450,9 +450,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1W1.png
+/build:graphics/cards/terraria_unit_king-slime.png
 
-#begin graphics/cards/1W2.png
+#begin graphics/cards/terraria_unit_eater-of-worlds.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -462,9 +462,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1W2.png
+/build:graphics/cards/terraria_unit_eater-of-worlds.png
 
-#begin graphics/cards/1W3.png
+#begin graphics/cards/terraria_unit_wall-of-flesh.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -474,9 +474,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/1W3.png
+/build:graphics/cards/terraria_unit_wall-of-flesh.png
 
-#begin graphics/cards/2.png
+#begin graphics/cards/terraria_unit_brain-of-cthulhu.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -486,9 +486,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2.png
+/build:graphics/cards/terraria_unit_brain-of-cthulhu.png
 
-#begin graphics/cards/2B1.png
+#begin graphics/cards/terraria_unit_plantera.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -498,9 +498,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2B1.png
+/build:graphics/cards/terraria_unit_plantera.png
 
-#begin graphics/cards/2B2.png
+#begin graphics/cards/terraria_unit_golem.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -510,9 +510,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2B2.png
+/build:graphics/cards/terraria_unit_golem.png
 
-#begin graphics/cards/2B3.png
+#begin graphics/cards/terraria_unit_lunatic-cultist.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -522,9 +522,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2B3.png
+/build:graphics/cards/terraria_unit_lunatic-cultist.png
 
-#begin graphics/cards/2D1.png
+#begin graphics/cards/terraria_weather_blood-moon.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -534,9 +534,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2D1.png
+/build:graphics/cards/terraria_weather_blood-moon.png
 
-#begin graphics/cards/2D2.png
+#begin graphics/cards/terraria_weather_solar-eclipse.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -546,9 +546,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2D2.png
+/build:graphics/cards/terraria_weather_solar-eclipse.png
 
-#begin graphics/cards/2L.png
+#begin graphics/cards/terraria_weather_slime-rain.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -558,9 +558,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2L.png
+/build:graphics/cards/terraria_weather_slime-rain.png
 
-#begin graphics/cards/2P1.png
+#begin graphics/cards/undertale_cover.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -570,9 +570,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2P1.png
+/build:graphics/cards/undertale_cover.png
 
-#begin graphics/cards/2U1.png
+#begin graphics/cards/undertale_boost_soul.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -582,9 +582,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2U1.png
+/build:graphics/cards/undertale_boost_soul.png
 
-#begin graphics/cards/2U2.png
+#begin graphics/cards/undertale_boost_death-by-glamour.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -594,9 +594,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2U2.png
+/build:graphics/cards/undertale_boost_death-by-glamour.png
 
-#begin graphics/cards/2U3.png
+#begin graphics/cards/undertale_boost_temmie.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -606,9 +606,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2U3.png
+/build:graphics/cards/undertale_boost_temmie.png
 
-#begin graphics/cards/2U4.png
+#begin graphics/cards/undertale_decoy_flowey.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -618,9 +618,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2U4.png
+/build:graphics/cards/undertale_decoy_flowey.png
 
-#begin graphics/cards/2U5.png
+#begin graphics/cards/undertale_decoy_annoying-dog.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -630,9 +630,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2U5.png
+/build:graphics/cards/undertale_decoy_annoying-dog.png
 
-#begin graphics/cards/2U6.png
+#begin graphics/cards/undertale_leader_asgore.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -642,9 +642,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2U6.png
+/build:graphics/cards/undertale_leader_asgore.png
 
-#begin graphics/cards/2U7.png
+#begin graphics/cards/undertale_dispel_barrier.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -654,9 +654,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2U7.png
+/build:graphics/cards/undertale_dispel_barrier.png
 
-#begin graphics/cards/2U8.png
+#begin graphics/cards/undertale_unit_toriel.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -666,9 +666,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2U8.png
+/build:graphics/cards/undertale_unit_toriel.png
 
-#begin graphics/cards/2W1.png
+#begin graphics/cards/undertale_unit_sans.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -678,9 +678,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2W1.png
+/build:graphics/cards/undertale_unit_sans.png
 
-#begin graphics/cards/2W2.png
+#begin graphics/cards/undertale_unit_papyrus.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -690,9 +690,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2W2.png
+/build:graphics/cards/undertale_unit_papyrus.png
 
-#begin graphics/cards/2W3.png
+#begin graphics/cards/undertale_unit_undyne.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -702,7 +702,91 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:graphics/cards/2W3.png
+/build:graphics/cards/undertale_unit_undyne.png
+
+#begin graphics/cards/undertale_unit_undyne-the-undying.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:graphics/cards/undertale_unit_undyne-the-undying.png
+
+#begin graphics/cards/undertale_unit_mettaton.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:graphics/cards/undertale_unit_mettaton.png
+
+#begin graphics/cards/undertale_unit_asriel.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:graphics/cards/undertale_unit_asriel.png
+
+#begin graphics/cards/undertale_unit_photoshop-flowey.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:graphics/cards/undertale_unit_photoshop-flowey.png
+
+#begin graphics/cards/undertale_weather_muffet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:graphics/cards/undertale_weather_muffet.png
+
+#begin graphics/cards/undertale_weather_it's-raining-somewhere.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:graphics/cards/undertale_weather_it's-raining-somewhere.png
+
+#begin graphics/cards/undertale_weather_amalgam.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:graphics/cards/undertale_weather_amalgam.png
 
 #begin graphics/img/card_back.png
 /importer:TextureImporter

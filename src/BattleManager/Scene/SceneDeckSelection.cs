@@ -18,7 +18,8 @@ public class SceneDeckSelection : IScene {
                 if (bm.Current == bm.Player1) {
                     bm.Current = bm.Rival;
                 } else {
-                    bm.NewGame();
+                    if (bm.Current.name != bm.Rival.name) 
+                        bm.NewGame();
                 }
             }
             // Erase
@@ -35,7 +36,9 @@ public class SceneDeckSelection : IScene {
             ) {
                 bm.SfxSelect.Play();
                 if (bm.Cursor.index == DecksDump.Count-1)
-                {bm.Cursor.Move(0);} else {bm.Cursor.Move(bm.Cursor.index+1);}
+                    bm.Cursor.Move(0);
+                else
+                    bm.Cursor.Move(bm.Cursor.index+1);
                 bm.Current.original_deck = DecksDump.GetDeck(bm.Cursor.index);
             }
             // Move Left
@@ -44,7 +47,9 @@ public class SceneDeckSelection : IScene {
             ) {
                 bm.SfxSelect.Play();
                 if (bm.Cursor.index == 0)
-                {bm.Cursor.Move(DecksDump.Count-1);} else {bm.Cursor.Move(bm.Cursor.index-1);}
+                    bm.Cursor.Move(DecksDump.Count-1);
+                else
+                    bm.Cursor.Move(bm.Cursor.index-1);
                 bm.Current.original_deck = DecksDump.GetDeck(bm.Cursor.index);
             }
             // Read Keys

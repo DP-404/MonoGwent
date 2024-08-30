@@ -469,19 +469,21 @@ Copyright (c) 2024 DP-404
 
                 // Draw Card Info Effect
                 if (card is CardUnit || card is CardLeader) {
-                    if (card.effect is not EffectNone) {
-                        var card_effect = gt.WrapText(fnt_message, string.Format(TEXT_CARD_EFFECT, card.effect.Description), PREVIEW_CARD_WIDTH);
-                        var card_effect_size = fnt_message.MeasureString(card_effect);
-                        gt.spriteBatch.DrawString(
-                            fnt_message,
-                            card_effect,
-                            new Vector2(
-                                PREVIEW_CARD_XPOS,
-                                last_ypos
-                            ),
-                            Color.White
-                        );
-                        last_ypos += (int)card_effect_size.Y;
+                    if (card.effects.Count() != 0) {
+                        foreach (var e in card.effects) {
+                            var card_effect = gt.WrapText(fnt_message, string.Format(TEXT_CARD_EFFECT, e.Description), PREVIEW_CARD_WIDTH);
+                            var card_effect_size = fnt_message.MeasureString(card_effect);
+                            gt.spriteBatch.DrawString(
+                                fnt_message,
+                                card_effect,
+                                new Vector2(
+                                    PREVIEW_CARD_XPOS,
+                                    last_ypos
+                                ),
+                                Color.White
+                            );
+                            last_ypos += (int)card_effect_size.Y;
+                        }
                     }
                 }
 

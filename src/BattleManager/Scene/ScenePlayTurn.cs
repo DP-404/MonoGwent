@@ -197,7 +197,7 @@ public class ScenePlayTurn : IScene {
                     // Use Leader
                     if (
                         !bm.Current.leader.used &&
-                        bm.Current.leader.effect.Type is EffectType.ON_USE &&
+                        bm.Current.leader.effects[0].Type is EffectType.ON_USE &&
                         Keyboard.GetState().IsKeyDown(Keys.Enter)
                     ) {
                         bm.UseLeaderEffect();

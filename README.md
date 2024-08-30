@@ -107,7 +107,8 @@ Content is placed on the `Content` folder and managed through the [MonoGame Cont
 - [x] Dispel cards.
 - [x] Boost cards.
 - [x] Decoy cards.
-- [ ] Add AI.
+- [ ] Rival AI.
+- [ ] Script interpreter.
 ### QoL
 - [x] Enhance GUI.
 - [x] Build full fledged decks.
