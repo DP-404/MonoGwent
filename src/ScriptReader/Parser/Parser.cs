@@ -27,7 +27,7 @@ public class Parser
     public void Parse()
     {
         // Check first token
-        if(cur_token.type == TokenType.Keyword)
+        if(cur_token.type == TokenType.Keyword || cur_token.val == "card")
         {
             // While "effect" > Create
             while (cur_token.val == "effect") {
@@ -54,7 +54,7 @@ public class Parser
 
                     while (true) {
                         string name = cur_token.val;
-                        Next(TokenType.Identifier);
+                        Next(TokenType.Word);
                         Next(TokenType.Colon);
                         string type;
                         object value;
@@ -108,10 +108,10 @@ public class Parser
                 Next(TokenType.Colon);
                 Next(TokenType.LParen);
                 string targets = cur_token.val;
-                Next(TokenType.Identifier);
+                Next(TokenType.Word);
                 Next(TokenType.Comma);
                 string context = cur_token.val;
-                Next(TokenType.Identifier);
+                Next(TokenType.Word);
                 Next(TokenType.RParen);
                 Next(TokenType.Asign);
                 Next(TokenType.GT);
@@ -172,19 +172,19 @@ public class Parser
                             foreach(Variable variable in variables)
                                 variablesFor.Add(variable);
 
-                            NextAndSave(TokenType.Identifier);
+                            NextAndSave(TokenType.Word);
 
                             // Save new var
                             variables.AddLast(new Variable(cur_token.val, "Card"));
                             variables2.AddLast(new Variable(cur_token.val, "Card"));
-                            NextAndSave(TokenType.Identifier);
+                            NextAndSave(TokenType.Word);
 
                             if(cur_token.val != "in") throw new Exception("Expected [in] keyword.");
-                            Next(TokenType.Identifier);
+                            Next(TokenType.Word);
 
                             // Save list
                             if(!IsCardList()) throw new Exception("Invalid list type. Expected [List<Card>].");
-                            NextAndSave(TokenType.Identifier);
+                            NextAndSave(TokenType.Word);
 
                             bool isOneInstruction;
 
@@ -234,7 +234,7 @@ public class Parser
                                 variablesWhile.Add(variable);
                             }
 
-                            NextAndSave(TokenType.Identifier);
+                            NextAndSave(TokenType.Word);
 
                             Next(TokenType.LParen);
 
@@ -285,33 +285,33 @@ public class Parser
 
                             if(IsNumericProperty())
                             {
-                                NextAndSave(TokenType.Identifier);
+                                NextAndSave(TokenType.Word);
                                 Next(TokenType.Point);
                                 NextAndSave(TokenType.Keyword);
                             }
-                            else if(cur_token.type == TokenType.Identifier) NextAndSave(TokenType.Identifier);
+                            else if(cur_token.type == TokenType.Word) NextAndSave(TokenType.Word);
 
-                            if(cur_token.type == TokenType.PlusCom)
+                            if(cur_token.type == TokenType.SumCom)
                             {
-                                NextAndSave(TokenType.PlusCom);
+                                NextAndSave(TokenType.SumCom);
                                 dNext = NextAndSave;
                                 Expr();
                             } 
-                            else if(cur_token.type == TokenType.MinusCom)
+                            else if(cur_token.type == TokenType.SubCom)
                             {
-                                NextAndSave(TokenType.MinusCom);
+                                NextAndSave(TokenType.SubCom);
                                 dNext = NextAndSave;
                                 Expr();
                             } 
-                            else if(cur_token.type == TokenType.MultiCom)
+                            else if(cur_token.type == TokenType.MultCom)
                             {
-                                NextAndSave(TokenType.MultiCom);
+                                NextAndSave(TokenType.MultCom);
                                 dNext = NextAndSave;
                                 Expr();
                             } 
-                            else if(cur_token.type == TokenType.DivisionCom)
+                            else if(cur_token.type == TokenType.DivCom)
                             {
-                                NextAndSave(TokenType.DivisionCom);
+                                NextAndSave(TokenType.DivCom);
                                 dNext = NextAndSave;
                                 Expr();
                             } 
@@ -342,11 +342,11 @@ public class Parser
 
                             if(IsNumericProperty())
                             {
-                                NextAndSave(TokenType.Identifier);
+                                NextAndSave(TokenType.Word);
                                 Next(TokenType.Point);
                                 NextAndSave(TokenType.Keyword);
                             }
-                            else if(cur_token.type == TokenType.Identifier) NextAndSave(TokenType.Identifier);
+                            else if(cur_token.type == TokenType.Word) NextAndSave(TokenType.Word);
 
                             // Instruction end > Collect next
                             if(cur_token.type == TokenType.Semicolon)
@@ -357,14 +357,14 @@ public class Parser
                             }
                             else throw new Exception("Semicolon was expected");
                         }
-                        else if(!IsVariable() && cur_token.type == TokenType.Identifier) // Var declaration
+                        else if(!IsVariable() && cur_token.type == TokenType.Word) // Var declaration
                         {
                             // Add instruction and change current
                             instructions.Add(new Instruction());
                             cur_instruction = instructions.Last();
 
                             string name = cur_token.val;
-                            NextAndSave(TokenType.Identifier);
+                            NextAndSave(TokenType.Word);
                             NextAndSave(TokenType.Asign);
 
                             if(IsVariable())
@@ -525,7 +525,7 @@ public class Parser
                             {
                                 if(variable.type == "Context")
                                 {
-                                    NextAndSave(TokenType.Identifier);
+                                    NextAndSave(TokenType.Word);
                                     if(cur_token.type == TokenType.Point) Next(TokenType.Point);
                                     else return false;
                                     if(Enum.IsDefined(typeof(ContextMethods), cur_token.val)) return CheckMethodCall();
@@ -533,7 +533,7 @@ public class Parser
                                 }
                                 else if(variable.type == "List<Card>")
                                 {
-                                    NextAndSave(TokenType.Identifier);
+                                    NextAndSave(TokenType.Word);
                                     if(cur_token.type == TokenType.Point) Next(TokenType.Point);
                                     else return false;
                                     if(Enum.IsDefined(typeof(CardListMethods), cur_token.val)) return CheckMethodCall();
@@ -620,7 +620,7 @@ public class Parser
                 string WichTypeIs(TokenType finalToken)
                 {
                     // Check if var
-                    if(cur_token.type == TokenType.Identifier)
+                    if(cur_token.type == TokenType.Word)
                     {
                         foreach(Variable variable in variables)
                         {
@@ -629,7 +629,7 @@ public class Parser
                                 // Check var type
                                 if(variable.type == "Context")
                                 {
-                                    NextAndSave(TokenType.Identifier);
+                                    NextAndSave(TokenType.Word);
                                     if(cur_token.type == finalToken) return "Context";
                                     else if(cur_token.type == TokenType.Point)
                                     {
@@ -640,7 +640,7 @@ public class Parser
                                 }
                                 else if(variable.type == "List<Card>")
                                 {
-                                    NextAndSave(TokenType.Identifier);
+                                    NextAndSave(TokenType.Word);
                                     if(cur_token.type == finalToken) return "List<Card>";
                                     else if(cur_token.type == TokenType.Point)
                                     {
@@ -666,7 +666,7 @@ public class Parser
                                 }
                                 else if(variable.type == "Card")
                                 {
-                                    NextAndSave(TokenType.Identifier);
+                                    NextAndSave(TokenType.Word);
                                     if(cur_token.type == finalToken) return "Card";
                                     else if(cur_token.type == TokenType.Point)
                                     {
@@ -677,7 +677,7 @@ public class Parser
                                 }
                                 else if(variable.type == "Player")
                                 {
-                                    NextAndSave(TokenType.Identifier);
+                                    NextAndSave(TokenType.Word);
                                     if(cur_token.type == finalToken) return "Player";
                                     else throw new Exception("Unknown method or property."); 
                                 }
@@ -824,7 +824,7 @@ public class Parser
             while(cur_token.val == "card")
             {
                 // Collect properties
-                Next(TokenType.Identifier);
+                Next(TokenType.Keyword);
                 Next(TokenType.LCBracket);
                 Properties(); 
                 
@@ -932,7 +932,7 @@ public class Parser
             }
             return result;
         }
-        else if(cur_token.type == TokenType.Identifier)
+        else if(cur_token.type == TokenType.Word)
         {
             foreach(Variable variable in cur_vars)
             {
@@ -940,7 +940,7 @@ public class Parser
                 {
                     int result = value;
 
-                    dNext(TokenType.Identifier);
+                    dNext(TokenType.Word);
 
                     if(cur_token.type == TokenType.Incr) dNext(TokenType.Incr);
 
@@ -965,7 +965,7 @@ public class Parser
                 }
                 else if(variable.name == cur_token.val && variable.type == "Card" && tokens[cur_tokenIndex + 2].val == "Power")
                 {
-                    dNext(TokenType.Identifier);
+                    dNext(TokenType.Word);
                     Next(TokenType.Point);
                     dNext(TokenType.Keyword);
 
@@ -1006,7 +1006,7 @@ public class Parser
                 {
                     int result = value;
 
-                    dNext(TokenType.Identifier);
+                    dNext(TokenType.Word);
                     
                     if(cur_token.type == TokenType.XOR)
                     {
@@ -1175,17 +1175,18 @@ public class Parser
         foreach(Property property in props)
         {
             if(property.type == "Type")
-            {   
+            {
+                var val = (string)property.value;
                 if (
-                    property.value == "Dispel"
-                    || property.value == "Weather"
-                    || property.value == "Leader"
-                    || property.value == "Decoy"
-                    || property.value == "Boost"
+                    val == "Dispel"
+                    || val == "Weather"
+                    || val == "Leader"
+                    || val == "Decoy"
+                    || val == "Boost"
                 ) isSpecialCard = true;
                 else if (
-                    property.value != "Gold"
-                    && property.value != "Silver"
+                    val != "Gold"
+                    && val != "Silver"
                 ) throw new Exception($"Card type mismatch. Got: {property.value}");
                 hasType = true;
             }
@@ -1193,7 +1194,7 @@ public class Parser
             else if (property.type == "Faction") hasFaction = true;
             else if (property.type == "Power")
             {
-                if (property.val_int < 0) throw new Exception("Power cannot be negative");
+                if ((int)property.value < 0) throw new Exception("Power cannot be negative");
                 else hasPower = true;
             } 
             else if (property.type == "Range") hasRange = true;
@@ -1331,7 +1332,7 @@ public class Parser
                 {
                     if(variable.name == param.name)
                     {
-                        Next(TokenType.Identifier);
+                        Next(TokenType.Word);
                         Next(TokenType.Colon);
                         if(param.type == "Number") variable.val = Expr();
                         else if(param.type == "Bool")
@@ -1360,7 +1361,7 @@ public class Parser
             }
         }
 
-        if(!isCorrectParam) throw new Exception("Invalid parameter.");
+        if(!isCorrectParam) throw new Exception("Invalid or missing parameter. Perhaps you put an tailing comma?");
     }
 
     public void Selector(Effect effectParent, Effect effect)
@@ -1391,14 +1392,14 @@ public class Parser
         if(cur_token.val == "false")
         {
             effect.single = false;
-            Next(TokenType.Identifier);
+            Next(TokenType.Word);
         }
         else if(cur_token.val == "true")
         {
             effect.single = true;
-            Next(TokenType.Identifier);
+            Next(TokenType.Word);
         }
-        else throw new Exception("Expected true or false");
+        else throw new Exception("Expected [true] or [false].");
 
         Next(TokenType.Comma);
 
@@ -1410,8 +1411,10 @@ public class Parser
 
             dNext = NextAndSavePredicate;
             Predicate(effect.vars);
+            
+            cur_vars.Clear();
         } 
-        else throw new Exception("Predicate expected");
+        else throw new Exception("Expected predicate.");
 
         Next(TokenType.RCBracket);
 
@@ -1429,14 +1432,14 @@ public class Parser
 
         foreach(Variable variable in cur_vars)
         if(variable.name == cur_token.val) 
-        throw new Exception("Cannot use this variable in this context.");
+        throw new Exception("Variable already used.");
         
-        if(cur_token.type == TokenType.Identifier) 
+        if(cur_token.type == TokenType.Word) 
         {
             cur_vars.AddLast(new Variable(cur_token.val, "Card"));
             variables?.AddLast(new Variable(cur_token.val, "Card"));
 
-            dNext(TokenType.Identifier);
+            dNext(TokenType.Word);
         }
         else throw new Exception("Expected variable.");
 
@@ -1500,7 +1503,7 @@ public class Parser
         Next(TokenType.RCBracket);
 
         // Add as postEffect of parent
-        effectParent.postEffect = effect;
+        effectParent.PostEffect = effect;
 
         Console.WriteLine("Correct postEffect.");
     }
@@ -1509,9 +1512,9 @@ public class Parser
     {
         foreach(Property property in props)
         if (
-            property.value == "Silver"
-            || property.value == "Gold"
-            || property.value == "Leader"
+            (string)property.value == "Silver"
+            || (string)property.value == "Gold"
+            || (string)property.value == "Leader"
         ) return true;
         return false;
     }   
@@ -1696,12 +1699,12 @@ public class Parser
     {
         if (cur_token.val == "true")
         {
-            dNext(TokenType.Identifier);
+            dNext(TokenType.Word);
             return true;
         }
         else if (cur_token.val == "false")
         {
-            dNext(TokenType.Identifier);
+            dNext(TokenType.Word);
             return false;
         }
         else if (cur_token.type == TokenType.Number)
@@ -1717,13 +1720,13 @@ public class Parser
             dNext(TokenType.RParen);
             return result;
         }
-        else if(cur_token.type == TokenType.Identifier)
+        else if(cur_token.type == TokenType.Word)
         {
             foreach(Variable variable in cur_vars)
             {
                 if(variable.name == cur_token.val && variable.val is int value)
                 {
-                    dNext(TokenType.Identifier);
+                    dNext(TokenType.Word);
                     
                     if(cur_token.type == TokenType.Incr) dNext(TokenType.Incr);
 
@@ -1731,13 +1734,13 @@ public class Parser
                 }
                 else if(variable.name == cur_token.val && variable.val is bool value2)
                 {
-                    dNext(TokenType.Identifier);
+                    dNext(TokenType.Word);
                     return value2;
                 }
                 else if(variable.name == cur_token.val && variable.val is string value3) return ParseString();
                 else if(variable.name == cur_token.val && variable.type == "Card" && (tokens[cur_tokenIndex + 2].val == "Power"))
                 {
-                    dNext(TokenType.Identifier);
+                    dNext(TokenType.Word);
                     Next(TokenType.Point);
                     dNext(TokenType.Keyword);
 
@@ -1761,7 +1764,7 @@ public class Parser
             {
                 if(variable.name == cur_token.val && variable.val is int value)
                 {
-                    dNext(TokenType.Identifier);
+                    dNext(TokenType.Word);
                     return value;
                 }
             }
@@ -1784,7 +1787,7 @@ public class Parser
             dNext(TokenType.String);
             dNext(TokenType.Quote);
         }
-        else if(cur_token.type == TokenType.Identifier)
+        else if(cur_token.type == TokenType.Word)
         {
             bool IsCorrect = false;
 
@@ -1794,7 +1797,7 @@ public class Parser
                 {
                     result = "";
                     result += value;
-                    dNext(TokenType.Identifier);
+                    dNext(TokenType.Word);
                     IsCorrect = true;
                 }
                 else if(variable.name == cur_token.val && variable.type == "Card" && (tokens[cur_tokenIndex + 2].val == "Name"
@@ -1802,7 +1805,7 @@ public class Parser
                         || tokens[cur_tokenIndex + 2].val == "Faction"))
                 {
                     result = "";
-                    dNext(TokenType.Identifier);
+                    dNext(TokenType.Word);
                     Next(TokenType.Point);
                     dNext(TokenType.Keyword);
                     IsCorrect = true;

@@ -44,6 +44,8 @@ public class Gwent : Game
         IsMouseVisible = true;
 
         bm = new BattleManager();
+        Context.bm = bm;
+        ScriptReader.Initialize();
     }
 
     protected override void Initialize()

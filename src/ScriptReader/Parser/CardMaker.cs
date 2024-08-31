@@ -41,7 +41,14 @@ public class CardMaker
         SetProperties(blueprint, properties);
 
         foreach (var effect in effects)
-            ((CardUnitBlueprint)blueprint).effects.Add((IEffect)effect.Clone());
+            switch (blueprint) {
+                case CardUnitBlueprint c:
+                    c.effects.Add((IEffect)effect.Clone());
+                    break;
+                case CardLeaderBlueprint c:
+                    c.effects.Add((IEffect)effect.Clone());
+                    break;
+            }
 
         CardsDump.blueprints.Add(blueprint);
     }
@@ -55,20 +62,30 @@ public class CardMaker
                 case "Type":
                     break;
                 case "Name":
-                    blueprint.name = prop.value;
+                    blueprint.name = (string)prop.value;
                     break;
                 case "Faction":
-                    blueprint.faction = prop.value;
+                    blueprint.faction = (string)prop.value;
                     break;
                 case "Power":
-                    ((CardUnitBlueprint)blueprint).power = prop.val_int;
+                    switch (blueprint) {
+                        case CardUnitBlueprint c:
+                            c.power = (int)prop.value;
+                            break;
+                        case CardWeatherBlueprint c:
+                            c.penalty = (int)prop.value;
+                            break;
+                        case CardBoostBlueprint c:
+                            c.bonus = (int)prop.value;
+                            break;
+                    }
                     break;
                 case "Range":
                     foreach (var r in Enum.GetNames(typeof(RowType))) {
-                        if (prop.value.Contains(r)) {
+                        if (((string)prop.value).Contains(char.ToUpper(r[0])+r[1..].ToLower())) {
                             blueprint.types = [
                                 .. blueprint.types,
-                                (RowType)Enum.Parse(typeof(RowType), prop.value)
+                                (RowType)Enum.Parse(typeof(RowType), ((string)prop.value).ToUpper())
                             ];
                         }
                     }
@@ -82,7 +99,7 @@ public class CardMaker
         foreach(var prop in properties)
         {
             if (prop.type == "Type")
-                return prop.value;
+                return (string)prop.value;
         }
         throw new Exception("Missing card type.");
     }

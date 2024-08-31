@@ -471,7 +471,11 @@ Copyright (c) 2024 DP-404
                 if (card is CardUnit || card is CardLeader) {
                     if (card.effects.Count() != 0) {
                         foreach (var e in card.effects) {
-                            var card_effect = gt.WrapText(fnt_message, string.Format(TEXT_CARD_EFFECT, e.Description), PREVIEW_CARD_WIDTH);
+                            var descr = e switch {
+                                Effect => ((Effect)e).name,
+                                _ => e.Description
+                            };
+                            var card_effect = gt.WrapText(fnt_message, string.Format(TEXT_CARD_EFFECT, descr), PREVIEW_CARD_WIDTH);
                             var card_effect_size = fnt_message.MeasureString(card_effect);
                             gt.spriteBatch.DrawString(
                                 fnt_message,

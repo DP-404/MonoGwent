@@ -4,7 +4,7 @@ namespace MonoGwent;
 
 public class CardWeatherBlueprint : CardBlueprint {
     public override string type_name {get => "Weather";}
-    public uint penalty = CardWeather.DEFAULT_PENALTY;
+    public int penalty = CardWeather.DEFAULT_PENALTY;
 
     public override Card GetCard() {
         return new CardWeather {
@@ -14,7 +14,7 @@ public class CardWeatherBlueprint : CardBlueprint {
             img_name=image_name,
             img=image,
             types=types,
-            penalty=(int)penalty
+            penalty=penalty
         };
     }
 }

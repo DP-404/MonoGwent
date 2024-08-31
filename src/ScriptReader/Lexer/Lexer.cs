@@ -21,7 +21,7 @@ public class Lexer
         while (pos < input.Length) {
             TokenType tType;
             string tVal = "";
-            int tPos;
+            int tPos = -1;
 
             // Check Whitespace > Ignore
             if(char.IsWhiteSpace(i)) {
@@ -63,9 +63,9 @@ public class Lexer
                     tVal = word;
                     tPos = pos-word.Length;
                 }
-                // Word > Store as Identifier
+                // Word > Store as Word
                 else {
-                    tType = TokenType.Identifier;
+                    tType = TokenType.Word;
                     tVal = word;
                     tPos = pos-word.Length;
                 }
@@ -130,6 +130,10 @@ public class Lexer
                             tVal += input[pos-1];
                             pos++;
                             tType = TokenType.Incr;
+                        } else if (i == '=') {
+                            tVal += input[pos-1];
+                            pos++;
+                            tType = TokenType.SumCom;
                         } else {
                             tType = TokenType.Plus;
                         }
@@ -141,6 +145,10 @@ public class Lexer
                             tVal += input[pos-1];
                             pos++;
                             tType = TokenType.Decr;
+                        } else if (i == '=') {
+                            tVal += input[pos-1];
+                            pos++;
+                            tType = TokenType.SubCom;
                         } else {
                             tType = TokenType.Minus;
                         }
@@ -148,19 +156,42 @@ public class Lexer
                         break;
                     case '*':
                         pos++;
-                        tType = TokenType.Mult;
+                        if (i == '=') {
+                            tVal += input[pos-1];
+                            pos++;
+                            tType = TokenType.MultCom;
+                        } else {
+                            tType = TokenType.Mult;
+                        }
                         tPos = pos;
                         break;
                     case '/':
                         pos++;
-                        tType = TokenType.Div;
+                        if (i == '=') {
+                            tVal += input[pos-1];
+                            pos++;
+                            tType = TokenType.DivCom;
+                        } else {
+                            tType = TokenType.Div;
+                        }
                         tPos = pos;
                         break;
                     case '"':
                         pos++;
-                        tType = TokenType.Quote;
-                        tPos = pos;
-                        break;
+                        tokens.Add(new Token(TokenType.Quote, "\"", pos-1));
+
+                        string word = "";
+                        while(pos < input.Length && i != '"') {
+                            word += i;
+                            pos++;
+                        }
+                        tokens.Add(new Token(TokenType.String, word, pos-word.Length));
+
+                        if(pos < input.Length && i == '"') {
+                            tokens.Add(new Token(TokenType.Quote, "\"", pos-1));
+                            pos++;
+                        } 
+                        continue;
                     case '=':
                         pos++;
                         if (i == '=') {

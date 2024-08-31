@@ -185,7 +185,9 @@ public partial class BattleManager
     public List<Card> GetWeathers() {
         List<Card> cards = new();
         foreach (var row in weathers.Keys) {
-            cards.Add(weathers[row].Item1);
+            var weather = weathers[row].Item1;
+            if (weather is not null)
+                cards.Add(weather);
         }
         return cards;
     }

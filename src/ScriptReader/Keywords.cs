@@ -45,7 +45,7 @@ enum Keyword
 public enum TokenType {
     // Base
     Number,
-    Identifier,
+    Word,
     Keyword,
 
     // Symbols
@@ -83,10 +83,10 @@ public enum TokenType {
     XOR,
     At,
     DoubleAt,
-    PlusCom,
-    MinusCom,
-    MultiCom,
-    DivisionCom,
+    SumCom,
+    SubCom,
+    MultCom,
+    DivCom,
     XORCom,
 
     // Extra

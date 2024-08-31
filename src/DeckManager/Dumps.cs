@@ -462,12 +462,12 @@ public struct DecksDump {
                 switch (c) {
                     case CardLeaderBlueprint l:
                         leader = l;
-                        break;
+                        continue;
                     case CardUnitBlueprint u:
                         var has_effect = u.effects.Count() != 0;
                         if (u.is_hero) {
                             qtty = 1;
-                            continue;
+                            break;
                         } else {
                             if (u.power < 4) qtty = 3;
                             else if (4 <= u.power && u.power < 5) {
@@ -495,8 +495,7 @@ public struct DecksDump {
                     default:
                         throw new Exception();
                 };
-                if (c is not CardLeaderBlueprint)
-                    cards[c] = qtty;
+                cards[c] = qtty;
             }
         }
 
