@@ -10,19 +10,17 @@ public class EffectRemoveRivalWeakest : IEffect {
         return true;
     }
     public void Use(BattleManager bm) {
-        Tuple<RowType,CardUnit> card = null;
-        foreach (var r in bm.Rival.rows.Keys) {
-            var row = bm.Rival.rows[r];
-            foreach (var c in row) {
-                if (c.is_hero) continue;
-                if (card is null || c.power < card.Item2.power) {
-                    card = new (r, c);
-                }
+        CardUnit card = null;
+        foreach (var c in bm.Rival.field) {
+            if (c is not CardUnit u) continue;
+            if (u.is_hero) continue;
+            if (card is null || c.power < card.power) {
+                card = u;
             }
         }
 
         if (card is null) return;
-        bm.Rival.rows[card.Item1].Remove(card.Item2);
-        bm.Rival.DisposeOf(card.Item2);
+        bm.Rival.field.Remove(card);
+        bm.Rival.DisposeOf(card);
     }
 }

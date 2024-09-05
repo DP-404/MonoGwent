@@ -7,6 +7,7 @@ public class CardDispelBlueprint : CardBlueprint {
 
     public override Card GetCard() {
         return new CardWeather {
+            blueprint=this,
             name=name,
             description=description,
             faction=faction,

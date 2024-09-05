@@ -17,9 +17,8 @@ public class Context
 
     public static List<Card> Board {
         get => [
-            .. bm.Current.GetFieldCards(),
-            .. bm.Rival.GetFieldCards(),
-            .. bm.GetWeathers()
+            .. bm.Current.field,
+            .. bm.Rival.field,
         ];
     }
 
@@ -30,10 +29,7 @@ public class Context
 
     public static List<Card> FieldOfPlayer(string player)
     {
-        return [
-            .. bm.GetPlayerByName(player).hand,
-            .. bm.GetWeathers()
-        ];
+        return bm.GetPlayerByName(player).field;
     }
 
     public static List<Card> GraveyardOfPlayer(string player)

@@ -508,7 +508,7 @@ public struct DecksDump {
     }
 
     public static Deck GetDeck(int index=DEFAULT_DECK_INDEX) {
-        return decks.Values.ToArray()[index];
+        return decks.Values.ToArray()[index].GetCopy();
     }
 
     public static void Initialize() {

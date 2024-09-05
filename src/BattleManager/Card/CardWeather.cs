@@ -11,30 +11,34 @@ public class CardWeather : Card {
     public int penalty = DEFAULT_PENALTY;
     public bool is_dispel {get => penalty == DISPEL_PENALTY;}
 
+    public override CardWeather Copy() {
+        return (CardWeather)base.Copy();
+    }
     public override bool PlayCard(BattleManager bm)
     {
-        RowType field;
+        RowType pos;
         if (bm.Cursor.field == Cursor.NONE) {
-            field = (RowType)bm.Cursor.index;
+            pos = (RowType)bm.Cursor.index;
         } else {
-            field = (RowType)bm.Cursor.field;
+            pos = (RowType)bm.Cursor.field;
         }
 
         // Card is Weather
         if (!is_dispel) {
             bm.Current.hand.Remove(this);
-            var old_weather = bm.Weathers[field];
+            var old_weather = bm.Weathers[pos];
             if (old_weather.Item1 is not null) {
                 old_weather.Item2.DisposeOf(old_weather.Item1);
             }
-            bm.Weathers[field] = new (this, bm.Current);
+            bm.Weathers[pos] = new (this, bm.Current);
+            position = pos;
         }
         // Card is Dispel
         else {
             var exists_weather = false;
             var is_single = types.Length != 0;
             if (is_single) {
-                exists_weather = bm.Weathers[field].Item1 is not null;
+                exists_weather = bm.Weathers[pos].Item1 is not null;
             } else {
                 exists_weather = Enum.GetValues(typeof(RowType))
                     .Cast<RowType>()
@@ -48,9 +52,9 @@ public class CardWeather : Card {
             bm.Current.hand.Remove(this);
 
             // Dispel All
-            if (types.Length == 0) {bm.ClearAllWeathers();}
+            if (types.Length == 0) bm.ClearAllWeathers();
             // Dispel Single
-            else {bm.ClearWeather(field);}
+            else bm.ClearWeather(pos);
         }
 
         return true;

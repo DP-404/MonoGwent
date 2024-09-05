@@ -158,7 +158,7 @@ public class ScenePlayTurn : IScene {
                     if (
                         bm.HandCard is CardUnit cardUnit &&
                         cardUnit.is_decoy &&
-                        bm.Current.rows[(RowType)bm.Cursor.field].Count != 0 &&
+                        bm.Current.GetRow((RowType)bm.Cursor.field).Count != 0 &&
                         !((CardUnit)bm.Current.GetFieldCard((RowType)bm.Cursor.field, bm.Cursor.index)).is_decoy &&
                         Keyboard.GetState().IsKeyDown(Keys.Enter)
                     ) {
@@ -167,19 +167,19 @@ public class ScenePlayTurn : IScene {
 
                     // Move Right
                     else if (
-                        bm.Current.rows[(RowType)bm.Cursor.field].Count != 0 &&
+                        bm.Current.GetRow((RowType)bm.Cursor.field).Count != 0 &&
                         Keyboard.GetState().IsKeyDown(Keys.Right)
                     ) {
-                        if (bm.Cursor.index == bm.Current.rows[(RowType)bm.Cursor.field].Count-1)
+                        if (bm.Cursor.index == bm.Current.GetRow((RowType)bm.Cursor.field).Count-1)
                         {bm.Cursor.Move(0);} else {bm.Cursor.Move(bm.Cursor.index+1);}
                     }
                     // Move Left
                     else if (
-                        bm.Current.rows[(RowType)bm.Cursor.field].Count != 0 &&
+                        bm.Current.GetRow((RowType)bm.Cursor.field).Count != 0 &&
                         Keyboard.GetState().IsKeyDown(Keys.Left)
                     ) {
                         if (bm.Cursor.index == 0)
-                        {bm.Cursor.Move(bm.Current.rows[(RowType)bm.Cursor.field].Count-1);} else {bm.Cursor.Move(bm.Cursor.index-1);}
+                        {bm.Cursor.Move(bm.Current.GetRow((RowType)bm.Cursor.field).Count-1);} else {bm.Cursor.Move(bm.Cursor.index-1);}
                     }
 
                     // Cancelling

@@ -89,8 +89,7 @@ public class Player
     public int health = DEFAULT_HEALTH;
     public bool has_passed = false;
     public bool has_played = false;
-    public readonly Dictionary<RowType, List<CardUnit>> rows
-    = Enum.GetValues(typeof(RowType)).Cast<RowType>().ToDictionary(x => x, x => new List<CardUnit>());
+    public List<Card> field = [];
     public readonly Dictionary<RowType, CardBoost> boosts
     = Enum.GetValues(typeof(RowType)).Cast<RowType>().ToDictionary(x => x, x => (CardBoost)null);
     public List<Card> hand = [];
@@ -125,9 +124,9 @@ public class Player
         graveyard.Clear();
         hand.Clear();
         selected.Clear();
-        foreach (var row in rows) {
-            rows[row.Key].Clear();
-            boosts[row.Key] = null;
+        field.Clear();
+        foreach (var row in Enum.GetValues(typeof(RowType)).Cast<RowType>()) {
+            boosts[row] = null;
         }
         ReceiveCard(STARTING_CARDS);
     }
@@ -147,28 +146,26 @@ public class Player
         return hand[index];
     }
     public Card GetFieldCard(RowType row, int index) {
-        return rows[row][index];
+        return GetRow(row)[index];
     }
-    public List<Card> GetFieldCards() {
-        List<Card> cards = new();
-        foreach (var row in rows.Keys) {
-            foreach (Card c in rows[row]) {
-                cards.Add(c);
-            }
-        }
-        return cards;
+    public List<Card> GetRow(RowType row) {
+        return field
+            .Select(x => x)
+            .Where(x => x.position == row)
+            .ToList();
     }
     public int GetRowPower(RowType row_type, Tuple<CardWeather,Player> weather) {
         int row_power = 0;
-        var row = rows[row_type];
+        var row = GetRow(row_type);
         foreach (var card in row) {
-            row_power += card.GetPower(weather.Item1, boosts[row_type]);
+            if (card is CardUnit unit)
+                row_power += unit.GetPower(weather.Item1, boosts[row_type]);
         }
         return row_power;
     }
     public int GetPower(Dictionary<RowType,Tuple<CardWeather,Player>> weathers) {
         int power = 0;
-        foreach (var row in rows.Keys) {
+        foreach (var row in Enum.GetValues(typeof(RowType)).Cast<RowType>()) {
             power += GetRowPower(row, weathers[row]);
         }
         return power;
@@ -185,12 +182,13 @@ public class Player
         graveyard.Add(card);
     }
     public void ClearField() {
-        foreach (var row in rows) {
-            foreach (var card in row.Value) {
-                graveyard.Add(card);
-            }
-            row.Value.Clear();
-            if (boosts[row.Key] is not null) graveyard.Add(boosts[row.Key]);
+        foreach (var c in field) {
+            DisposeOf(c);
+        }
+        field.Clear();
+        foreach (var row in boosts) {
+            if (row.Value is not null)
+                DisposeOf(row.Value);
             boosts[row.Key] = null;
         }
     }
@@ -329,17 +327,17 @@ public class Player
         }
     }
     public void DrawRows(GameTools gt, Dictionary<RowType, Tuple<CardWeather,Player>> weathers, bool is_focus) {
-        foreach (var row in rows) {
+        foreach (var row in Enum.GetValues(typeof(RowType)).Cast<RowType>()) {
 
             // Draw Row Cards
-            var cards = row.Value;
+            var cards = GetRow(row);;
             for (int i = 0; i<cards.Count; i++) {
                 var card = cards[i];
                 var position = card.GetRowPosition(
                     i,
                     cards.Count,
                     ROW_XPOS,
-                    GetRelativePosition(ROW_YPOS, ROW_YPOS_OFFSET[row.Key], Card.HEIGHT, is_focus),
+                    GetRelativePosition(ROW_YPOS, ROW_YPOS_OFFSET[row], Card.HEIGHT, is_focus),
                     ROW_WIDTH 
                 );
                 gt.spriteBatch.Draw(
@@ -352,12 +350,12 @@ public class Player
             }
 
             // Draw Row Boost
-            if (boosts[row.Key] is not null) {
+            if (boosts[row] is not null) {
                 gt.spriteBatch.Draw(
-                    boosts[row.Key].img,
+                    boosts[row].img,
                     new Vector2(
                         BOOST_XPOS,
-                        GetRelativePosition(BOOST_YPOS, BOOST_YPOS_OFFSET[row.Key], Card.HEIGHT, is_focus)
+                        GetRelativePosition(BOOST_YPOS, BOOST_YPOS_OFFSET[row], Card.HEIGHT, is_focus)
                     ),
                     null,
                     Color.White,
@@ -366,12 +364,12 @@ public class Player
             }
 
             // Draw Row Weather
-            if (weathers[row.Key].Item1 is not null) {
+            if (weathers[row].Item1 is not null) {
                 gt.spriteBatch.Draw(
                     img_row_weather,
                     new Vector2(
                         ROW_XPOS,
-                        GetRelativePosition(ROW_YPOS, ROW_YPOS_OFFSET[row.Key], Card.HEIGHT, is_focus)
+                        GetRelativePosition(ROW_YPOS, ROW_YPOS_OFFSET[row], Card.HEIGHT, is_focus)
                     ),
                     null,
                     Color.White
@@ -379,14 +377,14 @@ public class Player
             }
 
             // Draw Row Power
-            var row_power = GetRowPower(row.Key, weathers[row.Key]);
+            var row_power = GetRowPower(row, weathers[row]);
             var size = fnt_status.MeasureString(row_power.ToString());
             gt.spriteBatch.DrawString(
                 fnt_status,
                 row_power.ToString(),
                 new Vector2(
                     ROW_POWER_XPOS - size.X / 2,
-                    GetRelativePosition(ROW_POWER_YPOS, ROW_POWER_YPOS_OFFSET[row.Key], 0, is_focus) - size.Y/2
+                    GetRelativePosition(ROW_POWER_YPOS, ROW_POWER_YPOS_OFFSET[row], 0, is_focus) - size.Y/2
                 ),
                 Color.White
             );

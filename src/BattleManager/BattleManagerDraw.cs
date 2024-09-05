@@ -67,13 +67,13 @@ Back - Cancel/Return
 Right Shift - Select Leader
 Tab - Pass
 
+Script path: Content/Script.txt
+
 Credits:
 Developed by DP-404 (https://github.com/DP-404).
-Made with MonoGame.
-All assets used in this game belong to their respective owners.
+Made with MonoGame. All assets used in this game belong to their respective owners.
 
-Licenced under MIT Licence
-Copyright (c) 2024 DP-404
+Licenced under MIT Licence. Copyright (c) 2024 DP-404
 ";
 
     private void DrawDeckSelection(GameTools gt) {
@@ -290,7 +290,7 @@ Copyright (c) 2024 DP-404
         else if (cursor.section == Section.ROW) {
             // Highlight Cards
             var row_type = (RowType)cursor.field;
-            var row = current_player.rows[row_type];
+            var row = current_player.GetRow(row_type);
             foreach (CardUnit card in row) {
                 var index = row.IndexOf(card);
                 position = card.GetRowPosition(
@@ -514,7 +514,7 @@ Copyright (c) 2024 DP-404
                     DrawHoveredCard(current_player.hand[cursor.hand]);
                     break;
                 case Section.ROW:
-                    var row = current_player.rows[(RowType)cursor.field];
+                    var row = current_player.GetRow((RowType)cursor.field);
                     if (row.Count != 0) DrawHoveredCard(row[cursor.index]);
                     break;
                 case Section.LEADER:

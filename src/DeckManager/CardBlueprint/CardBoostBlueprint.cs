@@ -8,6 +8,7 @@ public class CardBoostBlueprint : CardBlueprint {
 
     public override Card GetCard() {
         return new CardBoost {
+            blueprint=this,
             name=name,
             description=description,
             faction=faction,

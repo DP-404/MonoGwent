@@ -67,16 +67,9 @@ public class Deck {
 
     public void Copy(Deck deck) {
         cards.Clear();
-        foreach (var i in deck.cards) Add(i);
-        leader = new() {
-            name=deck.leader.name,
-            description=deck.leader.description,
-            img_name=deck.leader.img_name,
-            img=deck.leader.img,
-            types=deck.leader.types,
-            effects=deck.leader.effects,
-            used=deck.leader.used
-        };
+        foreach (var i in deck.cards) Add(i.Copy());
+        leader = deck.leader.Copy();
+        img = deck.img;
     }
     public Deck GetCopy() {
         var deck = new Deck();

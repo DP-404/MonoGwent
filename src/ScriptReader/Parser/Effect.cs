@@ -94,6 +94,7 @@ public class Effect : IEffect, ICloneable {
     public void Activate() {   
         Source();
         FinishInstruction();
+        Reset();
     }
     public bool Eval(BattleManager bm) {
         return true;
@@ -107,7 +108,7 @@ public class Effect : IEffect, ICloneable {
         cur_instruction.Debug();
 
         // Means declaration
-        if (cur_instruction.Keywords[1] == "=")  {
+        if (cur_instruction.Keywords[1] == "=") {
             foreach(Variable variable in vars) {
                 if (
                     variable.name == cur_keyword
@@ -155,17 +156,17 @@ public class Effect : IEffect, ICloneable {
         foreach (var variable in vars) {
             if (variable.name == TargetsName) {
                 variable.val = sourceTargets switch {
-                    "board" => Context.Board,
-                    "hand" => Context.Hand,
-                    "deck" => Context.Deck,
-                    "field" => Context.Field,
-                    "graveyard" => Context.Graveyard,
-                    "otherHand" => Context.HandOfPlayer(Context.OtherPlayer),
-                    "otherDeck" => Context.DeckOfPlayer(Context.OtherPlayer),
-                    "otherField" => Context.FieldOfPlayer(Context.OtherPlayer),
-                    "otherGraveyard" => Context.GraveyardOfPlayer(Context.OtherPlayer),
-                    "parent" => ParentEffect.vars.Where(pVar => pVar.name == ParentEffect.TargetsName).Select(pVar => pVar.val),
-                    "empty" => new List<Card>(),
+                    "board" or "Board" => Context.Board,
+                    "hand" or "Hand" => Context.Hand,
+                    "deck" or "Deck" => Context.Deck,
+                    "field" or "Field" => Context.Field,
+                    "graveyard" or "Graveyard" => Context.Graveyard,
+                    "otherHand" or "OtherHand" => Context.HandOfPlayer(Context.OtherPlayer),
+                    "otherDeck" or "OtherDeck" => Context.DeckOfPlayer(Context.OtherPlayer),
+                    "otherField" or "OtherField" => Context.FieldOfPlayer(Context.OtherPlayer),
+                    "otherGraveyard" or "OtherGraveyard" => Context.GraveyardOfPlayer(Context.OtherPlayer),
+                    "parent" or "Parent" => ParentEffect.vars.Where(pVar => pVar.name == ParentEffect.TargetsName).Select(pVar => (List<Card>)pVar.val).First(),
+                    "empty" or "Empty" => new List<Card>(),
                     _ => throw new Exception($"Invalid variable name: {variable.val}.")
                 };
 
@@ -209,6 +210,13 @@ public class Effect : IEffect, ICloneable {
         throw new Exception();
     }
 
+    private void Reset() {
+        cur_instruction = instructions[0];
+        cur_keywordIndex = 0;
+        cur_keyword = cur_instruction.Keywords[0];
+        cur_instructionIndex = 0;
+    }
+
     // Advance to next instruction
     private void Next() {
         // If End, finish
@@ -238,7 +246,8 @@ public class Effect : IEffect, ICloneable {
     }
 
     private object Parameter() {
-        if (VariableType() == "Context") {
+        var vartype = VariableType();
+        if (vartype == "Context") {
             Next();
 
             if (cur_keywordIndex == 0) return new Context();
@@ -248,17 +257,19 @@ public class Effect : IEffect, ICloneable {
             } else {
                 List<Card> cards;
 
-                cards = cur_keyword switch {
-                    "board" => Context.Board,
-                    "hand" => Context.Hand,
-                    "deck" => Context.Deck,
-                    "field" => Context.Field,
-                    "graveyard" => Context.Graveyard,
-                    "HandOfPlayer" => Context.HandOfPlayer((string)Parameter()),
-                    "DeckOfPlayer" => Context.DeckOfPlayer((string)Parameter()),
-                    "FieldOfPlayer" => Context.FieldOfPlayer((string)Parameter()),
-                    "GraveyardOfPlayer" => Context.GraveyardOfPlayer((string)Parameter()),
-                    _ => throw new Exception($"Invalid keyword: {cur_keyword}.")
+                var keyword = cur_keyword;
+                Next();
+                cards = keyword switch {
+                    "board" or "Board" => Context.Board,
+                    "hand" or "Hand" => Context.Hand,
+                    "deck" or "Deck" => Context.Deck,
+                    "field" or "Field" => Context.Field,
+                    "graveyard" or "Graveyard" => Context.Graveyard,
+                    "handOfPlayer" or "HandOfPlayer" => Context.HandOfPlayer((string)Parameter()),
+                    "deckOfPlayer" or "DeckOfPlayer" => Context.DeckOfPlayer((string)Parameter()),
+                    "fieldOfPlayer" or "FieldOfPlayer" => Context.FieldOfPlayer((string)Parameter()),
+                    "graveyardOfPlayer" or "GraveyardOfPlayer" => Context.GraveyardOfPlayer((string)Parameter()),
+                    _ => throw new Exception($"Invalid keyword: {keyword}.")
                 };
 
                 while (
@@ -322,7 +333,7 @@ public class Effect : IEffect, ICloneable {
             }
         }
 
-        else if (VariableType() == "List<Card>") {
+        else if (vartype == "List<Card>") {
             string nameVariable = cur_keyword;
 
             var cards = (List<Card>)SetVariableValue(cur_keyword).val;
@@ -371,7 +382,7 @@ public class Effect : IEffect, ICloneable {
             }
             throw new Exception();
 
-        } else if (VariableType() == "Card") {
+        } else if (vartype == "Card") {
             string nameVariable = cur_keyword;
             Next();
 
@@ -379,7 +390,7 @@ public class Effect : IEffect, ICloneable {
             else if (cur_keyword == "Owner") {
                 Next();
                 var card = (Card)SetVariableValue(nameVariable).val;
-                return Context.bm.GetPlayerByName(card.owner);
+                return card.owner;
             }
             else throw new Exception();
 
@@ -457,8 +468,8 @@ public class Effect : IEffect, ICloneable {
                     variable.name == cur_keyword
                     && variable.type == "Card" 
                     && cur_instruction.Keywords[cur_keywordIndex+1] == "Power")
-                {   
-                    var card = (CardUnit)variable.val;
+                {
+                    var card = (Card)variable.val;
                     newValue = card.power;
 
                     Next();
@@ -497,8 +508,8 @@ public class Effect : IEffect, ICloneable {
                 } else if (
                     variable.name == variableName
                     && variable.type == "Card"
-                ) {   
-                    var card = (CardUnit)variable.val;
+                ) {
+                    var card = (Card)variable.val;
                     card.power = newValue;
                     break;
                 }
@@ -522,7 +533,7 @@ public class Effect : IEffect, ICloneable {
                     && variable.type == "Card" 
                     && cur_instruction.Keywords[cur_keywordIndex+1] == "Power"
                 ) {
-                    var card = (CardUnit)variable.val;
+                    var card = (Card)variable.val;
                     card.power++;
 
                     Next();
@@ -698,17 +709,19 @@ public class Effect : IEffect, ICloneable {
     private void GetContext() {
         List<Card> cards;
 
-        cards = cur_keyword switch {
-            "board" => Context.Board,
-            "hand" => Context.Hand,
-            "deck" => Context.Deck,
-            "field" => Context.Field,
-            "graveyard" => Context.Graveyard,
-            "HandOfPlayer" => Context.HandOfPlayer((string)Parameter()),
-            "DeckOfPlayer" => Context.DeckOfPlayer((string)Parameter()),
-            "FieldOfPlayer" => Context.FieldOfPlayer((string)Parameter()),
-            "GraveyardOfPlayer" => Context.GraveyardOfPlayer((string)Parameter()),
-            _ => throw new Exception($"Invalid keyword: {cur_keyword}.")
+        var keyword = cur_keyword;
+        Next();
+        cards = keyword switch {
+            "board" or "Board" => Context.Board,
+            "hand" or "Hand" => Context.Hand,
+            "deck" or "Deck" => Context.Deck,
+            "field" or "Field" => Context.Field,
+            "graveyard" or "Graveyard" => Context.Graveyard,
+            "handOfPlayer" or "HandOfPlayer" => Context.HandOfPlayer((string)Parameter()),
+            "deckOfPlayer" or "DeckOfPlayer" => Context.DeckOfPlayer((string)Parameter()),
+            "fieldOfPlayer" or "FieldOfPlayer" => Context.FieldOfPlayer((string)Parameter()),
+            "graveyardOfPlayer" or "GraveyardOfPlayer" => Context.GraveyardOfPlayer((string)Parameter()),
+            _ => throw new Exception($"Invalid keyword: {keyword}.")
         };
 
         CardList(cards);
@@ -719,14 +732,27 @@ public class Effect : IEffect, ICloneable {
             cur_keyword == "Push"
             || cur_keyword == "Add"
         ) {
+            if (cards.SequenceEqual(Context.Board))
+                throw new Exception("Cannot add cards to board through effects.");
+
             Next();
-            cards.Add((Card)Parameter());
+            var card = (Card)Parameter();
+            cards.Add(card);
         } else if (cur_keyword == "SendBottom") {
+            if (cards.SequenceEqual(Context.Board))
+                throw new Exception("Cannot add cards to board through effects.");
+
             Next();
             cards.Insert(0, (Card)Parameter());
         } else if (cur_keyword == "Remove") {
             Next();
-            cards.Remove((Card)Parameter());
+
+            var card = (Card)Parameter();
+            if (cards.SequenceEqual(Context.Board)) {
+                Context.bm.GetPlayerByName(card.owner).field.Remove(card);
+            } else {
+                cards.Remove(card);
+            }
         } else if (cur_keyword == "Shuffle") {
             Next();
 
@@ -810,32 +836,27 @@ public class Effect : IEffect, ICloneable {
                 Next();
                 int leftValue = Convert.ToInt32(left);
                 int rightValue = Convert.ToInt32(ParsePrimaryExpression());
-                rightValue = Convert.ToInt32(ParsePrimaryExpression());
                 left = leftValue < rightValue;
             } else if (cur_keyword == ">" ) {
                 Next();
                 int leftValue = Convert.ToInt32(left);
                 int rightValue = Convert.ToInt32(ParsePrimaryExpression());
-                rightValue = Convert.ToInt32(ParsePrimaryExpression());
                 left = leftValue > rightValue;
             } else if (cur_keyword == "<=") {
                 Next();
                 int leftValue = Convert.ToInt32(left);
                 int rightValue = Convert.ToInt32(ParsePrimaryExpression());
-                rightValue = Convert.ToInt32(ParsePrimaryExpression());
                 left = leftValue <= rightValue;
             } else if (cur_keyword == ">=") {
                 Next();
                 int leftValue = Convert.ToInt32(left);
                 int rightValue = Convert.ToInt32(ParsePrimaryExpression());
-                rightValue = Convert.ToInt32(ParsePrimaryExpression());
                 left = leftValue >= rightValue;
             } else if (cur_keyword == "==") {
                 Next();
                 if (left is int or bool) {
                     int leftValue = Convert.ToInt32(left);
                     int rightValue = Convert.ToInt32(ParsePrimaryExpression());
-                    rightValue = Convert.ToInt32(ParsePrimaryExpression());
                     left = leftValue == rightValue;
                 } else if (left is string value) {
                     string rightValue = ParseString();
@@ -846,7 +867,6 @@ public class Effect : IEffect, ICloneable {
                 if (left is int or bool) {
                     int leftValue = Convert.ToInt32(left);
                     int rightValue = Convert.ToInt32(ParsePrimaryExpression());
-                    rightValue = Convert.ToInt32(ParsePrimaryExpression());
                     left = leftValue != rightValue;
                 } else if (left is string value) {
                     string rightValue = ParseString();
@@ -916,7 +936,7 @@ public class Effect : IEffect, ICloneable {
                         numberTemp++;
                         value2 = (int)variable.val;
                         variable.val = numberTemp;
-                     }
+                    }
                     
                     return value2;
                 }
@@ -932,8 +952,7 @@ public class Effect : IEffect, ICloneable {
                     Next();
                     Next();
 
-                    var card = (CardUnit)variable.val;
-
+                    var card = (Card)variable.val;
                     return card.power;
                 }
                 else if(variable.name == cur_keyword && variable.type == "Card" 

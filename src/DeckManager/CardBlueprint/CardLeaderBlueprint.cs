@@ -8,6 +8,7 @@ public class CardLeaderBlueprint : CardBlueprint {
 
     public override Card GetCard() {
         return new CardLeader {
+            blueprint=this,
             name=name,
             description=description,
             faction=faction,

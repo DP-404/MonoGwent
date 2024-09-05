@@ -16,8 +16,8 @@ public class EffectClearEmptiestRow : IEffect {
         List<Tuple<Player,RowType>> fewest_rows = new();
         int fewest_count = 0;
         foreach (var p in bm.Players) {
-            foreach (var rtype in p.rows.Keys) {
-                var r = p.rows[rtype];
+            foreach (var rtype in Enum.GetValues(typeof(RowType)).Cast<RowType>()) {
+                var r = p.GetRow(rtype);
                 if (r.Count() == 0) continue;
                 if (r.Count() < fewest_count || fewest_count == 0) {
                     fewest_rows.Clear();
@@ -31,11 +31,12 @@ public class EffectClearEmptiestRow : IEffect {
 
         var index = Random.Shared.Next(fewest_rows.Count());
         var chosen_row = fewest_rows[index];
-        var row = chosen_row.Item1.rows[chosen_row.Item2];
+        var row = chosen_row.Item1.GetRow(chosen_row.Item2);
 
         for (int i = row.Count(); i != 0; i--) {
             var c = row[i-1];
-            if (c.is_hero) continue;
+            if (c is not CardUnit u) continue;
+            if (u.is_hero) continue;
             chosen_row.Item1.DisposeOf(c);
             row.Remove(c);
         }

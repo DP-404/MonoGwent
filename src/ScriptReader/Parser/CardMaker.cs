@@ -73,7 +73,7 @@ public class CardMaker
                             c.power = (int)prop.value;
                             break;
                         case CardWeatherBlueprint c:
-                            c.penalty = (int)prop.value;
+                            c.power = (int)prop.value;
                             break;
                         case CardBoostBlueprint c:
                             c.bonus = (int)prop.value;

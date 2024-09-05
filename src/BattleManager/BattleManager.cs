@@ -237,6 +237,18 @@ public partial class BattleManager
         cursor.Move(Section.HAND);
 
         current_player.has_played = true;
+
+        // Check field cards and dispose graveyard
+        foreach (var p in players) {
+            foreach (var c in p.field) {
+                if (c.position is null)
+                    c.position = c.types[0];
+            }
+            foreach (var c in p.graveyard) {
+                if (c.position is not null)
+                    c.Dispose();
+            }
+        }
     }
 
     public void UseCardEffect(Player player, Card card) {

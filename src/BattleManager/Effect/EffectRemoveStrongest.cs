@@ -10,22 +10,22 @@ public class EffectRemoveStrongest : IEffect {
         return true;
     }
     public void Use(BattleManager bm) {
-        Tuple<Player,RowType,CardUnit> card = null;
+        Player player = null;
+        CardUnit card = null;
         foreach (var p in bm.Players) {
-            foreach (var r in p.rows.Keys) {
-                var row = p.rows[r];
-                foreach (var c in row) {
-                    if (c.is_hero) continue;
-                    if (card is null || c.power > card.Item3.power) {
-                        card = new (p, r, c);
-                    }
+            foreach (var c in p.field) {
+                if (c is not CardUnit u) continue;
+                if (u.is_hero) continue;
+                if (card is null || c.power > card.power) {
+                    player = p;
+                    card = u;
                 }
             }
         }
 
         if (card is null) return;
-        if (card.Item3 == bm.HandCard) return;
-        card.Item1.rows[card.Item2].Remove(card.Item3);
-        card.Item1.DisposeOf(card.Item3);
+        if (card == bm.HandCard) return;
+        player.field.Remove(card);
+        player.DisposeOf(card);
     }
 }
