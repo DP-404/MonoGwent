@@ -4,9 +4,8 @@ namespace MonoGwent;
 
 public class CardUnit : Card {
     public const int POWER_DECOY = 0;
-    private const string TYPE_UNIT_NAME = "Unit";
-    private const string TYPE_SILVER_NAME = " (Silver)";
-    private const string TYPE_GOLDEN_NAME = " (Golden)";
+    private const string TYPE_SILVER_NAME = "Silver";
+    private const string TYPE_GOLDEN_NAME = "Golden";
     private const string TYPE_DECOY_NAME = "Decoy";
 
     public override string type_name {get => 

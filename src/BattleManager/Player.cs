@@ -71,7 +71,7 @@ public class Player
     public const int ROW_YPOS = 360;
     public static readonly Dictionary<RowType,int> ROW_YPOS_OFFSET = new Dictionary<RowType,int> {
         {RowType.MELEE, 4},
-        {RowType.RANGE, 94},
+        {RowType.RANGED, 94},
         {RowType.SIEGE, 184}
     };
 

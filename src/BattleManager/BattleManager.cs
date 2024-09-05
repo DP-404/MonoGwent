@@ -126,7 +126,7 @@ public partial class BattleManager
         Card.img_siege = gt.content.Load<Texture2D>("graphics/img/siege");
         Card.img_rows = new() {
             {RowType.MELEE,Card.img_melee},
-            {RowType.RANGE,Card.img_range},
+            {RowType.RANGED,Card.img_range},
             {RowType.SIEGE,Card.img_siege}
         };
 

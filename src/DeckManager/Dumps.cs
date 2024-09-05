@@ -27,7 +27,7 @@ public struct CardsDump {
             name="Hornet",
             description="Skilled protector of Hallownest's ruins. Wields a needle and thread.",
             faction="Hallownest",
-            types=[RowType.MELEE,RowType.RANGE],
+            types=[RowType.MELEE,RowType.RANGED],
             power=3,
         },
 
@@ -35,7 +35,7 @@ public struct CardsDump {
             name="Mantis Lords",
             description="Leaders of the Mantis tribe and its finest warriors. They bear thin nail-lances and attack with blinding speed.",
             faction="Hallownest",
-            types=[RowType.MELEE,RowType.RANGE],
+            types=[RowType.MELEE,RowType.RANGED],
             power=4,
         },
 
@@ -53,7 +53,7 @@ public struct CardsDump {
             name="Radiance",
             description="The light, forgotten.",
             faction="Hallownest",
-            types=[RowType.RANGE],
+            types=[RowType.RANGED],
             power=8,
             is_hero=true
         },
@@ -102,7 +102,7 @@ public struct CardsDump {
             name="City of Tears",
             description="The city looks to be built into an enormous cavern, and the rain pours down from cracks in the stone above. There must be a lot of water up there somewhere.",
             faction="Hallownest",
-            types=[RowType.RANGE,RowType.SIEGE]
+            types=[RowType.RANGED,RowType.SIEGE]
         },
 
         new CardWeatherBlueprint() {
@@ -116,7 +116,7 @@ public struct CardsDump {
             name="The Infection",
             description="The bugs of Hallownest were twisted out of shape by that ancient sickness. First they fell into deep slumber, then they awoke with broken minds, and then their bodies started to deform...",
             faction="Hallownest",
-            types=[RowType.RANGE]
+            types=[RowType.RANGED]
         },
 
         new CardDispelBlueprint() {
@@ -145,7 +145,7 @@ public struct CardsDump {
             name="White Lady",
             description="These bindings about me, I've chosen to erect. There is some shame I feel from my own part in the deed, and this method guarantees it cease.",
             faction="Hallownest",
-            types=[RowType.RANGE],
+            types=[RowType.RANGED],
             bonus=1
         },
 
@@ -176,7 +176,7 @@ public struct CardsDump {
             name="Eater of Worlds",
             description="Conceived from the bottomless malice of the Corruption, this mighty abyssal worm tunnels wildly to devour all in its path.",
             faction="Terraria",
-            types=[RowType.RANGE],
+            types=[RowType.RANGED],
             power=3
         },
 
@@ -194,7 +194,7 @@ public struct CardsDump {
             name="Brain of Cthulhu",
             description="A piece of Cthulhu torn asunder, this vile mastermind pulses with agony and aids the Crimson in an attempt to avenge its master.",
             faction="Terraria",
-            types=[RowType.RANGE,RowType.SIEGE],
+            types=[RowType.RANGED,RowType.SIEGE],
             power=5,
         },
 
@@ -220,7 +220,7 @@ public struct CardsDump {
             name="Lunatic Cultist",
             description="A fanatical leader hell-bent on bringing about the apocalypse by reviving the great Cthulhu through behind-the-scenes scheming.",
             faction="Terraria",
-            types=[RowType.RANGE],
+            types=[RowType.RANGED],
             power=9,
             is_hero=true,
             effects=new List<IEffect>() {new EffectAveragePower()}
@@ -230,7 +230,7 @@ public struct CardsDump {
             name="Goldfish",
             description="A seemingly ordinary goldfish, until it decides to rain.",
             faction="Terraria",
-            types=[RowType.RANGE]
+            types=[RowType.RANGED]
         },
 
         new CardDecoyBlueprint() {
@@ -244,7 +244,7 @@ public struct CardsDump {
             name="Blood Moon",
             description="The Blood Moon is rising... You can tell a Blood Moon is out when the sky turns red. There is something about it that causes monsters to swarm.",
             faction="Terraria",
-            types=[RowType.MELEE,RowType.RANGE]
+            types=[RowType.MELEE,RowType.RANGED]
         },
 
         new CardWeatherBlueprint() {
@@ -258,7 +258,7 @@ public struct CardsDump {
             name="Slime Rain",
             description="Slime is falling from the sky! It's a slime rain, where gelatinous organisms fall from the sky in droves.",
             faction="Terraria",
-            types=[RowType.RANGE]
+            types=[RowType.RANGED]
         },
 
         new CardDispelBlueprint() {
@@ -279,7 +279,7 @@ public struct CardsDump {
             name="The Twins",
             description="Belonging to a pair of mechanically recreated Eyes of Cthulhu, one focuses its energy into firing powerful lasers, while the other chases at high speed, exhaling cursed flames..",
             faction="Terraria",
-            types=[RowType.RANGE],
+            types=[RowType.RANGED],
             bonus=1
         },
 
@@ -302,7 +302,7 @@ public struct CardsDump {
             name="Toriel",
             description="I am TORIEL, caretaker of the RUINS.",
             faction="Undertale",
-            types=[RowType.RANGE,RowType.SIEGE],
+            types=[RowType.RANGED,RowType.SIEGE],
             power=3,
         },
 
@@ -310,7 +310,7 @@ public struct CardsDump {
             name="Sans",
             description="it's a beautiful day outside.birds are singing, flowers are blooming... on days like these, kids like you... Should be burning in hell.",
             faction="Undertale",
-            types=[RowType.RANGE],
+            types=[RowType.RANGED],
             power=8,
             is_hero=true,
             effects=new List<IEffect>() {new EffectClearEmptiestRow()}
@@ -329,7 +329,7 @@ public struct CardsDump {
             name="Undyne",
             description="Now, human! Let's end this, right here, right now. I'll show you how determined monsters can be! Step forward when you're ready! Fuhuhuhu!",
             faction="Undertale",
-            types=[RowType.MELEE,RowType.RANGE],
+            types=[RowType.MELEE,RowType.RANGED],
             power=5
         },
 
@@ -347,9 +347,9 @@ public struct CardsDump {
             name="Mettaton",
             description="I'M NOT GOING TO DESTROY YOU WITHOUT A LIVE TELEVISION AUDIENCE!!",
             faction="Undertale",
-            types=[RowType.RANGE],
+            types=[RowType.RANGED],
             power=4,
-            effects=new List<IEffect>() {new EffectSetBoost(RowType.RANGE)}
+            effects=new List<IEffect>() {new EffectSetBoost(RowType.RANGED)}
         },
 
         new CardUnitBlueprint() {
@@ -381,7 +381,7 @@ public struct CardsDump {
             name="Annoying Dog",
             description="I'm not snoring, I'm cheering you on in my sleep!! ...Oh, you're still here? Don't you have anything better to do?",
             faction="Undertale",
-            types=[RowType.MELEE,RowType.RANGE,RowType.SIEGE]
+            types=[RowType.MELEE,RowType.RANGED,RowType.SIEGE]
         },
 
         new CardWeatherBlueprint() {
@@ -395,7 +395,7 @@ public struct CardsDump {
             name="It's Raining Somewhere",
             description="Someone who sincerely likes bad jokes... has an integrity you can't say \"no\" to.",
             faction="Undertale",
-            types=[RowType.RANGE]
+            types=[RowType.RANGED]
         },
 
         new CardWeatherBlueprint() {
@@ -423,7 +423,7 @@ public struct CardsDump {
             name="Death by Glamour",
             description="Lights! Camera! Action!",
             faction="Undertale",
-            types=[RowType.RANGE],
+            types=[RowType.RANGED],
             bonus=1
         },
 

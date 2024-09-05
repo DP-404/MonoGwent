@@ -8,7 +8,7 @@ namespace MonoGwent;
 
 public enum RowType {
     MELEE,
-    RANGE,
+    RANGED,
     SIEGE
 }
 
