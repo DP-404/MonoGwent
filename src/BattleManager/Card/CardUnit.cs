@@ -9,11 +9,15 @@ public class CardUnit : Card {
     private const string TYPE_GOLDEN_NAME = " (Golden)";
     private const string TYPE_DECOY_NAME = "Decoy";
 
-    public override string type_name {get =>
-    (!is_decoy)? (TYPE_UNIT_NAME + (is_hero? TYPE_GOLDEN_NAME : TYPE_SILVER_NAME))
-    : TYPE_DECOY_NAME;}
+    public override string type_name {get => 
+        !is_decoy?
+            is_hero?
+                TYPE_GOLDEN_NAME
+                : TYPE_SILVER_NAME
+            : TYPE_DECOY_NAME;
+    }
     public bool is_hero {get; init;}
-    public bool is_decoy {get => power == POWER_DECOY? true : false;}
+    public bool is_decoy {get => original_power == POWER_DECOY? true : false;}
 
     public new int power {
         get => modified_power;
