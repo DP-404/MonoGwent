@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MonoGwent;
 
@@ -15,11 +16,20 @@ public class Context
     public static List<Card> Field {get => FieldOfPlayer(TriggerPlayer);}
     public static List<Card> Graveyard {get => GraveyardOfPlayer(TriggerPlayer);}
 
+    private static List<Card> _board;
     public static List<Card> Board {
-        get => [
-            .. bm.Current.field,
-            .. bm.Rival.field,
-        ];
+        get {
+            List<Card> board = [
+                .. bm.Current.field,
+                .. bm.Rival.field,
+            ];
+            if (
+                _board is null
+                || !_board.SequenceEqual(board)
+            )
+                _board = board;
+            return _board;
+        }
     }
 
     public static List<Card> HandOfPlayer(string player)

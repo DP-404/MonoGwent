@@ -732,14 +732,14 @@ public class Effect : IEffect, ICloneable {
             cur_keyword == "Push"
             || cur_keyword == "Add"
         ) {
-            if (cards.SequenceEqual(Context.Board))
+            if (ReferenceEquals(cards, Context.Board))
                 throw new Exception("Cannot add cards to board through effects.");
 
             Next();
             var card = (Card)Parameter();
             cards.Add(card);
         } else if (cur_keyword == "SendBottom") {
-            if (cards.SequenceEqual(Context.Board))
+            if (ReferenceEquals(cards, Context.Board))
                 throw new Exception("Cannot add cards to board through effects.");
 
             Next();
@@ -748,7 +748,7 @@ public class Effect : IEffect, ICloneable {
             Next();
 
             var card = (Card)Parameter();
-            if (cards.SequenceEqual(Context.Board)) {
+            if (ReferenceEquals(cards, Context.Board)) {
                 Context.bm.GetPlayerByName(card.owner).field.Remove(card);
             } else {
                 cards.Remove(card);
