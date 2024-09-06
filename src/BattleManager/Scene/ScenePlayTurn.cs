@@ -18,8 +18,8 @@ public class ScenePlayTurn : IScene {
 
                     // Pass turn
                     if (
-                        bm.Scene is not SceneEndTurn &&
-                        Keyboard.GetState().IsKeyDown(Keys.Tab)
+                        bm.Scene is not SceneEndTurn
+                        && Keyboard.GetState().IsKeyDown(Keys.Tab)
                     ) {
                         if (!bm.Current.has_played) bm.Current.has_passed = true;
                         bm.EndTurn();
@@ -27,24 +27,28 @@ public class ScenePlayTurn : IScene {
 
                     // Move Right
                     else if (
-                        bm.Current.hand.Count != 0 &&
-                        Keyboard.GetState().IsKeyDown(Keys.Right)
+                        bm.Current.hand.Count != 0
+                        && Keyboard.GetState().IsKeyDown(Keys.Right)
                     ) {
                         if (bm.Cursor.index == bm.Current.hand.Count-1)
-                        {bm.Cursor.Move(0);} else {bm.Cursor.Move(bm.Cursor.index+1);}
+                            bm.Cursor.Move(0);
+                        else
+                            bm.Cursor.Move(bm.Cursor.index+1);
                     }
                     // Move Left
                     else if (
-                        bm.Current.hand.Count != 0 &&
-                        Keyboard.GetState().IsKeyDown(Keys.Left)
+                        bm.Current.hand.Count != 0
+                        && Keyboard.GetState().IsKeyDown(Keys.Left)
                     ) {
                         if (bm.Cursor.index == 0)
-                        {bm.Cursor.Move(bm.Current.hand.Count-1);} else {bm.Cursor.Move(bm.Cursor.index-1);}
+                            bm.Cursor.Move(bm.Current.hand.Count-1);
+                        else
+                            bm.Cursor.Move(bm.Cursor.index-1);
                     }
                     // Select Card > Move to Field
                     else if (
-                        bm.Current.hand.Count != 0 &&
-                        Keyboard.GetState().IsKeyDown(Keys.Enter)
+                        bm.Current.hand.Count != 0
+                        && Keyboard.GetState().IsKeyDown(Keys.Enter)
                     ) {
                         bm.SfxSelect.Play();
                         bm.Cursor.hand = bm.Cursor.index;
@@ -65,14 +69,10 @@ public class ScenePlayTurn : IScene {
 
                     // Move Down/Right
                     if (
-                        // No Weather Card => Rows are a Column
-                        (
-                            bm.HandCard is not CardWeather &&
-                            Keyboard.GetState().IsKeyDown(Keys.Down)
-                        )
-                            ||
-                        // Weather Card => Rows are a Row
-                        (
+                        ( // No Weather Card => Rows are a Column
+                            bm.HandCard is not CardWeather
+                            && Keyboard.GetState().IsKeyDown(Keys.Down)
+                        ) || ( // Weather Card => Rows are a Row
                             bm.HandCard is CardWeather &&
                             Keyboard.GetState().IsKeyDown(Keys.Right)
                         )
@@ -85,14 +85,10 @@ public class ScenePlayTurn : IScene {
                     }
                     // Move Up/Left
                     else if (
-                        (
-                        // No Weather Card => Rows are a Column
-                            bm.HandCard is not CardWeather &&
-                            Keyboard.GetState().IsKeyDown(Keys.Up)
-                        )
-                            ||
-                        // Weather Card => Rows are a Row
-                        (
+                        ( // No Weather Card => Rows are a Column
+                            bm.HandCard is not CardWeather
+                            && Keyboard.GetState().IsKeyDown(Keys.Up)
+                        ) || ( // Weather Card => Rows are a Row
                             bm.HandCard is CardWeather &&
                             Keyboard.GetState().IsKeyDown(Keys.Left)
                         )
@@ -106,9 +102,9 @@ public class ScenePlayTurn : IScene {
 
                     // Selected card is Unit and no Field selected
                     else if (
-                        bm.HandCard is CardUnit &&
-                        bm.Cursor.field == Cursor.NONE &&
-                        Keyboard.GetState().IsKeyDown(Keys.Enter)
+                        bm.HandCard is CardUnit
+                        && bm.Cursor.field == Cursor.NONE
+                        && Keyboard.GetState().IsKeyDown(Keys.Enter)
                     ) {
                         // Selected card is Decoy > Move to Row
                         if (
@@ -128,16 +124,16 @@ public class ScenePlayTurn : IScene {
 
                     // Selected card is Weather
                     else if (
-                        bm.HandCard is CardWeather &&
-                        Keyboard.GetState().IsKeyDown(Keys.Enter)
+                        bm.HandCard is CardWeather
+                        && Keyboard.GetState().IsKeyDown(Keys.Enter)
                     ) {
                         bm.PlayCard();
                     }
 
                     // Selected card is Boost
                     else if (
-                        bm.HandCard is CardBoost &&
-                        Keyboard.GetState().IsKeyDown(Keys.Enter)
+                        bm.HandCard is CardBoost
+                        && Keyboard.GetState().IsKeyDown(Keys.Enter)
                     ) {
                         bm.PlayCard();
                     }
@@ -156,30 +152,34 @@ public class ScenePlayTurn : IScene {
 
                     // Selected card is Decoy > Play Card
                     if (
-                        bm.HandCard is CardUnit cardUnit &&
-                        cardUnit.is_decoy &&
-                        bm.Current.GetRow((RowType)bm.Cursor.field).Count != 0 &&
-                        !((CardUnit)bm.Current.GetFieldCard((RowType)bm.Cursor.field, bm.Cursor.index)).is_decoy &&
-                        Keyboard.GetState().IsKeyDown(Keys.Enter)
+                        bm.HandCard is CardUnit cardUnit
+                        && cardUnit.is_decoy
+                        && bm.Current.GetRow((RowType)bm.Cursor.field).Count != 0
+                        && !((CardUnit)bm.Current.GetFieldCard((RowType)bm.Cursor.field, bm.Cursor.index)).is_decoy
+                        && Keyboard.GetState().IsKeyDown(Keys.Enter)
                     ) {
                         bm.PlayCard();
                     }
 
                     // Move Right
                     else if (
-                        bm.Current.GetRow((RowType)bm.Cursor.field).Count != 0 &&
-                        Keyboard.GetState().IsKeyDown(Keys.Right)
+                        bm.Current.GetRow((RowType)bm.Cursor.field).Count != 0
+                        && Keyboard.GetState().IsKeyDown(Keys.Right)
                     ) {
                         if (bm.Cursor.index == bm.Current.GetRow((RowType)bm.Cursor.field).Count-1)
-                        {bm.Cursor.Move(0);} else {bm.Cursor.Move(bm.Cursor.index+1);}
+                            bm.Cursor.Move(0);
+                        else
+                            bm.Cursor.Move(bm.Cursor.index+1);
                     }
                     // Move Left
                     else if (
-                        bm.Current.GetRow((RowType)bm.Cursor.field).Count != 0 &&
-                        Keyboard.GetState().IsKeyDown(Keys.Left)
+                        bm.Current.GetRow((RowType)bm.Cursor.field).Count != 0
+                        && Keyboard.GetState().IsKeyDown(Keys.Left)
                     ) {
                         if (bm.Cursor.index == 0)
-                        {bm.Cursor.Move(bm.Current.GetRow((RowType)bm.Cursor.field).Count-1);} else {bm.Cursor.Move(bm.Cursor.index-1);}
+                            bm.Cursor.Move(bm.Current.GetRow((RowType)bm.Cursor.field).Count-1);
+                        else
+                            bm.Cursor.Move(bm.Cursor.index-1);
                     }
 
                     // Cancelling
@@ -196,9 +196,9 @@ public class ScenePlayTurn : IScene {
 
                     // Use Leader
                     if (
-                        !bm.Current.leader.used &&
-                        bm.Current.leader.effects[0].Type is EffectType.ON_USE &&
-                        Keyboard.GetState().IsKeyDown(Keys.Enter)
+                        !bm.Current.leader.used
+                        && bm.Current.leader.effects[0].Type is EffectType.ON_USE
+                        && Keyboard.GetState().IsKeyDown(Keys.Enter)
                     ) {
                         bm.UseLeaderEffect();
                     }

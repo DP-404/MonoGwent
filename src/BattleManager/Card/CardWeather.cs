@@ -14,8 +14,7 @@ public class CardWeather : Card {
     public override CardWeather Copy() {
         return (CardWeather)base.Copy();
     }
-    public override bool PlayCard(BattleManager bm)
-    {
+    public override bool PlayCard(BattleManager bm) {
         RowType pos;
         if (bm.Cursor.field == Cursor.NONE) {
             pos = (RowType)bm.Cursor.index;

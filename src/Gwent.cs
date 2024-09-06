@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MonoGwent;
 
-public class GameTools{
+public class GameTools {
     public GraphicsDeviceManager graphics;
     public SpriteBatch spriteBatch;
     public ContentManager content;
@@ -17,8 +17,7 @@ public class GameTools{
 
 }
 
-public class Gwent : Game
-{
+public class Gwent : Game {
     private GraphicsDeviceManager graphics;
     private SpriteBatch spriteBatch;
     private GameTools gameTools;
@@ -30,10 +29,8 @@ public class Gwent : Game
 
     private BattleManager bm;
 
-    public Gwent()
-    {
-        graphics = new GraphicsDeviceManager(this)
-        {
+    public Gwent() {
+        graphics = new GraphicsDeviceManager(this) {
             IsFullScreen = false,
             PreferredBackBufferWidth = gameResolution.X,
             PreferredBackBufferHeight = gameResolution.Y
@@ -48,16 +45,14 @@ public class Gwent : Game
         ScriptReader.Initialize();
     }
 
-    protected override void Initialize()
-    {
+    protected override void Initialize() {
         // TODO: Add your initialization logic here
 
         base.Initialize();
         bm.Initialize();
     }
 
-    protected override void LoadContent()
-    {
+    protected override void LoadContent() {
         spriteBatch = new SpriteBatch(GraphicsDevice);
         gameTools = new GameTools(graphics, spriteBatch, Content);
 
@@ -72,13 +67,11 @@ public class Gwent : Game
         bm.LoadContent(gameTools);
     }
 
-    protected override void Update(GameTime gameTime)
-    {
+    protected override void Update(GameTime gameTime) {
         if (Keyboard.GetState().IsKeyDown(Keys.Escape)) 
             Exit();
-        if (Keyboard.GetState().IsKeyDown(Keys.F4)) {
+        if (Keyboard.GetState().IsKeyDown(Keys.F4))
             ToggleFullScreen();
-        }
 
         // TODO: Add your update logic here
 
@@ -86,8 +79,7 @@ public class Gwent : Game
         base.Update(gameTime);
     }
 
-    protected override void Draw(GameTime gameTime)
-    {
+    protected override void Draw(GameTime gameTime) {
         GraphicsDevice.SetRenderTarget(renderTarget);
         GraphicsDevice.Clear(clearColor);
 
@@ -107,15 +99,11 @@ public class Gwent : Game
         base.Draw(gameTime);
     }
 
-    void ToggleFullScreen()
-    {
-        if (!graphics.IsFullScreen)
-        {
+    void ToggleFullScreen() {
+        if (!graphics.IsFullScreen) {
             graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-        }
-        else
-        {
+        } else {
             graphics.PreferredBackBufferWidth = gameResolution.X;
             graphics.PreferredBackBufferHeight = gameResolution.Y;
         }
@@ -125,8 +113,7 @@ public class Gwent : Game
         renderTargetDestination = GetRenderTargetDestination(gameResolution, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
     }
 
-    Rectangle GetRenderTargetDestination(Point resolution, int preferredBackBufferWidth, int preferredBackBufferHeight)
-    {
+    Rectangle GetRenderTargetDestination(Point resolution, int preferredBackBufferWidth, int preferredBackBufferHeight) {
         float resolutionRatio = (float)resolution.X / resolution.Y;
         float screenRatio;
         Point bounds = new Point(preferredBackBufferWidth, preferredBackBufferHeight);
@@ -138,8 +125,7 @@ public class Gwent : Game
             scale = (float)bounds.Y / resolution.Y;
         else if (resolutionRatio > screenRatio)
             scale = (float)bounds.X / resolution.X;
-        else
-        {
+        else {
             // Resolution and window/screen share aspect ratio
             rectangle.Size = bounds;
             return rectangle;
@@ -149,8 +135,7 @@ public class Gwent : Game
         return CenterRectangle(new Rectangle(Point.Zero, bounds), rectangle);
     }
 
-    static Rectangle CenterRectangle(Rectangle outerRectangle, Rectangle innerRectangle)
-    {
+    static Rectangle CenterRectangle(Rectangle outerRectangle, Rectangle innerRectangle) {
         Point delta = outerRectangle.Center - innerRectangle.Center;
         innerRectangle.Offset(delta);
         return innerRectangle;

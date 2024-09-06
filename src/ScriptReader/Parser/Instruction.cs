@@ -3,35 +3,26 @@ using System.Collections.Generic;
 
 namespace MonoGwent;
 
-public class Instruction
-{
+public class Statement {
+    public List<string> keywords = new();
+    public int Count{get => keywords.Count;}
 
-    public List<string> Keywords = new();
-
-
-    public void Add(string keyword)
-    {
-        Keywords.Add(keyword);
+    public void Add(string keyword) {
+        keywords.Add(keyword);
     }
-
-    public int Count{get{return Keywords.Count;}}
-
-    public void Debug()
-    {
-        string debugList = string.Join(", ", Keywords.ToArray());
-        Console.WriteLine($"Instruction keywords: {debugList}");
+    public void Debug() {
+        string debugList = string.Join(", ", keywords.ToArray());
+        Console.WriteLine($"Statement keywords: {debugList}");
     }
 
 
-    public object Clone()
-    {
-        Instruction instruction = new();
+    public object Clone() {
+        Statement statement = new();
 
-        foreach(string word in Keywords)
-        {
-            instruction.Add((string)word.Clone());
+        foreach (var word in keywords) {
+            statement.Add((string)word.Clone());
         }
 
-        return instruction;
+        return statement;
     }
 }

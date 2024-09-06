@@ -11,8 +11,8 @@ public class SceneEndPhase : IScene {
 
             // Either play is defeated > Game Over
             if (
-                bm.Player1.IsDefeated() ||
-                bm.Player2.IsDefeated()
+                bm.Player1.IsDefeated()
+                || bm.Player2.IsDefeated()
             ) {
                 // Input > End Game
                 if (

@@ -9,8 +9,7 @@ public class Lexer
     private int pos;
     private char i {get => input[pos];}
 
-    public Lexer(string input)
-    {
+    public Lexer(string input) {
         this.input = input;
         pos = 0;
     }

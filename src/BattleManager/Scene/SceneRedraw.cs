@@ -26,8 +26,8 @@ public class SceneRedraw : IScene {
 
             // Await for input > Finish redrawing
             else if (
-                !bm.Cursor.holding &&
-                Keyboard.GetState().IsKeyDown(Keys.Tab)
+                !bm.Cursor.holding
+                && Keyboard.GetState().IsKeyDown(Keys.Tab)
             ) {
                 if (bm.Rival.has_passed) {
                     foreach (var player in bm.Players) {
@@ -49,21 +49,25 @@ public class SceneRedraw : IScene {
 
             // Move Right
             else if (
-                !bm.Cursor.holding &&
-                bm.Current.hand.Count != 0 &&
-                Keyboard.GetState().IsKeyDown(Keys.Right)
+                !bm.Cursor.holding
+                && bm.Current.hand.Count != 0
+                && Keyboard.GetState().IsKeyDown(Keys.Right)
             ) {
                 if (bm.Cursor.index == bm.Current.hand.Count-1)
-                {bm.Cursor.Move(0);} else {bm.Cursor.Move(bm.Cursor.index+1);}
+                    bm.Cursor.Move(0);
+                else
+                    bm.Cursor.Move(bm.Cursor.index+1);
             }
             // Move Left
             else if (
-                !bm.Cursor.holding &&
-                bm.Current.hand.Count != 0 &&
-                Keyboard.GetState().IsKeyDown(Keys.Left)
+                !bm.Cursor.holding
+                && bm.Current.hand.Count != 0
+                && Keyboard.GetState().IsKeyDown(Keys.Left)
             ) {
                 if (bm.Cursor.index == 0)
-                {bm.Cursor.Move(bm.Current.hand.Count-1);} else {bm.Cursor.Move(bm.Cursor.index-1);}
+                    bm.Cursor.Move(bm.Current.hand.Count-1);
+                else
+                    bm.Cursor.Move(bm.Cursor.index-1);
             }
 
         }

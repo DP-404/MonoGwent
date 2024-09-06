@@ -16,18 +16,18 @@ public class Effect : IEffect, ICloneable {
 
     public bool single {get;set;}
     // Selector predicate
-    public Instruction predicate = new();
+    public Statement predicate = new();
     // Stored variables
     public LinkedList<Variable> vars;
-    // Effect instructions to exec
-    private List<Instruction> instructions;
+    // Effect statements to exec
+    private List<Statement> statements;
     // After-effect
     public Effect PostEffect {get;set;}
     // Parent effect (if any)
     public Effect ParentEffect {get;set;}
 
-    private Instruction cur_instruction;
-    private int cur_instructionIndex = 0;
+    private Statement cur_statement;
+    private int cur_statementIndex = 0;
 
     private string cur_keyword;
     private int cur_keywordIndex = 0;
@@ -38,52 +38,52 @@ public class Effect : IEffect, ICloneable {
 
     delegate List<Card> ListReturn(string player);
 
-    public Effect(string name, string targetName, List<Instruction> instructions, LinkedList<Variable> vars) {
+    public Effect(string name, string targetName, List<Statement> statements, LinkedList<Variable> vars) {
         this.name = name;
         this.TargetsName = targetName;
-        this.instructions = instructions;
+        this.statements = statements;
         this.vars = vars;
-        cur_instruction = instructions[0];
-        cur_keyword = cur_instruction.Keywords[0];
+        cur_statement = statements[0];
+        cur_keyword = cur_statement.keywords[0];
     } 
 
-    public Effect(string name, string targetName, List<Instruction> instructions, LinkedList<Variable> vars ,LinkedList<Variable> parms) {
+    public Effect(string name, string targetName, List<Statement> statements, LinkedList<Variable> vars ,LinkedList<Variable> parms) {
         this.name = name;
         this.TargetsName = targetName;
-        this.instructions = instructions;
+        this.statements = statements;
         this.vars = vars;
         this.parms = parms;
-        cur_instruction = instructions[0];
-        cur_keyword = cur_instruction.Keywords[0];
+        cur_statement = statements[0];
+        cur_keyword = cur_statement.keywords[0];
     }
 
     public object Clone() {
-        Effect effect = new(name, TargetsName, this.instructions, vars, parms) {
+        Effect effect = new(name, TargetsName, this.statements, vars, parms) {
             sourceTargets = sourceTargets,
             single = single,
-            predicate = (Instruction)predicate.Clone()
+            predicate = (Statement)predicate.Clone()
         };
 
-        if(PostEffect != null) effect.PostEffect = (Effect)PostEffect.Clone();
-        if(ParentEffect != null) effect.ParentEffect = (Effect)ParentEffect.Clone();
+        if (PostEffect != null) effect.PostEffect = (Effect)PostEffect.Clone();
+        if (ParentEffect != null) effect.ParentEffect = (Effect)ParentEffect.Clone();
 
-        List<Instruction> instructions = new();
+        List<Statement> statements = new();
 
-        foreach(Instruction instruction in this.instructions)
-            instructions.Add((Instruction)instruction.Clone());
+        foreach (var statement in this.statements)
+            statements.Add((Statement)statement.Clone());
 
-        effect.instructions = instructions;
+        effect.statements = statements;
 
         LinkedList<Variable> variables = new();
 
-        foreach(Variable variable in vars)
+        foreach (var variable in vars)
             variables.AddLast((Variable)variable.Clone());
 
         effect.vars = variables;
 
         LinkedList<Variable> parameters = new();
 
-        foreach(Variable parameter in parms)
+        foreach (var parameter in parms)
             parameters.AddLast((Variable)parameter.Clone());
 
         effect.parms = parameters;
@@ -93,7 +93,7 @@ public class Effect : IEffect, ICloneable {
 
     public void Activate() {   
         Source();
-        FinishInstruction();
+        FinishStatement();
         Reset();
     }
     public bool Eval(BattleManager bm) {
@@ -103,13 +103,13 @@ public class Effect : IEffect, ICloneable {
         Activate();
     }
 
-    private void FinishInstruction() {
-        Console.WriteLine("Starded instruction.");
-        cur_instruction.Debug();
+    private void FinishStatement() {
+        Console.WriteLine("Starded statement.");
+        cur_statement.Debug();
 
         // Means declaration
-        if (cur_instruction.Keywords[1] == "=") {
-            foreach(Variable variable in vars) {
+        if (cur_statement.keywords[1] == "=") {
+            foreach (var variable in vars) {
                 if (
                     variable.name == cur_keyword
                     && variable.val is int
@@ -126,27 +126,28 @@ public class Effect : IEffect, ICloneable {
                     Next();
                     variable.val = BooleanExpression();
                     break;
-                } else if(variable.name == cur_keyword) {
+                } else if (variable.name == cur_keyword) {
                     variable.val = Declaration();
                     break;
                 }
             }
         } else if (cur_keyword == "for") {
-            ForIntruction();
+            For();
         } else if (cur_keyword == "while") {
-            WhileInstruction();
+            While();
         } else if (
             cur_keyword == "++"
             || IsNumericVariable()
             || IsNumericProperty()
         ) {
             Increase();
-        } else MethodCall();
+        } else {
+            MethodCall();
+        }
 
-        if (cur_instruction.Count != 0)
-            FinishInstruction();
-        else if(PostEffect != null)
-        {
+        if (cur_statement.Count != 0)
+            FinishStatement();
+        else if (PostEffect != null) {
             PostEffect.ParentEffect = this;
             PostEffect.Activate();
         }
@@ -171,15 +172,15 @@ public class Effect : IEffect, ICloneable {
                 };
 
                 if (sourceTargets != "empty") {
-                    if(single) {
+                    if (single) {
                         List<Card> cards = (List<Card>)variable.val;
                         List<Card> cards2 = new(){cards[0]};
                         variable.val = cards2;
                     }
 
                     predicate.Debug();
-                    cur_instruction = predicate;
-                    cur_keyword = cur_instruction.Keywords[0]; 
+                    cur_statement = predicate;
+                    cur_keyword = cur_statement.keywords[0]; 
                     Variable variable2 = SetVariableValue(cur_keyword);
                     Next();
 
@@ -190,17 +191,17 @@ public class Effect : IEffect, ICloneable {
 
                         if (!BooleanExpression()) cards3.Remove(card);
 
-                        cur_instruction = predicate;
+                        cur_statement = predicate;
                         cur_keywordIndex = 1;
-                        cur_keyword = cur_instruction.Keywords[1];
+                        cur_keyword = cur_statement.keywords[1];
                     }
 
                     variable.val = cards3;
 
-                    cur_instruction = instructions[0];
+                    cur_statement = statements[0];
                     cur_keywordIndex = 0;
-                    cur_keyword = cur_instruction.Keywords[0];
-                    cur_instructionIndex = 0;
+                    cur_keyword = cur_statement.keywords[0];
+                    cur_statementIndex = 0;
                 }
 
                 return;
@@ -211,30 +212,30 @@ public class Effect : IEffect, ICloneable {
     }
 
     private void Reset() {
-        cur_instruction = instructions[0];
+        cur_statement = statements[0];
         cur_keywordIndex = 0;
-        cur_keyword = cur_instruction.Keywords[0];
-        cur_instructionIndex = 0;
+        cur_keyword = cur_statement.keywords[0];
+        cur_statementIndex = 0;
     }
 
-    // Advance to next instruction
+    // Advance to next statement
     private void Next() {
         // If End, finish
         if (cur_keyword != "End") {
             cur_keywordIndex++;
-            cur_keyword = cur_keywordIndex < cur_instruction.Count ?
-            cur_instruction.Keywords[cur_keywordIndex] : cur_keyword = "End";
+            cur_keyword = cur_keywordIndex < cur_statement.Count ?
+            cur_statement.keywords[cur_keywordIndex] : cur_keyword = "End";
         }
 
-       // End of Instruction > Step to next instruction
+       // End of statement > Step to next statement
         if (cur_keyword == "End") {
             cur_keywordIndex = 0;
-            cur_instructionIndex++;
-            cur_instruction = cur_instructionIndex < instructions.Count ?
-            instructions[cur_instructionIndex] : new Instruction();
+            cur_statementIndex++;
+            cur_statement = cur_statementIndex < statements.Count ?
+            statements[cur_statementIndex] : new Statement();
 
-            if (cur_instruction.Count > 0) {
-                cur_keyword = cur_instruction.Keywords[cur_keywordIndex];
+            if (cur_statement.Count > 0) {
+                cur_keyword = cur_statement.keywords[cur_keywordIndex];
             }
         }
     }
@@ -278,44 +279,44 @@ public class Effect : IEffect, ICloneable {
                     || cur_keyword == "["
                     || cur_keywordIndex == 0
                 ) {
-                    if (cur_keywordIndex == 0) return cards;
+                    if (cur_keywordIndex == 0)
+                        return cards;
                     else if (cur_keyword == "Pop") {
                         Next();
                         Card card = cards.Last();
                         cards.Remove(card);
                         return card;
-                    } else if(cur_keyword == "[") {
+                    } else if (cur_keyword == "[") {
                         Next();
                         var card = cards[NumericExpression()];
                         Next();
-                        if(cur_keywordIndex == 0) return card;
-                        else if(cur_keyword == "Owner")
-                        {
+                        if (cur_keywordIndex == 0)
+                            return card;
+                        else if (cur_keyword == "Owner") {
                             Next();
-
                             return card.owner;
                         }
-                    } else if(cur_keyword == "Find") {
+                    } else if (cur_keyword == "Find") {
                         Next();
                         Variable variable = SetVariableValue(cur_keyword);
                         Next();
 
-                        Instruction startInstruction = cur_instruction;
-                        int startInstructionIndex = cur_instructionIndex;
+                        Statement startStatement = cur_statement;
+                        int startStatementIndex = cur_statementIndex;
                         string startKeyWord = cur_keyword;
                         int startKeyWordIndex = cur_keywordIndex; 
 
                         List<Card> cards2 = [.. cards];
 
                         foreach (var card in cards) {
-                            cur_instruction = startInstruction;
-                            cur_instructionIndex = startInstructionIndex;
+                            cur_statement = startStatement;
+                            cur_statementIndex = startStatementIndex;
                             cur_keyword = startKeyWord;
                             cur_keywordIndex = startKeyWordIndex;
 
                             variable.val = card;
 
-                            if(!BooleanExpression()) cards2.Remove(card);
+                            if (!BooleanExpression()) cards2.Remove(card);
                         }
 
                         cards = cards2;
@@ -340,14 +341,20 @@ public class Effect : IEffect, ICloneable {
 
             Next();
 
-            while(cur_keyword == "Pop" || cur_keyword == "Find" || cur_keywordIndex == 0 || cur_keyword == "[") {
-                if (cur_keywordIndex == 0) return SetVariableValue(nameVariable).val;
+            while (
+                cur_keyword == "Pop"
+                || cur_keyword == "Find"
+                || cur_keyword == "["
+                || cur_keywordIndex == 0
+            ) {
+                if (cur_keywordIndex == 0)
+                    return SetVariableValue(nameVariable).val;
                 else if (cur_keyword == "Pop") {
                     Next();
                     Card card = cards.Last();
                     cards.Remove(card);
                     return card;
-                } else if(cur_keyword == "[") {
+                } else if (cur_keyword == "[") {
                     Next();
                     var card = cards[NumericExpression()];
                     Next();
@@ -357,27 +364,30 @@ public class Effect : IEffect, ICloneable {
                     Variable variable = SetVariableValue(cur_keyword);
                     Next();
         
-                    Instruction startInstruction = cur_instruction;
-                    int startInstructionIndex = cur_instructionIndex;
+                    Statement startStatement = cur_statement;
+                    int startStatementIndex = cur_statementIndex;
                     string startKeyWord = cur_keyword;
                     int startKeyWordIndex = cur_keywordIndex; 
 
                     List<Card> cards2 = [.. cards];
 
                     foreach (var card in cards) {
-                        cur_instruction = startInstruction;
-                        cur_instructionIndex = startInstructionIndex;
+                        cur_statement = startStatement;
+                        cur_statementIndex = startStatementIndex;
                         cur_keyword = startKeyWord;
                         cur_keywordIndex = startKeyWordIndex;
 
                         variable.val = card;
 
-                        if(!BooleanExpression()) cards2.Remove(card);
+                        if (!BooleanExpression()) cards2.Remove(card);
                     }
 
                     cards = cards2;
 
-                    if (cur_keyword != "Pop" && cur_keyword != "Find") return cards;
+                    if (
+                        cur_keyword != "Pop"
+                        && cur_keyword != "Find"
+                    ) return cards;
                 } else throw new Exception();  
             }
             throw new Exception();
@@ -386,7 +396,8 @@ public class Effect : IEffect, ICloneable {
             string nameVariable = cur_keyword;
             Next();
 
-            if (cur_keywordIndex == 0) return SetVariableValue(nameVariable).val;
+            if (cur_keywordIndex == 0)
+                return SetVariableValue(nameVariable).val;
             else if (cur_keyword == "Owner") {
                 Next();
                 var card = (Card)SetVariableValue(nameVariable).val;
@@ -413,7 +424,8 @@ public class Effect : IEffect, ICloneable {
 
     private Variable SetVariableValue(string name) {
         foreach (var variable in vars)
-        if(variable.name == name) return variable;
+            if (variable.name == name)
+                return variable;
 
         throw new Exception();
     }
@@ -422,8 +434,10 @@ public class Effect : IEffect, ICloneable {
         foreach (var variable in vars) {
             if (variable.name == cur_keyword) {
                 Next();
-                if(variable.type == "Context") GetContext();
-                else if(variable.type == "List<Card>") CardList((List<Card>)variable.val);
+                if (variable.type == "Context")
+                    GetContext();
+                else if (variable.type == "List<Card>")
+                    CardList((List<Card>)variable.val);
                 break;
             } 
         } 
@@ -444,7 +458,7 @@ public class Effect : IEffect, ICloneable {
             if (
                 variable.name == cur_keyword
                 && variable.type == "Card"
-                && cur_instruction.Keywords[cur_keywordIndex+1] == "Power"
+                && cur_statement.keywords[cur_keywordIndex+1] == "Power"
             )
                 return true;
         return false;
@@ -455,7 +469,7 @@ public class Effect : IEffect, ICloneable {
             string variableName = cur_keyword;
             int newValue = 0;
 
-            foreach(var variable in vars) {
+            foreach (var variable in vars) {
                 if (
                     variable.name == cur_keyword
                     && variable.val is int value
@@ -467,7 +481,7 @@ public class Effect : IEffect, ICloneable {
                 } else if (
                     variable.name == cur_keyword
                     && variable.type == "Card" 
-                    && cur_instruction.Keywords[cur_keywordIndex+1] == "Power")
+                    && cur_statement.keywords[cur_keywordIndex+1] == "Power")
                 {
                     var card = (Card)variable.val;
                     newValue = card.power;
@@ -481,19 +495,19 @@ public class Effect : IEffect, ICloneable {
             if (cur_keyword == "+=") {
                 Next();
                 newValue += NumericExpression();
-            } else if(cur_keyword == "-=") {
+            } else if (cur_keyword == "-=") {
                 Next();
                 newValue -= NumericExpression();
-            } else if(cur_keyword == "/=") {
+            } else if (cur_keyword == "/=") {
                 Next();
                 newValue /= NumericExpression();
-            } else if(cur_keyword == "*=") {
+            } else if (cur_keyword == "*=") {
                 Next();
                 newValue *= NumericExpression();
-            } else if(cur_keyword == "^=") {
+            } else if (cur_keyword == "^=") {
                 Next();
                 newValue ^= NumericExpression();
-            } else if(cur_keyword == "++") {
+            } else if (cur_keyword == "++") {
                 Next();
                 newValue++;
             }
@@ -517,8 +531,8 @@ public class Effect : IEffect, ICloneable {
         } else {
             Next();
 
-            foreach(var variable in vars) {
-                if(
+            foreach (var variable in vars) {
+                if (
                     variable.name == cur_keyword
                     && variable.val is int value
                 ) {
@@ -531,7 +545,7 @@ public class Effect : IEffect, ICloneable {
                 } else if (
                     variable.name == cur_keyword
                     && variable.type == "Card" 
-                    && cur_instruction.Keywords[cur_keywordIndex+1] == "Power"
+                    && cur_statement.keywords[cur_keywordIndex+1] == "Power"
                 ) {
                     var card = (Card)variable.val;
                     card.power++;
@@ -545,15 +559,15 @@ public class Effect : IEffect, ICloneable {
         }
     }
 
-    private void ForIntruction() {
+    private void For() {
         Next();
         string nameCard = cur_keyword;
         Next();
         var cards = (List<Card>)SetVariableValue(cur_keyword).val;
         Next();
 
-        Instruction startInstruction = cur_instruction;
-        int startInstructionIndex = cur_instructionIndex;
+        Statement startStatement = cur_statement;
+        int startStatementIndex = cur_statementIndex;
 
         int count = cards.Count - 1;
 
@@ -561,20 +575,22 @@ public class Effect : IEffect, ICloneable {
             Variable variable = SetVariableValue(nameCard);
             variable.val = card;
 
-            FinishFor(count--);
+            ForEnd(count--);
         }
 
-        while (cur_keyword != "ForEnd") Next();
+        while (cur_keyword != "ForEnd") {
+            Next();
+        }
 
         Next();
 
-        void FinishFor(int count) {
+        void ForEnd(int count) {
             Console.WriteLine("For statement started.");
 
-            cur_instruction.Debug();
+            cur_statement.Debug();
 
-            if (cur_instruction.Keywords[1] == "=") {
-                foreach (Variable variable in vars) {
+            if (cur_statement.keywords[1] == "=") {
+                foreach (var variable in vars) {
                     if (
                         variable.name == cur_keyword
                         && variable.val is int
@@ -597,36 +613,38 @@ public class Effect : IEffect, ICloneable {
                     }
                 }
             } else if (cur_keyword == "for") {
-                ForIntruction();
+                For();
             } else if (cur_keyword == "while") {
-                WhileInstruction();
+                While();
             } else if (
                 cur_keyword == "++"
                 || IsNumericVariable()
                 || IsNumericProperty()
             ) {
                 Increase();
-            } else MethodCall();
+            } else {
+                MethodCall();
+            }
 
-            // Not completed > Read next Instruction
+            // Not completed > Read next Statement
             if (cur_keyword != "ForEnd") {
-                FinishFor(count);
+                ForEnd(count);
             } else if (
                 cur_keyword == "ForEnd"
                 && count > 0
             ) { // Restart cycle
-                cur_instruction = startInstruction;
-                cur_instructionIndex = startInstructionIndex;
-                cur_keyword = startInstruction.Keywords[0];
+                cur_statement = startStatement;
+                cur_statementIndex = startStatementIndex;
+                cur_keyword = startStatement.keywords[0];
             }
         }
     }
 
-    private void WhileInstruction() {
+    private void While() {
         Next();
 
-        Instruction startInstruction = cur_instruction;
-        int startInstructionIndex = cur_instructionIndex;
+        Statement startStatement = cur_statement;
+        int startStatementIndex = cur_statementIndex;
 
         bool argument = BooleanExpressionWhile();
 
@@ -638,7 +656,7 @@ public class Effect : IEffect, ICloneable {
         }  
 
         while (argument) {
-            FinishWhile();
+            WhileEnd();
 
             if (!BooleanExpressionWhile()) {
                 argument = false;
@@ -650,12 +668,12 @@ public class Effect : IEffect, ICloneable {
             }  
         }
 
-        void FinishWhile() {
+        void WhileEnd() {
             Console.WriteLine("Started while statement.");
 
-            cur_instruction.Debug();
+            cur_statement.Debug();
 
-            if (cur_instruction.Keywords[1] == "=") {
+            if (cur_statement.keywords[1] == "=") {
                 foreach (var variable in vars) {
                     if (
                         variable.name == cur_keyword
@@ -679,27 +697,28 @@ public class Effect : IEffect, ICloneable {
                     }
                 }
             } else if (cur_keyword == "for") {
-                ForIntruction();
+                For();
             } else if (cur_keyword == "while") {
-                WhileInstruction();
+                While();
             } else if (
                 cur_keyword == "++"
                 || IsNumericVariable()
                 || IsNumericProperty()
             ) {
                 Increase();
+            } else {
+                MethodCall();
             }
-            else MethodCall();
 
             // Read next until end
-            if(cur_keyword != "WhileEnd")
-                FinishWhile();
+            if (cur_keyword != "WhileEnd")
+                WhileEnd();
         }
 
         bool BooleanExpressionWhile() {
-            cur_instruction = startInstruction;
-            cur_instructionIndex = startInstructionIndex;
-            cur_keyword = startInstruction.Keywords[1];
+            cur_statement = startStatement;
+            cur_statementIndex = startStatementIndex;
+            cur_keyword = startStatement.keywords[1];
             cur_keywordIndex = 1;
 
             return BooleanExpression();
@@ -738,12 +757,14 @@ public class Effect : IEffect, ICloneable {
             Next();
             var card = (Card)Parameter();
             cards.Add(card);
+
         } else if (cur_keyword == "SendBottom") {
             if (ReferenceEquals(cards, Context.Board))
                 throw new Exception("Cannot add cards to board through effects.");
 
             Next();
             cards.Insert(0, (Card)Parameter());
+
         } else if (cur_keyword == "Remove") {
             Next();
 
@@ -753,6 +774,7 @@ public class Effect : IEffect, ICloneable {
             } else {
                 cards.Remove(card);
             }
+
         } else if (cur_keyword == "Shuffle") {
             Next();
 
@@ -764,21 +786,22 @@ public class Effect : IEffect, ICloneable {
                 int k = random.Next(n+1);
                 (cards[n], cards[k]) = (cards[k], cards[n]);
             }
+
         } else if (cur_keyword == "Find") {
             Next();
             Variable variable = SetVariableValue(cur_keyword);
             Next();
 
-            Instruction startInstruction = cur_instruction;
-            int startInstructionIndex = cur_instructionIndex;
+            Statement startStatement = cur_statement;
+            int startStatementIndex = cur_statementIndex;
             string startKeyWord = cur_keyword;
             int startKeyWordIndex = cur_keywordIndex; 
 
             List<Card> cards2 = [.. cards];
 
             foreach (var card in cards) {
-                cur_instruction = startInstruction;
-                cur_instructionIndex = startInstructionIndex;
+                cur_statement = startStatement;
+                cur_statementIndex = startStatementIndex;
                 cur_keyword = startKeyWord;
                 cur_keywordIndex = startKeyWordIndex;
 
@@ -878,32 +901,21 @@ public class Effect : IEffect, ICloneable {
     }
 
 
-    object ParsePrimaryExpression()
-    {
-        if (cur_keyword == "true")
-        {
+    object ParsePrimaryExpression() {
+        if (cur_keyword == "true") {
             Next();
             return true;
-        }
-        else if (cur_keyword == "false")
-        {
+        } else if (cur_keyword == "false") {
             Next();
             return false;
-        }
-        else if (int.TryParse(cur_keyword, out int value))
-        {
+        } else if (int.TryParse(cur_keyword, out int value)) {
             Next();
-
             return value;
-        }
-        else if(cur_keyword == "++")
-        {
+        } else if (cur_keyword == "++") {
             Next();
 
-            foreach(Variable variable in vars)
-            {
-                if(variable.name == cur_keyword)
-                {
+            foreach (var variable in vars) {
+                if (variable.name == cur_keyword) {
                     Next();
                     int numberTemp = (int)variable.val;
                     numberTemp++;
@@ -911,62 +923,69 @@ public class Effect : IEffect, ICloneable {
                     return numberTemp;
                 }
             }
-            
+
             throw new Exception();
-        }
-        else if (cur_keyword == "(")
-        {
+        } else if (cur_keyword == "(") {
             Next();
             bool result = ParseOrExpression();
             Next();
             return result;
-        }
-        else if(char.IsLetter(cur_keyword[0]))
-        {
-            foreach(Variable variable in vars)
-            {
-                if(variable.name == cur_keyword && variable.val is int value2)
-                {
+        } else if (char.IsLetter(cur_keyword[0])) {
+            foreach (var variable in vars) {
+                if (
+                    variable.name == cur_keyword
+                    && variable.val is int value2
+                ) {
                     Next();
 
-                    if(cur_keyword == "++")
-                    {       
+                    if (cur_keyword == "++") {       
                         Next();
                         int numberTemp = (int)variable.val;
                         numberTemp++;
                         value2 = (int)variable.val;
                         variable.val = numberTemp;
                     }
-                    
                     return value2;
-                }
-                else if(variable.name == cur_keyword && variable.val is bool value3)
-                {
+                } else if (
+                    variable.name == cur_keyword
+                    && variable.val is bool value3
+                ) {
                     Next();
                     return value3;
-                }
-                else if(variable.name == cur_keyword && variable.val is string value4) return ParseString();
-                else if(variable.name == cur_keyword && variable.type == "Card" 
-                && (cur_instruction.Keywords[cur_keywordIndex + 1] == "Power"))
-                {
+                } else if (
+                    variable.name == cur_keyword
+                    && variable.val is string value4
+                ) {
+                    return ParseString();
+                } else if (
+                    variable.name == cur_keyword
+                    && variable.type == "Card" 
+                    && cur_statement.keywords[cur_keywordIndex + 1] == "Power"
+                ) {
                     Next();
                     Next();
 
                     var card = (Card)variable.val;
                     return card.power;
-                }
-                else if(variable.name == cur_keyword && variable.type == "Card" 
-                && (cur_instruction.Keywords[cur_keywordIndex + 1] == "Name" 
-                || cur_instruction.Keywords[cur_keywordIndex + 1] == "Type"
-                || cur_instruction.Keywords[cur_keywordIndex + 1] == "Range" 
-                || cur_instruction.Keywords[cur_keywordIndex + 1] == "Faction"))
-                return ParseString();    
+                } else if (
+                    variable.name == cur_keyword
+                    && variable.type == "Card" 
+                    && (
+                        cur_statement.keywords[cur_keywordIndex + 1] == "Name" 
+                        || cur_statement.keywords[cur_keywordIndex + 1] == "Type"
+                        || cur_statement.keywords[cur_keywordIndex + 1] == "Range" 
+                        || cur_statement.keywords[cur_keywordIndex + 1] == "Faction"
+                    )
+                ) {
+                    return ParseString();
+                }    
             }
 
-            throw new Exception("Wrong variable.");
+            throw new Exception($"Wrong variable: {cur_keyword}");
+        } else if (cur_keyword == "\"") {
+            return ParseString();
         }
-        else if (cur_keyword == "\"") return ParseString();
-        else throw new Exception("Invalid boolean expression.");
+        throw new Exception("Invalid boolean expression.");
     }
 
 
@@ -979,7 +998,7 @@ public class Effect : IEffect, ICloneable {
 
             Next();
 
-            if(cur_keyword == "^") {
+            if (cur_keyword == "^") {
                 Next();
                 result ^= Pow(); 
             }
@@ -1065,7 +1084,7 @@ public class Effect : IEffect, ICloneable {
 
                     Next();
 
-                    if(cur_keyword == "^") {
+                    if (cur_keyword == "^") {
                         Next();
                         result ^= Pow(); 
                     }
@@ -1084,7 +1103,7 @@ public class Effect : IEffect, ICloneable {
             }
             throw new Exception("Invalid variable type. Expected [int].");
         }
-        else throw new Exception($"Unexpected keyword: {keyWord}");
+        throw new Exception($"Unexpected keyword: {keyWord}");
     }
 
     private int MultDiv() {
@@ -1100,7 +1119,7 @@ public class Effect : IEffect, ICloneable {
             if (keyWord == "*") {
                 Next();
                 result *= Pow();
-            } else if(keyWord == "/") {
+            } else if (keyWord == "/") {
                 Next();
                 result /= Pow();
             }
@@ -1150,37 +1169,44 @@ public class Effect : IEffect, ICloneable {
                     result += value;
                     Next();
                     IsCorrect = true;
-                } else if(
+                } else if (
                     variable.name == cur_keyword && variable.type == "Card" 
                     && (
-                        cur_instruction.Keywords[cur_keywordIndex + 1] == "Name"
-                        || cur_instruction.Keywords[cur_keywordIndex + 1] == "Type" 
-                        || cur_instruction.Keywords[cur_keywordIndex + 1] == "Range" 
-                        || cur_instruction.Keywords[cur_keywordIndex + 1] == "Faction"
+                        cur_statement.keywords[cur_keywordIndex + 1] == "Name"
+                        || cur_statement.keywords[cur_keywordIndex + 1] == "Type" 
+                        || cur_statement.keywords[cur_keywordIndex + 1] == "Range" 
+                        || cur_statement.keywords[cur_keywordIndex + 1] == "Faction"
                     )
                 ) {
                     var card = (Card)variable.val;
-                    
-                    Next();
-                    
-                    if(cur_keyword == "Name") result = card.name;
-                    else if(cur_keyword == "Type") result = card.type_name;
-                    else if(cur_keyword == "Faction") result = card.faction;
-                    else if(cur_keyword == "Range") {
-                        result = "";
 
-                        foreach (var row in card.types) {
-                            if (result != "") result += ", ";
-                            result += Enum.GetName(row);
-                        }
-                    } 
-                    
+                    Next();
+
+                    switch (cur_keyword) {
+                        case "Name":
+                            result = card.name;
+                            break;
+                        case "Type":
+                            result = card.type_name;
+                            break;
+                        case "Faction":
+                            result = card.faction;
+                            break;
+                        case "Range":
+                            result = "";
+                            foreach (var row in card.types) {
+                                if (result != "") result += ", ";
+                                result += Enum.GetName(row);
+                            }
+                            break;
+                    }
+
                     Next();
                     IsCorrect = true;
                 }
             }
             
-            if (!IsCorrect) throw new Exception("Invalid variable name.");
+            if (!IsCorrect) throw new Exception($"Invalid variable name: {cur_keyword}");
         }
 
         if (cur_keyword == "@") {

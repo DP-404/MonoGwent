@@ -4,13 +4,10 @@ using System.Collections.Generic;
 
 namespace MonoGwent;
 
-public class CardMaker
-{
-
+public class CardMaker {
     public CardBlueprint blueprint = new();
 
-    public void Create(List<Property> properties, List<Effect> effects)
-    {
+    public void Create(List<Property> properties, List<Effect> effects) {
         var type = GetCardType(properties);
         switch (GetCardType(properties)) {
             case "Leader":
@@ -35,7 +32,7 @@ public class CardMaker
                 blueprint = new CardBoostBlueprint();
                 break;
             default:
-                throw new Exception($"Case mismatch: {type}");
+                throw new Exception($"Card type case mismatch: {type}");
         }
 
         SetProperties(blueprint, properties);
@@ -54,8 +51,7 @@ public class CardMaker
     }
 
     // Add actual card properties values
-    public void SetProperties(CardBlueprint blueprint, List<Property> properties)
-    {
+    public void SetProperties(CardBlueprint blueprint, List<Property> properties) {
         foreach (var prop in properties) {
             // Add according to property
             switch (prop.type) {
@@ -94,10 +90,8 @@ public class CardMaker
         }
     }
 
-    public string GetCardType(List<Property> properties)
-    {
-        foreach(var prop in properties)
-        {
+    public string GetCardType(List<Property> properties) {
+        foreach(var prop in properties) {
             if (prop.type == "Type")
                 return (string)prop.value;
         }

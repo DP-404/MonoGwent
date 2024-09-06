@@ -208,8 +208,7 @@ Licenced under MIT Licence. Copyright (c) 2024 DP-404
                 position,
                 Color.White
             );
-        }
-        else if (cursor.section == Section.FIELD) {
+        } else if (cursor.section == Section.FIELD) {
             var selected_card = current_player.GetHandCard(cursor.hand);
 
             if (selected_card is CardUnit) {
@@ -236,8 +235,7 @@ Licenced under MIT Licence. Copyright (c) 2024 DP-404
                     ),
                     Color.White
                 );
-            }
-            else if (selected_card is CardBoost) {
+            } else if (selected_card is CardBoost) {
                 // Highlight rows
                 foreach (RowType row in Enum.GetValues(typeof(RowType))) {
                     if ((int)row == cursor.index) continue;
@@ -259,8 +257,7 @@ Licenced under MIT Licence. Copyright (c) 2024 DP-404
                     ),
                     Color.White
                 );
-            }
-            else if (selected_card is CardWeather) {
+            } else if (selected_card is CardWeather) {
                 // Highlight Weathers
                 foreach (RowType row in Enum.GetValues(typeof(RowType))) {
                     if ((int)row == cursor.index) continue;
@@ -284,10 +281,8 @@ Licenced under MIT Licence. Copyright (c) 2024 DP-404
                     ),
                     Color.White
                 );
-            }
-            else {throw new Exception("Unsupported hovered card type.");}
-        }
-        else if (cursor.section == Section.ROW) {
+            } else throw new Exception("Unsupported hovered card type.");
+        } else if (cursor.section == Section.ROW) {
             // Highlight Cards
             var row_type = (RowType)cursor.field;
             var row = current_player.GetRow(row_type);
@@ -319,8 +314,7 @@ Licenced under MIT Licence. Copyright (c) 2024 DP-404
                 position,
                 Color.White
             );
-        }
-        else if (cursor.section == Section.LEADER) {
+        } else if (cursor.section == Section.LEADER) {
             gt.spriteBatch.Draw(
                 !current_player.leader.used? cursor.mark_card_hovered : cursor.mark_card_hovered_disabled,
                 new Vector2(
@@ -372,8 +366,7 @@ Licenced under MIT Licence. Copyright (c) 2024 DP-404
                     if (unit.is_decoy) {
                         img_card_type = Card.img_decoy;
                         power_color = Color.Black;
-                    }
-                    else if (unit.is_hero) {
+                    } else if (unit.is_hero) {
                         img_card_type = Card.img_power_hero;
                         power_color = Color.White;
                     } else {
@@ -396,8 +389,7 @@ Licenced under MIT Licence. Copyright (c) 2024 DP-404
                         new Vector2(PREVIEW_CARD_POWER_XPOS-power_size.X/2, PREVIEW_CARD_POWER_YPOS-power_size.Y/2),
                         power_color
                     );
-                }
-                else if (card is CardWeather weather) {
+                } else if (card is CardWeather weather) {
                     if (!weather.is_dispel) {img_card_type = Card.img_weather;}
                     else {img_card_type = Card.img_dispel;}
 
@@ -408,8 +400,7 @@ Licenced under MIT Licence. Copyright (c) 2024 DP-404
                         Color.White,
                         PREVIEW_CARD_SCALE
                     );
-                }
-                else if (card is CardBoost) {
+                } else if (card is CardBoost) {
                     img_card_type = Card.img_boost;
 
                     gt.spriteBatch.Draw(
@@ -468,7 +459,10 @@ Licenced under MIT Licence. Copyright (c) 2024 DP-404
                 last_ypos += (int)card_type_size.Y;
 
                 // Draw Card Info Effect
-                if (card is CardUnit || card is CardLeader) {
+                if (
+                    card is CardUnit
+                    || card is CardLeader
+                ) {
                     if (card.effects.Count() != 0) {
                         foreach (var e in card.effects) {
                             var descr = e switch {
@@ -525,13 +519,13 @@ Licenced under MIT Licence. Copyright (c) 2024 DP-404
     }
     private void DrawMessage(GameTools gt) {
         if (
-            scene is SceneStartGame ||
-            scene is SceneStartPhase ||
-            scene is SceneStartTurn ||
-            scene is SceneEndTurn ||
-            scene is SceneEndPhase ||
-            scene is SceneEndGame ||
-            help
+            scene is SceneStartGame
+            || scene is SceneStartPhase
+            || scene is SceneStartTurn
+            || scene is SceneEndTurn
+            || scene is SceneEndPhase
+            || scene is SceneEndGame
+            || help
         ) {
             gt.spriteBatch.Draw(
                 img_dim_background,

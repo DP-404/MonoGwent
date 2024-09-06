@@ -16,7 +16,10 @@ public class EffectRemoveStrongest : IEffect {
             foreach (var c in p.field) {
                 if (c is not CardUnit u) continue;
                 if (u.is_hero) continue;
-                if (card is null || c.power > card.power) {
+                if (
+                    card is null
+                    || c.power > card.power
+                ) {
                     player = p;
                     card = u;
                 }

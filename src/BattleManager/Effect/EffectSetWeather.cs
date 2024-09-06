@@ -14,13 +14,19 @@ public class EffectSetWeather : IEffect {
     public bool Eval(BattleManager bm) {
         if (bm.ExistsWeather(row)) return false;
         foreach (var c in bm.EffectPlayer.deck.Cards) {
-            if (c is CardWeather && c.types.Contains(row)) return true;
+            if (
+                c is CardWeather
+                && c.types.Contains(row)
+            ) return true;
         }
         return false;
     }
     public void Use(BattleManager bm) {
         foreach (var c in bm.EffectPlayer.deck.Cards) {
-            if (c is CardWeather && c.types.Contains(row)) {
+            if (
+                c is CardWeather
+                && c.types.Contains(row)
+            ) {
                 bm.EffectPlayer.deck.Remove(c);
                 c.PlayCard(bm);
                 break;

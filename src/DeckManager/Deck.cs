@@ -60,14 +60,16 @@ public class Deck {
     }
     public void Shuffle() {
         var shuffled = new Deck();
-        foreach (var c in cards.OrderBy(x=>Random.Shared.Next())) shuffled.Add(c);
+        foreach (var c in cards.OrderBy(x=>Random.Shared.Next()))
+            shuffled.Add(c);
         shuffled.leader = leader;
         Copy(shuffled);
     }
 
     public void Copy(Deck deck) {
         cards.Clear();
-        foreach (var i in deck.cards) Add(i.Copy());
+        foreach (var i in deck.cards)
+            Add(i.Copy());
         leader = deck.leader.Copy();
         img = deck.img;
     }

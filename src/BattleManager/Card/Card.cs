@@ -12,8 +12,7 @@ public enum RowType {
     SIEGE
 }
 
-public abstract class Card
-{
+public abstract class Card {
     public const int ACTUAL_WIDTH = 520;
     public const int ACTUAL_HEIGHT = 768;
     public const int WIDTH = 55;

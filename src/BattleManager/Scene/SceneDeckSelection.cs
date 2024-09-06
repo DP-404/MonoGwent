@@ -10,8 +10,8 @@ public class SceneDeckSelection : IScene {
 
             // Await for input
             if (
-                bm.Current.name.Length != 0 &&
-                Keyboard.GetState().IsKeyDown(Keys.Enter)
+                bm.Current.name.Length != 0
+                && Keyboard.GetState().IsKeyDown(Keys.Enter)
             ) {
                 bm.SfxSelect.Play();
                 bm.Cursor.Move(0);
@@ -24,8 +24,8 @@ public class SceneDeckSelection : IScene {
             }
             // Erase
             else if (
-                bm.Current.name.Length != 0 &&
-                Keyboard.GetState().IsKeyDown(Keys.Back)
+                bm.Current.name.Length != 0
+                && Keyboard.GetState().IsKeyDown(Keys.Back)
             ) {
                 bm.Cursor.Hold();
                 bm.Current.name = bm.Current.name.Remove(bm.Current.name.Length-1);
@@ -54,8 +54,8 @@ public class SceneDeckSelection : IScene {
             }
             // Read Keys
             else if (
-                bm.Current.name.Length != Player.MAX_NAME_LENGTH &&
-                Keyboard.GetState().GetPressedKeys().Length != 0
+                bm.Current.name.Length != Player.MAX_NAME_LENGTH
+                && Keyboard.GetState().GetPressedKeys().Length != 0
             ) {
                 var key_string = Keyboard.GetState().GetPressedKeys()[0].ToString();
                 if (key_string.Length == 1) {
@@ -63,8 +63,8 @@ public class SceneDeckSelection : IScene {
                     if (char.IsLetter(key)) {
                         bm.Cursor.Hold();
                         if (
-                            Keyboard.GetState().IsKeyDown(Keys.LeftShift) ||
-                            Keyboard.GetState().IsKeyDown(Keys.RightShift)
+                            Keyboard.GetState().IsKeyDown(Keys.LeftShift)
+                            || Keyboard.GetState().IsKeyDown(Keys.RightShift)
                         ) {
                             key = char.ToUpper(key);
                         } else {

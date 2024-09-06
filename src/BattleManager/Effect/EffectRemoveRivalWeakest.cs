@@ -14,7 +14,10 @@ public class EffectRemoveRivalWeakest : IEffect {
         foreach (var c in bm.Rival.field) {
             if (c is not CardUnit u) continue;
             if (u.is_hero) continue;
-            if (card is null || c.power < card.power) {
+            if (
+                card is null
+                || c.power < card.power
+            ) {
                 card = u;
             }
         }

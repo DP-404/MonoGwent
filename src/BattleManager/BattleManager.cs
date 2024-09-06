@@ -9,8 +9,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace MonoGwent;
 
-public partial class BattleManager
-{
+public partial class BattleManager {
 
     public const string PLAYER_1_NAME = "Radiant";
     public const string PLAYER_2_NAME = "Dire";
@@ -30,12 +29,12 @@ public partial class BattleManager
         get {
             var p1 = player_1.GetPower(weathers);
             var p2 = player_2.GetPower(weathers);
-            if
-            (p1 > p2) {return player_1;}
-            else if
-            (p2 > p1) {return player_2;}
+            if (p1 > p2)
+                return player_1;
+            else if (p2 > p1)
+                return player_2;
             else
-            {return null;}
+                return null;
         }
     }
     private Player effect_player = null;
@@ -256,7 +255,8 @@ public partial class BattleManager
         foreach (var e in card.effects) {
             if (e.Eval(this)) {
                 e.Use(this);
-                if (card is CardLeader leader) leader.used = true;
+                if (card is CardLeader leader)
+                    leader.used = true;
             }
             effect_player = null;
         }
@@ -376,11 +376,21 @@ public partial class BattleManager
         scene = new SceneEndPhase();
     }
     public void EndGame() {
-        if (player_1.IsDefeated() && !player_2.IsDefeated()) {victor = player_2;}
-        else if (player_2.IsDefeated() && !player_1.IsDefeated()) {victor = player_1;}
-        else {victor = null;}
+        if (
+            player_1.IsDefeated()
+            && !player_2.IsDefeated()
+        )
+            victor = player_2;
+        else if (
+            player_2.IsDefeated()
+            && !player_1.IsDefeated()
+        )
+            victor = player_1;
+        else 
+            victor = null;
         MediaPlayer.Pause();
-        if (victor is not null) sfx_win.Play();
+        if (victor is not null)
+            sfx_win.Play();
         scene = new SceneEndGame();
     }
 

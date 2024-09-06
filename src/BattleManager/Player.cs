@@ -6,8 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoGwent;
 
-public class Player
-{
+public class Player {
     public const int MAX_NAME_LENGTH = 12;
     public const int DEFAULT_HEALTH = 2;
     public const int DEFEATED_HEALTH = 0;
@@ -133,7 +132,10 @@ public class Player
     public void ReceiveCard(int count=1, bool skip_limit=false) {
         while (count > 0 && deck.Count != 0) {
             var card = deck.Take();
-            if (hand.Count >= HAND_CARDS_LIMIT && !skip_limit) {
+            if (
+                hand.Count >= HAND_CARDS_LIMIT
+                && !skip_limit
+            ) {
                 DisposeOf(card);
             }
             else {
@@ -182,9 +184,8 @@ public class Player
         graveyard.Add(card);
     }
     public void ClearField() {
-        foreach (var c in field) {
+        foreach (var c in field)
             DisposeOf(c);
-        }
         field.Clear();
         foreach (var row in boosts) {
             if (row.Value is not null)

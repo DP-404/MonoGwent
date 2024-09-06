@@ -14,7 +14,7 @@ public class EffectLeaderRecoverLastDiscardedCard : IEffect {
             || (
                 bm.EffectPlayer.graveyard[^1] is CardUnit unit
                 && unit.is_hero
-                )
+            )
         ) return false;
         return true;
     }

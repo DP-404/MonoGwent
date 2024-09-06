@@ -1,8 +1,7 @@
 
 namespace MonoGwent;
 
-enum Keyword
-{
+enum Keyword {
     effect,
     Name,
     Params,
@@ -93,8 +92,7 @@ public enum TokenType {
     End
 }
 
-enum ContextPropertiesAndMethods
-{
+enum ContextPropertiesAndMethods {
     TriggerPlayer,
     Board,
     HandOfPlayer,
@@ -107,8 +105,7 @@ enum ContextPropertiesAndMethods
     Graveyard
 }
 
-enum CardProperties
-{
+enum CardProperties {
     Owner,
     Power,
     Range,
@@ -117,14 +114,12 @@ enum CardProperties
     Name
 }
 
-enum CardListProperties
-{
+enum CardListProperties {
     Find,
     Pop,
 }
 
-enum SyntacticSugarContext
-{
+enum SyntacticSugarContext {
     Board,
     Hand,
     Field,
@@ -132,8 +127,7 @@ enum SyntacticSugarContext
     Graveyard
 }
 
-enum ContextMethods
-{
+enum ContextMethods {
     Board,
     HandOfPlayer,
     FieldOfPlayer,
@@ -145,8 +139,7 @@ enum ContextMethods
     Graveyard
 }
 
-enum CardListMethods
-{
+enum CardListMethods {
     Push,
     SendBottom,
     Remove,
@@ -155,8 +148,7 @@ enum CardListMethods
     Find
 }
 
-public enum Source
-{
+public enum Source {
     hand,
     otherHand,
     deck,
@@ -166,8 +158,7 @@ public enum Source
     parent
 }
 
-public enum Booleans
-{
+public enum Boolean {
     EQ,
     NE,
     LT,
@@ -178,8 +169,7 @@ public enum Booleans
     AND
 }
 
-public enum CompositeOperators
-{
+public enum CompositeOperators {
     PlusCom,
     MinusCom,
     MultiCom,

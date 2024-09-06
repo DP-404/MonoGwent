@@ -6,8 +6,7 @@ public class Token {
     public string val { get; }
     public int pos { get; }
 
-    public Token(TokenType type, string val, int pos)
-    {
+    public Token(TokenType type, string val, int pos) {
         this.type = type;
         this.val = val;
         this.pos = pos;

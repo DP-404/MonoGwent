@@ -51,8 +51,7 @@ public class CardUnit : Card {
         power = original_power;
         position = null;
     }
-    public override bool PlayCard(BattleManager bm)
-    {
+    public override bool PlayCard(BattleManager bm) {
         if (is_decoy) {
             var pos = (RowType)bm.Cursor.field;
 
