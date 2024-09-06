@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Diagnostics;
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -43,6 +46,23 @@ public class Gwent : Game {
         bm = new BattleManager();
         Context.bm = bm;
         ScriptReader.Initialize();
+
+        if (ScriptReader.error) {
+            string editor = "";
+            if (OperatingSystem.IsWindows())
+                editor = "notepad.exe";
+            else if (OperatingSystem.IsLinux())
+                editor = "gedit";
+            else if (OperatingSystem.IsMacOS())
+                editor = "TextEdit.app";
+            if (editor != "") {
+                try {
+                    Process.Start(editor, ScriptReader.ERROR_PATH);
+                }
+                finally {}
+            }
+            Exit();
+        }
     }
 
     protected override void Initialize() {
