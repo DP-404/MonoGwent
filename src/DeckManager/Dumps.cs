@@ -470,7 +470,7 @@ public struct DecksDump {
                             break;
                         } else {
                             if (u.power < 4) qtty = 3;
-                            else if (4 <= u.power && u.power < 5) {
+                            else if (4 <= u.power && u.power < 6) {
                                 if (!has_effect) qtty = 3;
                                 else qtty = 2;
                             }
