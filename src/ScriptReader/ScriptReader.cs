@@ -5,7 +5,7 @@ namespace MonoGwent;
 
 class ScriptReader {
     public static readonly string ERROR_PATH = "scripterror.txt";
-    private static string script_path = Path.Join(
+    public static readonly string SCRIPT_PATH = Path.Join(
         "Content",
         "script.txt"
     );
@@ -13,8 +13,11 @@ class ScriptReader {
     public static bool error {get => _error;}
 
     private static string Read() {
-        if (Path.Exists(script_path))
-            return File.ReadAllText(script_path);
+        if (Path.Exists(SCRIPT_PATH))
+            return File.ReadAllText(SCRIPT_PATH);
+        else {
+            File.Create(SCRIPT_PATH);
+        }
         return "";
     }
 

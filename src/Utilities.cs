@@ -1,10 +1,30 @@
+using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoGwent;
 
 static class Utilities {
+
+    public static void OpenTextFile(string path) {
+        string editor = "";
+        if (OperatingSystem.IsWindows())
+            editor = "notepad.exe";
+        else if (OperatingSystem.IsLinux())
+            editor = "gedit";
+        else if (OperatingSystem.IsMacOS())
+            editor = "TextEdit.app";
+        if (editor != "") {
+            try {
+                Process.Start(editor, path);
+            }
+            finally {}
+        }
+    }
 
     public static void CreateBorder(
         this Texture2D texture,

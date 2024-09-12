@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -43,24 +42,16 @@ public class Gwent : Game {
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
 
+        Startup();
+    }
+
+    private void Startup() {
         bm = new BattleManager();
         Context.bm = bm;
         ScriptReader.Initialize();
 
         if (ScriptReader.error) {
-            string editor = "";
-            if (OperatingSystem.IsWindows())
-                editor = "notepad.exe";
-            else if (OperatingSystem.IsLinux())
-                editor = "gedit";
-            else if (OperatingSystem.IsMacOS())
-                editor = "TextEdit.app";
-            if (editor != "") {
-                try {
-                    Process.Start(editor, ScriptReader.ERROR_PATH);
-                }
-                finally {}
-            }
+            Utilities.OpenTextFile(ScriptReader.ERROR_PATH);
             Exit();
         }
     }
@@ -90,8 +81,15 @@ public class Gwent : Game {
     protected override void Update(GameTime gameTime) {
         if (Keyboard.GetState().IsKeyDown(Keys.Escape)) 
             Exit();
+        if (Keyboard.GetState().IsKeyDown(Keys.F3))
+            Utilities.OpenTextFile(ScriptReader.SCRIPT_PATH);
         if (Keyboard.GetState().IsKeyDown(Keys.F4))
             ToggleFullScreen();
+        if (Keyboard.GetState().IsKeyDown(Keys.F12)) {
+            Startup();
+            LoadContent();
+            Initialize();
+        }
 
         // TODO: Add your update logic here
 

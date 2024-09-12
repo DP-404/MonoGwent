@@ -60,14 +60,16 @@ Controls:
 Esc - Exit game
 F1 - Open/Close help
 F2 - Mute music
+F3 - Open script editor
 F4 - Toggle Fullscreen/Window mode
+F12 - Full restart
 Arrow Keys - Move
 Enter - Accept/Use
 Back - Cancel/Return
 Right Shift - Select Leader
 Tab - Pass
 
-Script path: Content/Script.txt
+Script changes require game restart to take effect.
 
 Credits:
 Developed by DP-404 (https://github.com/DP-404).
