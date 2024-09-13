@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using static MonoGwent.Utilities;
+
 namespace MonoGwent;
 
 public class Lexer
@@ -23,14 +25,14 @@ public class Lexer
             int tPos = -1;
 
             // Check Whitespace > Ignore
-            if(char.IsWhiteSpace(i)) {
+            if (char.IsWhiteSpace(i)) {
                 pos++;
                 continue;
             }
 
             // Words nor Keywords can start with number
             // Check Number > Store
-            else if(char.IsDigit(i)) {
+            else if (char.IsDigit(i)) {
                 string number = "";
                 while (pos < input.Length && char.IsDigit(i)) {
                     number += i;
@@ -46,7 +48,7 @@ public class Lexer
             }
 
             // Check Word
-            else if(char.IsLetter(i)) {
+            else if (char.IsLetter(i)) {
                 string word = "";
                 while (
                     pos < input.Length
@@ -180,13 +182,13 @@ public class Lexer
                         tokens.Add(new Token(TokenType.Quote, "\"", pos-1));
 
                         string word = "";
-                        while(pos < input.Length && i != '"') {
+                        while (pos < input.Length && i != '"') {
                             word += i;
                             pos++;
                         }
                         tokens.Add(new Token(TokenType.String, word, pos-word.Length));
 
-                        if(pos < input.Length && i == '"') {
+                        if (pos < input.Length && i == '"') {
                             tokens.Add(new Token(TokenType.Quote, "\"", pos-1));
                             pos++;
                         } 

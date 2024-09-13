@@ -17,8 +17,8 @@ class ScriptReader {
             return File.ReadAllText(SCRIPT_PATH);
         else {
             File.Create(SCRIPT_PATH);
+            return "";
         }
-        return "";
     }
 
     public static void Initialize() {

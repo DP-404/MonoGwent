@@ -28,684 +28,614 @@ public class Parser {
             cur_token.type == TokenType.Keyword
             || cur_token.val == "card"
         ) {
-            // While "effect" > Create
-            while (cur_token.val == "effect") {
+            ParseEffects();
+            ParseCards();
+        }
+        else throw new Exception($"Syntax error in: {cur_token.pos}");
+    }
+
+    // Parse effects
+    private void ParseEffects() {
+        // While "effect" > Create
+        while (cur_token.val == "effect") {
+            Next(TokenType.Keyword);
+            Next(TokenType.LCBracket);
+
+            // Collect name
+            if (cur_token.val == "Name")
                 Next(TokenType.Keyword);
+            else
+                throw new Exception("Missing effect name.");
+            Next(TokenType.Colon);
+            dNext = Next;
+            string nameEffect = ParseString();
+            Next(TokenType.Comma);
+
+            // Collect params
+            LinkedList<Variable> parameters = new();
+            LinkedList<Variable> variables = new();
+            LinkedList<Variable> variables2 = new();
+
+            if (cur_token.val == "Params") {
+                Next(TokenType.Keyword);
+                Next(TokenType.Colon);
                 Next(TokenType.LCBracket);
 
-                // Collect name
-                if (cur_token.val == "Name")
-                    Next(TokenType.Keyword);
-                else
-                    throw new Exception("Missing effect name.");
-                Next(TokenType.Colon);
-                dNext = Next;
-                string nameEffect = ParseString();
-                Next(TokenType.Comma);
-
-                // Collect params
-                LinkedList<Variable> parameters = new();
-                LinkedList<Variable> variables = new();
-                LinkedList<Variable> variables2 = new();
-
-                if (cur_token.val == "Params") {
-                    Next(TokenType.Keyword);
+                while (true) {
+                    string name = cur_token.val;
+                    Next(TokenType.Word);
                     Next(TokenType.Colon);
-                    Next(TokenType.LCBracket);
+                    string type;
+                    object value;
 
-                    while (true) {
-                        string name = cur_token.val;
-                        Next(TokenType.Word);
-                        Next(TokenType.Colon);
-                        string type;
-                        object value;
+                    if (cur_token.val == "Number") {
+                        type = cur_token.val;
+                        value = 0;
+                    } else if (cur_token.val == "Bool") {
+                        type = cur_token.val;
+                        value = false;
+                    } else if (cur_token.val == "String") {
+                        type = cur_token.val;
+                        value = "";
+                    } else throw new Exception("Parameter does not exist.");
 
-                        if (cur_token.val == "Number") {
-                            type = cur_token.val;
-                            value = 0;
-                        } else if (cur_token.val == "Bool") {
-                            type = cur_token.val;
-                            value = false;
-                        } else if(cur_token.val == "String") {
-                            type = cur_token.val;
-                            value = "";
-                        } else throw new Exception("Parameter does not exist.");
-
-                        Next(TokenType.Keyword);
-
-                        Variable param = new(name, type){val = value};
-                        parameters.AddLast(param);
-                        variables.AddLast(param);
-                        variables2.AddLast(param);
-
-                        if (cur_token.type == TokenType.Comma)
-                            Next(TokenType.Comma);
-                        else
-                            break;
-                    }
-                    Next(TokenType.RCBracket);
-                    Next(TokenType.Comma);
-                }
-
-                if (parameters.Count != 0) {
-                    Console.WriteLine("Effect params:");
-                    foreach (var param in parameters) {
-                        Console.WriteLine($"Param: {param.name}, Type: {param.type}");
-                    }
-                } else Console.WriteLine("No params.");
-
-                // Effect action
-                if (cur_token.val == "Action")
                     Next(TokenType.Keyword);
-                else
-                    throw new Exception("Invalid action declaration.");
 
-                // Collect "targets" and "context"
-                Next(TokenType.Colon);
-                Next(TokenType.LParen);
-                string targets = cur_token.val;
-                Next(TokenType.Word);
-                Next(TokenType.Comma);
-                string context = cur_token.val;
-                Next(TokenType.Word);
-                Next(TokenType.RParen);
-                Next(TokenType.Asign);
-                Next(TokenType.GT);
-                Next(TokenType.LCBracket);
+                    Variable param = new(name, type){val = value};
+                    parameters.AddLast(param);
+                    variables.AddLast(param);
+                    variables2.AddLast(param);
 
-                // Collect statements
-                List<Statement> statements = new();
-
-                // Add vars
-                variables.AddLast(new Variable(targets, "List<Card>"));
-                variables.AddLast(new Variable(context, "Context")); 
-
-                variables2.AddLast(new Variable(targets, "List<Card>"));
-                variables2.AddLast(new Variable(context, "Context")); 
-
-                int count = 0;
-
-                ActionRecolector();
-
-                foreach (var statement in statements)
-                    statement.Debug();
-
-                // Create Effect
-                if (parameters != null)
-                    effects.Add(new Effect(nameEffect, targets, statements, variables2, parameters));
-                else
-                    effects.Add(new Effect(nameEffect, targets, statements, variables2));
-
-                cur_vars.Clear();
-
-                Console.WriteLine("Effect created.");
-
-                // Collect vars and method calls
-                void ActionRecolector() {
-                    StatementsCollector(false);
-
-                    Next(TokenType.RCBracket);
-                    Next(TokenType.RCBracket);
-
-                    Console.WriteLine("Action collected.");
+                    if (cur_token.type == TokenType.Comma)
+                        Next(TokenType.Comma);
+                    else
+                        break;
                 }
+                Next(TokenType.RCBracket);
+                Next(TokenType.Comma);
+            }
 
-                void StatementsCollector(bool OneStatement) {
-                    // Add statements until }
-                    if (cur_token.type != TokenType.RCBracket) {
-                        // Create var
-                        if (Enum.IsDefined(typeof(Keyword), cur_token.val))
-                            throw new Exception($"Cannot use [{cur_token.val}].");
-                        else if (cur_token.val == "for") {
-                            // Add statement and change current
-                            statements.Add(new Statement());
-                            cur_statement = statements.Last();
+            if (parameters.Count != 0) {
+                Console.WriteLine("Effect params:");
+                foreach (var param in parameters) {
+                    Console.WriteLine($"Param: {param.name}, Type: {param.type}");
+                }
+            } else Console.WriteLine("No params.");
 
-                            // Save outside loop vars
-                            List<Variable> variablesFor = [.. variables];
+            // Effect action
+            if (cur_token.val == "Action")
+                Next(TokenType.Keyword);
+            else
+                throw new Exception("Invalid action declaration.");
 
+            // Collect "targets" and "context"
+            Next(TokenType.Colon);
+            Next(TokenType.LParen);
+            string targets = cur_token.val;
+            Next(TokenType.Word);
+            Next(TokenType.Comma);
+            string context = cur_token.val;
+            Next(TokenType.Word);
+            Next(TokenType.RParen);
+            Next(TokenType.Asign);
+            Next(TokenType.GT);
+            Next(TokenType.LCBracket);
+
+            // Collect statements
+            List<Statement> statements = new();
+
+            // Add vars
+            variables.AddLast(new Variable(targets, "List<Card>"));
+            variables.AddLast(new Variable(context, "Context")); 
+
+            variables2.AddLast(new Variable(targets, "List<Card>"));
+            variables2.AddLast(new Variable(context, "Context")); 
+
+            int count = 0;
+
+            ActionRecolector();
+
+            foreach (var statement in statements)
+                statement.Debug();
+
+            // Create Effect
+            if (parameters != null)
+                effects.Add(new Effect(nameEffect, targets, statements, variables2, parameters));
+            else
+                effects.Add(new Effect(nameEffect, targets, statements, variables2));
+
+            cur_vars.Clear();
+
+            Console.WriteLine("Effect created.");
+
+            // Collect vars and method calls
+            void ActionRecolector() {
+                StatementsCollector(false);
+
+                Next(TokenType.RCBracket);
+                Next(TokenType.RCBracket);
+
+                Console.WriteLine("Action collected.");
+            }
+
+            void StatementsCollector(bool OneStatement) {
+                // Add statements until }
+                if (cur_token.type != TokenType.RCBracket) {
+                    // Create var
+                    if (Enum.IsDefined(typeof(Keyword), cur_token.val))
+                        throw new Exception($"Cannot use [{cur_token.val}].");
+                    else if (cur_token.val == "for") {
+                        // Add statement and change current
+                        statements.Add(new Statement());
+                        cur_statement = statements.Last();
+
+                        // Save outside loop vars
+                        List<Variable> variablesFor = [.. variables];
+
+                        NextAndSave(TokenType.Word);
+
+                        // Save new var
+                        variables.AddLast(new Variable(cur_token.val, "Card"));
+                        variables2.AddLast(new Variable(cur_token.val, "Card"));
+                        NextAndSave(TokenType.Word);
+
+                        if (cur_token.val != "in")
+                            throw new Exception("Expected [in] keyword.");
+                        Next(TokenType.Word);
+
+                        // Save list
+                        if (!IsCardList())
+                            throw new Exception("Invalid list type. Expected [List<Card>].");
+                        NextAndSave(TokenType.Word);
+
+                        bool isOneStatement;
+
+                        if (cur_token.type == TokenType.LCBracket) {
+                            Next(TokenType.LCBracket);
+                            isOneStatement = false;
+                        } else {
+                            isOneStatement = true;
+                        }
+
+                        // Collect statements inside loop
+                        StatementsCollector(isOneStatement);
+
+                        // Delete loop vars
+                        variables.Clear();
+
+                        foreach (var variable in variablesFor) {
+                            variables.AddLast(variable);
+                        }
+
+                        if (!isOneStatement) {
+                            Next(TokenType.RCBracket);
+                            Next(TokenType.Semicolon);
+                        }
+
+                        // End loop
+                        statements.Add(new Statement());
+                        cur_statement = statements.Last();
+                        cur_statement.Add("ForEnd");
+
+                        Console.WriteLine($"Collected statement {++count}: for");
+                        if (!OneStatement) StatementsCollector(false);
+
+                    } else if (cur_token.val == "while") {
+                        // Add statement and change current
+                        statements.Add(new Statement());
+                        cur_statement = statements.Last();
+
+                        // Save vars outside loop
+                        List<Variable> variablesWhile = [.. variables];
+
+                        NextAndSave(TokenType.Word);
+                        Next(TokenType.LParen);
+
+                        dNext = NextAndSave;
+                        ParseBooleanExpression();
+
+                        Next(TokenType.RParen);
+
+                        bool isOneStatement;
+
+                        if (cur_token.type == TokenType.LCBracket) {
+                            Next(TokenType.LCBracket);
+                            isOneStatement = false;
+                        } else {
+                            isOneStatement = true;
+                        }
+
+                        // Collect statements inside loop
+                        StatementsCollector(isOneStatement);
+
+                        if (!isOneStatement) {
+                            Next(TokenType.RCBracket);
+                            Next(TokenType.Semicolon);
+                        }
+
+                        // Delete loop vars
+                        variables.Clear();
+
+                        foreach (var variable in variablesWhile) {
+                            variables.AddLast(variable);
+                        }
+
+                        // End loop
+                        statements.Add(new Statement());
+                        cur_statement = statements.Last();
+                        cur_statement.Add("WhileEnd");
+
+                        Console.WriteLine($"Collected statement {++count}: while");
+                        if (!OneStatement) StatementsCollector(false);
+
+                    } else if (IsNumericVariable() || IsNumericProperty()) { // Incr or CombOp
+                        // Add new statement and change current
+                        statements.Add(new Statement());
+                        cur_statement = statements.Last();
+
+                        if (IsNumericProperty()) {
                             NextAndSave(TokenType.Word);
-
-                            // Save new var
-                            variables.AddLast(new Variable(cur_token.val, "Card"));
-                            variables2.AddLast(new Variable(cur_token.val, "Card"));
+                            Next(TokenType.Point);
+                            NextAndSave(TokenType.Keyword);
+                        } else if (cur_token.type == TokenType.Word) {
                             NextAndSave(TokenType.Word);
+                        }
 
-                            if (cur_token.val != "in")
-                                throw new Exception("Expected [in] keyword.");
-                            Next(TokenType.Word);
+                        if (cur_token.type == TokenType.SumCom) {
+                            NextAndSave(TokenType.SumCom);
+                            dNext = NextAndSave;
+                            Expr();
+                        } else if (cur_token.type == TokenType.SubCom) {
+                            NextAndSave(TokenType.SubCom);
+                            dNext = NextAndSave;
+                            Expr();
+                        } else if (cur_token.type == TokenType.MultCom) {
+                            NextAndSave(TokenType.MultCom);
+                            dNext = NextAndSave;
+                            Expr();
+                        } else if (cur_token.type == TokenType.DivCom) {
+                            NextAndSave(TokenType.DivCom);
+                            dNext = NextAndSave;
+                            Expr();
+                        } else if (cur_token.type == TokenType.XORCom) {
+                            NextAndSave(TokenType.XORCom);
+                            dNext = NextAndSave;
+                            Expr();
+                        } else if (cur_token.type == TokenType.Incr) {
+                            NextAndSave(TokenType.Incr);
+                        }
 
-                            // Save list
-                            if (!IsCardList())
-                                throw new Exception("Invalid list type. Expected [List<Card>].");
+                        // Statement end > Collect next
+                        if (cur_token.type == TokenType.Semicolon) {
+                            Next(TokenType.Semicolon);
+                            Console.WriteLine($"Collected statement {++count}: Incr or CombOp");
+                            if (!OneStatement) StatementsCollector(false);
+                        } else throw new Exception("Expected semicolon.");
+
+                    } else if (cur_token.type == TokenType.Incr) { // Increase
+                        // Add new statement and change current
+                        statements.Add(new Statement());
+                        cur_statement = statements.Last();
+
+                        NextAndSave(TokenType.Incr);
+
+                        if (IsNumericProperty()) {
                             NextAndSave(TokenType.Word);
-
-                            bool isOneStatement;
-
-                            if (cur_token.type == TokenType.LCBracket) {
-                                Next(TokenType.LCBracket);
-                                isOneStatement = false;
-                            } else {
-                                isOneStatement = true;
-                            }
-
-                            // Collect statements inside loop
-                            StatementsCollector(isOneStatement);
-
-                            // Delete loop vars
-                            variables.Clear();
-
-                            foreach (var variable in variablesFor) {
-                                variables.AddLast(variable);
-                            }
-
-                            if (!isOneStatement) {
-                                Next(TokenType.RCBracket);
-                                Next(TokenType.Semicolon);
-                            }
-
-                            // End loop
-                            statements.Add(new Statement());
-                            cur_statement = statements.Last();
-                            cur_statement.Add("ForEnd");
-
-                            Console.WriteLine($"Collected statement {++count}: for");
-                            if(!OneStatement) StatementsCollector(false);
-
-                        } else if(cur_token.val == "while") {
-                            // Add statement and change current
-                            statements.Add(new Statement());
-                            cur_statement = statements.Last();
-
-                            // Save vars outside loop
-                            List<Variable> variablesWhile = [.. variables];
-
+                            Next(TokenType.Point);
+                            NextAndSave(TokenType.Keyword);
+                        } else if (cur_token.type == TokenType.Word) {
                             NextAndSave(TokenType.Word);
-                            Next(TokenType.LParen);
+                        }
+
+                        // Statement end > Collect next
+                        if (cur_token.type == TokenType.Semicolon) {
+                            Next(TokenType.Semicolon);
+                            Console.WriteLine($"Collected statement {++count}: Incr");
+                            if (!OneStatement) StatementsCollector(false);
+                        } else throw new Exception("Semicolon was expected");
+
+                    } else if (!IsVariable() && cur_token.type == TokenType.Word) { // Var declaration
+                        // Add statement and change current
+                        statements.Add(new Statement());
+                        cur_statement = statements.Last();
+
+                        string name = cur_token.val;
+                        NextAndSave(TokenType.Word);
+                        NextAndSave(TokenType.Asign);
+
+                        if (IsVariable()) {
+                            cur_vars = variables;
+
+                            Variable variable = new(name, WichTypeIs(TokenType.Semicolon));
+
+                            variables.AddLast(variable);
+                            variables2.AddLast(variable);
+                        } else if (IsBoolean()) {
+                            cur_vars = variables;
 
                             dNext = NextAndSave;
-                            ParseBooleanExpression();
+                            Variable boolean = new(name, "Bool") {val = ParseBooleanExpression()};
 
-                            Next(TokenType.RParen);
+                            variables.AddLast(boolean);
+                            variables2.AddLast(boolean);
+                        } else if (
+                            cur_token.type == TokenType.Quote
+                            || IsString()
+                        ) {
+                            cur_vars = variables;
 
-                            bool isOneStatement;
+                            dNext = NextAndSave;
+                            Variable variable = new(name, "String") {val = ParseString()};
 
-                            if (cur_token.type == TokenType.LCBracket) {
-                                Next(TokenType.LCBracket);
-                                isOneStatement = false;
-                            } else {
-                                isOneStatement = true;
-                            }
+                            variables.AddLast(variable);
+                            variables2.AddLast(variable);
+                        } else {
+                            cur_vars = variables;
 
-                            // Collect statements inside loop
-                            StatementsCollector(isOneStatement);
-
-                            if (!isOneStatement) {
-                                Next(TokenType.RCBracket);
-                                Next(TokenType.Semicolon);
-                            }
-
-                            // Delete loop vars
-                            variables.Clear();
-
-                            foreach (var variable in variablesWhile) {
-                                variables.AddLast(variable);
-                            }
-
-                            // End loop
-                            statements.Add(new Statement());
-                            cur_statement = statements.Last();
-                            cur_statement.Add("WhileEnd");
-
-                            Console.WriteLine($"Collected statement {++count}: while");
-                            if(!OneStatement) StatementsCollector(false);
-
-                        } else if(IsNumericVariable() || IsNumericProperty()) { // Incr or CombOp
-                            // Add new statement and change current
-                            statements.Add(new Statement());
-                            cur_statement = statements.Last();
-
-                            if(IsNumericProperty()) {
-                                NextAndSave(TokenType.Word);
-                                Next(TokenType.Point);
-                                NextAndSave(TokenType.Keyword);
-                            } else if (cur_token.type == TokenType.Word) {
-                                NextAndSave(TokenType.Word);
-                            }
-
-                            if (cur_token.type == TokenType.SumCom) {
-                                NextAndSave(TokenType.SumCom);
-                                dNext = NextAndSave;
-                                Expr();
-                            } else if(cur_token.type == TokenType.SubCom) {
-                                NextAndSave(TokenType.SubCom);
-                                dNext = NextAndSave;
-                                Expr();
-                            } else if(cur_token.type == TokenType.MultCom) {
-                                NextAndSave(TokenType.MultCom);
-                                dNext = NextAndSave;
-                                Expr();
-                            } else if(cur_token.type == TokenType.DivCom) {
-                                NextAndSave(TokenType.DivCom);
-                                dNext = NextAndSave;
-                                Expr();
-                            } else if(cur_token.type == TokenType.XORCom) {
-                                NextAndSave(TokenType.XORCom);
-                                dNext = NextAndSave;
-                                Expr();
-                            } else if (cur_token.type == TokenType.Incr) {
-                                NextAndSave(TokenType.Incr);
-                            }
-
-                            // Statement end > Collect next
-                            if (cur_token.type == TokenType.Semicolon) {
-                                Next(TokenType.Semicolon);
-                                Console.WriteLine($"Collected statement {++count}: Incr or CombOp");
-                                if(!OneStatement) StatementsCollector(false);
-                            } else throw new Exception("Expected semicolon.");
-
-                        } else if (cur_token.type == TokenType.Incr) { // Increase
-                            // Add new statement and change current
-                            statements.Add(new Statement());
-                            cur_statement = statements.Last();
-
-                            NextAndSave(TokenType.Incr);
-
-                            if (IsNumericProperty()) {
-                                NextAndSave(TokenType.Word);
-                                Next(TokenType.Point);
-                                NextAndSave(TokenType.Keyword);
-                            } else if (cur_token.type == TokenType.Word) {
-                                NextAndSave(TokenType.Word);
-                            }
-
-                            // Statement end > Collect next
-                            if (cur_token.type == TokenType.Semicolon) {
-                                Next(TokenType.Semicolon);
-                                Console.WriteLine($"Collected statement {++count}: Incr");
-                                if(!OneStatement) StatementsCollector(false);
-                            } else throw new Exception("Semicolon was expected");
-
-                        } else if(!IsVariable() && cur_token.type == TokenType.Word) { // Var declaration
-                            // Add statement and change current
-                            statements.Add(new Statement());
-                            cur_statement = statements.Last();
-
-                            string name = cur_token.val;
-                            NextAndSave(TokenType.Word);
-                            NextAndSave(TokenType.Asign);
-
-                            if (IsVariable()) {
-                                cur_vars = variables;
-
-                                Variable variable = new(name, WichTypeIs(TokenType.Semicolon));
-
-                                variables.AddLast(variable);
-                                variables2.AddLast(variable);
-                            } else if (IsBoolean()) {
-                                cur_vars = variables;
-
-                                dNext = NextAndSave;
-                                Variable boolean = new(name, "Bool") {val = ParseBooleanExpression()};
-
-                                variables.AddLast(boolean);
-                                variables2.AddLast(boolean);
-                            } else if (
-                                cur_token.type == TokenType.Quote
-                                || IsString()
-                            ) {
-                                cur_vars = variables;
-
-                                dNext = NextAndSave;
-                                Variable variable = new(name, "String") {val = ParseString()};
-
-                                variables.AddLast(variable);
-                                variables2.AddLast(variable);
-                            } else {
-                                cur_vars = variables;
-
-                                dNext = NextAndSave;
-                                Variable number = new(name, "Number") {val = Expr()};
-                                
-                                variables.AddLast(number);
-                                variables2.AddLast(number);
-                            }
-
-                            // Statement end > Collect next
-                            if (cur_token.type == TokenType.Semicolon) {
-                                Next(TokenType.Semicolon);
-                                Console.WriteLine($"Collected statement {++count}: Var");
-                                if (!OneStatement) StatementsCollector(false);
-                            }
-                            else throw new Exception("Expected semicolon.");
-
-                        } else if (IsVariable()) { // Var > Await method call
-                            // Add statement and change current
-                            statements.Add(new Statement());
-                            cur_statement = statements.Last();
-
-                            // Collect statement
-                            if (!CheckMethodCall()) throw new Exception("Bad method call");
-
-                            // Statement end > Collect next
-                            if (cur_token.type == TokenType.Semicolon) {
-                                Next(TokenType.Semicolon);
-                                Console.WriteLine($"Collected statement {++count}: Method");
-                                if (!OneStatement) StatementsCollector(false);
-                            } else throw new Exception("Expected semicolon.");
-                        } else throw new Exception("Expected statement.");
-                    }
-                }
-
-                // Change to next token and save
-                void NextAndSave(TokenType type) {
-                    cur_statement.Add(cur_token.val);
-                    Next(type);
-                }
-
-                bool IsVariable() {
-                    if (Enum.IsDefined(typeof(Keyword), cur_token.val)) {
-                        return false;
-                    } else {
-                        foreach (var variable in variables) {
-                            if (
-                                variable.name == cur_token.val
-                                && (
-                                    (
-                                        variable.type != "Number" 
-                                        && variable.type != "Bool"
-                                        && variable.type != "String"
-                                        && variable.type != "Card"
-                                    ) || (
-                                        variable.type == "Card"
-                                        && tokens[cur_tokenIndex + 2].val == "Owner"
-                                    )
-                                )
-                            ) return true;
+                            dNext = NextAndSave;
+                            Variable number = new(name, "Number") {val = Expr()};
+                            
+                            variables.AddLast(number);
+                            variables2.AddLast(number);
                         }
-                        return false;
-                    }
-                }
 
-                bool IsNumericVariable() {
-                    if (Enum.IsDefined(typeof(Keyword), cur_token.val)) {
-                        return false;
-                    } else {
-                        foreach (var variable in variables) {
-                            if (
-                                variable.name == cur_token.val
-                                && variable.type == "Number"
-                            ) return true;
+                        // Statement end > Collect next
+                        if (cur_token.type == TokenType.Semicolon) {
+                            Next(TokenType.Semicolon);
+                            Console.WriteLine($"Collected statement {++count}: Var");
+                            if (!OneStatement) StatementsCollector(false);
                         }
-                        return false;
-                    }
-                }
+                        else throw new Exception("Expected semicolon.");
 
-                bool IsNumericProperty() {
-                    if (Enum.IsDefined(typeof(Keyword), cur_token.val)) {
-                        return false;
-                    } else {
-                        foreach (var variable in variables) {
-                            if (
-                                variable.name == cur_token.val
-                                && variable.type == "Card" 
-                                && tokens[cur_tokenIndex + 2].val == "Power"
-                            ) return true;
-                        }
-                        return false;
-                    }
-                }
+                    } else if (IsVariable()) { // Var > Await method call
+                        // Add statement and change current
+                        statements.Add(new Statement());
+                        cur_statement = statements.Last();
 
-                bool IsString() {
-                    if (Enum.IsDefined(typeof(Keyword), cur_token.val)) {
-                        return false;
-                    } else {
-                        foreach (var variable in variables) {
-                            if (
-                                variable.name == cur_token.val
-                                && variable.type == "String"
-                            ) {
-                                return true;
-                            } else if (
-                                variable.name == cur_token.val
-                                && variable.type == "Card" 
-                                && (
-                                    tokens[cur_tokenIndex + 2].val == "Name"
-                                    || tokens[cur_tokenIndex + 2].val == "Type"
-                                    || tokens[cur_tokenIndex + 2].val == "Range"
-                                    || tokens[cur_tokenIndex + 2].val == "Faction"
-                                )
-                            ) return true;
-                        }
-                        return false;
-                    }
-                }
+                        // Collect statement
+                        if (!CheckMethodCall()) throw new Exception("Bad method call");
 
-                bool IsCardList() {
+                        // Statement end > Collect next
+                        if (cur_token.type == TokenType.Semicolon) {
+                            Next(TokenType.Semicolon);
+                            Console.WriteLine($"Collected statement {++count}: Method");
+                            if (!OneStatement) StatementsCollector(false);
+                        } else throw new Exception("Expected semicolon.");
+                    } else throw new Exception("Expected statement.");
+                }
+            }
+
+            // Change to next token and save
+            void NextAndSave(TokenType type) {
+                cur_statement.Add(cur_token.val);
+                Next(type);
+            }
+
+            bool IsVariable() {
+                if (Enum.IsDefined(typeof(Keyword), cur_token.val)) {
+                    return false;
+                } else {
                     foreach (var variable in variables) {
                         if (
                             variable.name == cur_token.val
-                            && variable.type == "List<Card>"
+                            && (
+                                (
+                                    variable.type != "Number" 
+                                    && variable.type != "Bool"
+                                    && variable.type != "String"
+                                    && variable.type != "Card"
+                                ) || (
+                                    variable.type == "Card"
+                                    && tokens[cur_tokenIndex + 2].val == "Owner"
+                                )
+                            )
                         ) return true;
                     }
                     return false;
                 }
+            }
 
-                // Collect method call statement
-                bool CheckMethodCall() {
-                    // Check if var
-                    if (IsVariable()) {
+            bool IsNumericVariable() {
+                if (Enum.IsDefined(typeof(Keyword), cur_token.val)) {
+                    return false;
+                } else {
+                    foreach (var variable in variables) {
+                        if (
+                            variable.name == cur_token.val
+                            && variable.type == "Number"
+                        ) return true;
+                    }
+                    return false;
+                }
+            }
+
+            bool IsNumericProperty() {
+                if (Enum.IsDefined(typeof(Keyword), cur_token.val)) {
+                    return false;
+                } else {
+                    foreach (var variable in variables) {
+                        if (
+                            variable.name == cur_token.val
+                            && variable.type == "Card" 
+                            && tokens[cur_tokenIndex + 2].val == "Power"
+                        ) return true;
+                    }
+                    return false;
+                }
+            }
+
+            bool IsString() {
+                if (Enum.IsDefined(typeof(Keyword), cur_token.val)) {
+                    return false;
+                } else {
+                    foreach (var variable in variables) {
+                        if (
+                            variable.name == cur_token.val
+                            && variable.type == "String"
+                        ) {
+                            return true;
+                        } else if (
+                            variable.name == cur_token.val
+                            && variable.type == "Card" 
+                            && (
+                                tokens[cur_tokenIndex + 2].val == "Name"
+                                || tokens[cur_tokenIndex + 2].val == "Type"
+                                || tokens[cur_tokenIndex + 2].val == "Range"
+                                || tokens[cur_tokenIndex + 2].val == "Faction"
+                            )
+                        ) return true;
+                    }
+                    return false;
+                }
+            }
+
+            bool IsCardList() {
+                foreach (var variable in variables) {
+                    if (
+                        variable.name == cur_token.val
+                        && variable.type == "List<Card>"
+                    ) return true;
+                }
+                return false;
+            }
+
+            // Collect method call statement
+            bool CheckMethodCall() {
+                // Check if var
+                if (IsVariable()) {
+                    foreach (var variable in variables) {
+                        if (variable.name == cur_token.val) {
+                            if (variable.type == "Context") {
+                                NextAndSave(TokenType.Word);
+                                if (cur_token.type == TokenType.Point)
+                                    Next(TokenType.Point);
+                                else
+                                    return false;
+                                if (Enum.IsDefined(typeof(ContextMethods), cur_token.val))
+                                    return CheckMethodCall();
+                                else
+                                    return false;
+                            } else if (variable.type == "List<Card>") {
+                                NextAndSave(TokenType.Word);
+                                if (cur_token.type == TokenType.Point)
+                                    Next(TokenType.Point);
+                                else
+                                    return false;
+                                if (Enum.IsDefined(typeof(CardListMethods), cur_token.val))
+                                    return CheckMethodCall();
+                                else
+                                    return false;
+                            }
+                            return false;
+                        }
+                    }
+                    return false;
+
+                // Check if method
+                } else if (Enum.IsDefined(typeof(ContextMethods), cur_token.val)) {
+                    if (Enum.IsDefined(typeof(SyntacticSugarContext), cur_token.val)) {
+                        NextAndSave(TokenType.Keyword);
+                        Next(TokenType.Point);
+                        if (Enum.IsDefined(typeof(CardListMethods), cur_token.val))
+                            return CheckMethodCall();
+                        else
+                            return false;
+                    } else {
+                        NextAndSave(TokenType.Keyword);
+                        Next(TokenType.LParen);
+
+                        bool correct = false;
+
                         foreach (var variable in variables) {
-                            if (variable.name == cur_token.val) {
-                                if (variable.type == "Context") {
-                                    NextAndSave(TokenType.Word);
-                                    if (cur_token.type == TokenType.Point)
-                                        Next(TokenType.Point);
-                                    else
-                                        return false;
-                                    if (Enum.IsDefined(typeof(ContextMethods), cur_token.val))
-                                        return CheckMethodCall();
-                                    else
-                                        return false;
-                                } else if(variable.type == "List<Card>") {
-                                    NextAndSave(TokenType.Word);
-                                    if (cur_token.type == TokenType.Point)
-                                        Next(TokenType.Point);
-                                    else
-                                        return false;
-                                    if (Enum.IsDefined(typeof(CardListMethods), cur_token.val))
-                                        return CheckMethodCall();
-                                    else
-                                        return false;
-                                }
-                                return false;
-                            }
+                            if (
+                                variable.name == cur_token.val
+                                && WichTypeIs(TokenType.RParen) == "Player"
+                            ) correct = true;
                         }
-                        return false;
 
-                    // Check if method
-                    } else if (Enum.IsDefined(typeof(ContextMethods), cur_token.val)) {
-                        if (Enum.IsDefined(typeof(SyntacticSugarContext), cur_token.val)) {
-                            NextAndSave(TokenType.Keyword);
-                            Next(TokenType.Point);
-                            if (Enum.IsDefined(typeof(CardListMethods), cur_token.val))
-                                return CheckMethodCall();
-                            else
-                                return false;
-                        } else {
-                            NextAndSave(TokenType.Keyword);
-                            Next(TokenType.LParen);
+                        if (correct)
+                            Next(TokenType.RParen);
+                        else
+                            return false;
 
-                            bool correct = false;
+                        Next(TokenType.Point);
 
-                            foreach (var variable in variables) {
-                                if (
-                                    variable.name == cur_token.val
-                                    && WichTypeIs(TokenType.RParen) == "Player"
-                                ) correct = true;
-                            }
+                        if (Enum.IsDefined(typeof(CardListMethods), cur_token.val))
+                            return CheckMethodCall();
+                        else
+                            return false;
+                    }
+                } else if (Enum.IsDefined(typeof(CardListMethods), cur_token.val)) {
+                    if (cur_token.val == "Shuffle") {
+                        NextAndSave(TokenType.Keyword);
+                        Next(TokenType.LParen);
+                        Next(TokenType.RParen);
+                        if (cur_token.type == TokenType.Semicolon)
+                            return true;
+                        else
+                            return false;
+                    } else if (
+                        cur_token.val == "Add"
+                        || cur_token.val == "Push"
+                        || cur_token.val == "SendBottom"
+                        || cur_token.val == "Remove"
+                    ) {
+                        NextAndSave(TokenType.Keyword);
+                        Next(TokenType.LParen);
 
-                            if (correct)
-                                Next(TokenType.RParen);
-                            else
-                                return false;
-
-                            Next(TokenType.Point);
-
-                            if (Enum.IsDefined(typeof(CardListMethods), cur_token.val))
-                                return CheckMethodCall();
-                            else
-                                return false;
-                        }
-                    } else if (Enum.IsDefined(typeof(CardListMethods), cur_token.val)) {
-                        if (cur_token.val == "Shuffle") {
-                            NextAndSave(TokenType.Keyword);
-                            Next(TokenType.LParen);
+                        if (WichTypeIs(TokenType.RParen) == "Card") {
                             Next(TokenType.RParen);
                             if (cur_token.type == TokenType.Semicolon)
                                 return true;
                             else
                                 return false;
-                        } else if (
-                            cur_token.val == "Add"
-                            || cur_token.val == "Push"
-                            || cur_token.val == "SendBottom"
-                            || cur_token.val == "Remove"
-                        ) {
-                            NextAndSave(TokenType.Keyword);
-                            Next(TokenType.LParen);
-
-                            if (WichTypeIs(TokenType.RParen) == "Card") {
-                                Next(TokenType.RParen);
-                                if (cur_token.type == TokenType.Semicolon)
-                                    return true;
-                                else
-                                    return false;
-                            }
-                            return false;  
-                        } else if(cur_token.val == "Find") {
-                            NextAndSave(TokenType.Keyword);
-                            Next(TokenType.LParen);
-                            dNext = NextAndSave;
-                            Predicate(variables2);
-                            Next(TokenType.RParen);
-
-                            Next(TokenType.Point);
-
-                            if (Enum.IsDefined(typeof(CardListMethods), cur_token.val))
-                                return CheckMethodCall();
-                            else
-                                return false;
                         }
-                        throw new Exception("Invalid method.");
-                    } else return false;
-                }
+                        return false;  
+                    } else if (cur_token.val == "Find") {
+                        NextAndSave(TokenType.Keyword);
+                        Next(TokenType.LParen);
+                        dNext = NextAndSave;
+                        Predicate(variables2);
+                        Next(TokenType.RParen);
 
-                // Get var type
-                string WichTypeIs(TokenType finalToken) {
-                    // Check if var
-                    if (cur_token.type == TokenType.Word) {
-                        foreach (var variable in variables) {
-                            if (variable.name == cur_token.val) {
-                                // Check var type
-                                if (variable.type == "Context") {
-                                    NextAndSave(TokenType.Word);
-                                    if (cur_token.type == finalToken)
-                                        return "Context";
-                                    else if (cur_token.type == TokenType.Point) {
-                                        Next(TokenType.Point);
-                                        if (Enum.IsDefined(typeof(ContextPropertiesAndMethods), cur_token.val))
-                                            return WichTypeIs(finalToken);
-                                        throw new Exception("Unknown method or property.");
-                                    } 
-                                } else if (variable.type == "List<Card>") {
-                                    NextAndSave(TokenType.Word);
-                                    if (cur_token.type == finalToken)
-                                        return "List<Card>";
-                                    else if (cur_token.type == TokenType.Point) {
-                                        Next(TokenType.Point);
-                                        if (Enum.IsDefined(typeof(CardListProperties), cur_token.val))
-                                            return WichTypeIs(finalToken);
-                                        else
-                                            throw new Exception("Unknown method or property.");
-                                    } else if (cur_token.type == TokenType.LSBracket) {
-                                        NextAndSave(TokenType.LSBracket);
-                                        dNext = NextAndSave;
-                                        Expr();
-                                        NextAndSave(TokenType.RSBracket);
-                                        if (cur_token.type == finalToken)
-                                            return "Card";
-                                        else if (cur_token.type == TokenType.Point) {
-                                            Next(TokenType.Point);
-                                            if (Enum.IsDefined(typeof(CardProperties), cur_token.val))
-                                                return WichTypeIs(finalToken);
-                                            throw new Exception("Unknown method or property.");
-                                        }
-                                        throw new Exception("Variable declaration error.");
-                                    }
-                                } else if (variable.type == "Card") {
-                                    NextAndSave(TokenType.Word);
-                                    if (cur_token.type == finalToken)
-                                        return "Card";
-                                    else if (cur_token.type == TokenType.Point) {
-                                        Next(TokenType.Point);
-                                        if(Enum.IsDefined(typeof(CardProperties), cur_token.val))
-                                            return WichTypeIs(finalToken);
-                                        throw new Exception("Unknown method or property.");
-                                    } 
-                                } else if(variable.type == "Player") {
-                                    NextAndSave(TokenType.Word);
-                                    if (cur_token.type == finalToken)
-                                        return "Player";
-                                    throw new Exception("Unknown method or property."); 
-                                }
-                            } 
-                        }
-                        throw new Exception("Expected variable.");
-                    } else if(cur_token.type == TokenType.Keyword) {
-                        // Check if method
-                        if (Enum.IsDefined(typeof(ContextPropertiesAndMethods), cur_token.val)) {
-                            if (cur_token.val == "TriggerPlayer") {
-                                NextAndSave(TokenType.Keyword);
-                                return "Player";
-                            } else if (Enum.IsDefined(typeof(SyntacticSugarContext), cur_token.val)) {
-                                NextAndSave(TokenType.Keyword);
+                        Next(TokenType.Point);
+
+                        if (Enum.IsDefined(typeof(CardListMethods), cur_token.val))
+                            return CheckMethodCall();
+                        else
+                            return false;
+                    }
+                    throw new Exception("Invalid method.");
+                } else return false;
+            }
+
+            // Get var type
+            string WichTypeIs(TokenType finalToken) {
+                // Check if var
+                if (cur_token.type == TokenType.Word) {
+                    foreach (var variable in variables) {
+                        if (variable.name == cur_token.val) {
+                            // Check var type
+                            if (variable.type == "Context") {
+                                NextAndSave(TokenType.Word);
                                 if (cur_token.type == finalToken)
-                                    return "List<Card>";
+                                    return "Context";
                                 else if (cur_token.type == TokenType.Point) {
                                     Next(TokenType.Point);
-                                    return WichTypeIs(finalToken);
-                                } else if(cur_token.type == TokenType.LSBracket) {
-                                    NextAndSave(TokenType.LSBracket);
-                                    dNext = NextAndSave;
-                                    Expr();
-                                    NextAndSave(TokenType.RSBracket);
-                                    if (cur_token.type == finalToken)
-                                        return "Card";
-                                    else if (cur_token.type == TokenType.Point) {
-                                        Next(TokenType.Point);
-                                        if (Enum.IsDefined(typeof(CardProperties), cur_token.val))
-                                            return WichTypeIs(finalToken);
-                                        throw new Exception("Unknown method or property.");
-                                    }
-                                    throw new Exception("Variable declaration error.");
-                                }
-                                throw new Exception("Expected semicolon or method call.");
-                            } else {
-                                NextAndSave(TokenType.Keyword);
-                                Next(TokenType.LParen);
-
-                                if (WichTypeIs(TokenType.RParen) == "Player")
-                                    Next(TokenType.RParen);
-                                else throw new Exception("Expected Player parameter.");
-
+                                    if (Enum.IsDefined(typeof(ContextPropertiesAndMethods), cur_token.val))
+                                        return WichTypeIs(finalToken);
+                                    throw new Exception("Unknown method or property.");
+                                } 
+                            } else if (variable.type == "List<Card>") {
+                                NextAndSave(TokenType.Word);
                                 if (cur_token.type == finalToken)
                                     return "List<Card>";
                                 else if (cur_token.type == TokenType.Point) {
                                     Next(TokenType.Point);
                                     if (Enum.IsDefined(typeof(CardListProperties), cur_token.val))
                                         return WichTypeIs(finalToken);
-                                    throw new Exception("Unknown method or property.");
+                                    else
+                                        throw new Exception("Unknown method or property.");
                                 } else if (cur_token.type == TokenType.LSBracket) {
                                     NextAndSave(TokenType.LSBracket);
                                     dNext = NextAndSave;
@@ -721,118 +651,198 @@ public class Parser {
                                     }
                                     throw new Exception("Variable declaration error.");
                                 }
-                                throw new Exception("Expected semicolon or method call.");
-                            }
-                        } else if (Enum.IsDefined(typeof(CardProperties), cur_token.val)) {
-                            Token token = cur_token;
-                            NextAndSave(TokenType.Keyword);
-                            if (token.val == "Owner")
-                                return "Player";
-                            throw new Exception("Invalid Card property.");
-                        } else if (Enum.IsDefined(typeof(CardListProperties), cur_token.val)) {
-                            if (cur_token.val == "Pop") {
-                                NextAndSave(TokenType.Keyword);
-                                Next(TokenType.LParen);
-                                Next(TokenType.RParen);
+                            } else if (variable.type == "Card") {
+                                NextAndSave(TokenType.Word);
                                 if (cur_token.type == finalToken)
                                     return "Card";
                                 else if (cur_token.type == TokenType.Point) {
                                     Next(TokenType.Point);
-
                                     if (Enum.IsDefined(typeof(CardProperties), cur_token.val))
                                         return WichTypeIs(finalToken);
-                                    throw new Exception("Expected method return type not null.");
-                                }
-                                throw new Exception("Expected semicolon or method call.");
-                            } else if (cur_token.val == "Find") {
-                                NextAndSave(TokenType.Keyword);
-                                Next(TokenType.LParen);
-                                dNext = NextAndSave;
-                                Predicate(variables2);
-                                Next(TokenType.RParen);
+                                    throw new Exception("Unknown method or property.");
+                                } 
+                            } else if (variable.type == "Player") {
+                                NextAndSave(TokenType.Word);
                                 if (cur_token.type == finalToken)
-                                    return "List<Card>";
+                                    return "Player";
+                                throw new Exception("Unknown method or property."); 
+                            }
+                        } 
+                    }
+                    throw new Exception("Expected variable.");
+                } else if (cur_token.type == TokenType.Keyword) {
+                    // Check if method
+                    if (Enum.IsDefined(typeof(ContextPropertiesAndMethods), cur_token.val)) {
+                        if (cur_token.val == "TriggerPlayer") {
+                            NextAndSave(TokenType.Keyword);
+                            return "Player";
+                        } else if (Enum.IsDefined(typeof(SyntacticSugarContext), cur_token.val)) {
+                            NextAndSave(TokenType.Keyword);
+                            if (cur_token.type == finalToken)
+                                return "List<Card>";
+                            else if (cur_token.type == TokenType.Point) {
+                                Next(TokenType.Point);
+                                return WichTypeIs(finalToken);
+                            } else if (cur_token.type == TokenType.LSBracket) {
+                                NextAndSave(TokenType.LSBracket);
+                                dNext = NextAndSave;
+                                Expr();
+                                NextAndSave(TokenType.RSBracket);
+                                if (cur_token.type == finalToken)
+                                    return "Card";
                                 else if (cur_token.type == TokenType.Point) {
                                     Next(TokenType.Point);
-
-                                    if (Enum.IsDefined(typeof(CardListProperties), cur_token.val))
+                                    if (Enum.IsDefined(typeof(CardProperties), cur_token.val))
                                         return WichTypeIs(finalToken);
-                                    throw new Exception("Expected method return type not null.");
-                                } else if(cur_token.type == TokenType.LSBracket) {
-                                    NextAndSave(TokenType.LSBracket);
-                                    dNext = NextAndSave;
-                                    Expr();
-                                    NextAndSave(TokenType.RSBracket);
-                                    if (cur_token.type == finalToken)
-                                        return "Card";
-                                    else if (cur_token.type == TokenType.Point) {
-                                        Next(TokenType.Point);
-                                        if (Enum.IsDefined(typeof(CardProperties), cur_token.val))
-                                            return WichTypeIs(finalToken);
-                                        throw new Exception("Uknown method or property.");
-                                    }
-                                    throw new Exception("Variable declaration error.");
+                                    throw new Exception("Unknown method or property.");
                                 }
-                                throw new Exception("Expected semicolon or method call.");
-                            } 
-                            throw new Exception("Expected method return type not null.");
+                                throw new Exception("Variable declaration error.");
+                            }
+                            throw new Exception("Expected semicolon or method call.");
+                        } else {
+                            NextAndSave(TokenType.Keyword);
+                            Next(TokenType.LParen);
+
+                            if (WichTypeIs(TokenType.RParen) == "Player")
+                                Next(TokenType.RParen);
+                            else throw new Exception("Expected Player parameter.");
+
+                            if (cur_token.type == finalToken)
+                                return "List<Card>";
+                            else if (cur_token.type == TokenType.Point) {
+                                Next(TokenType.Point);
+                                if (Enum.IsDefined(typeof(CardListProperties), cur_token.val))
+                                    return WichTypeIs(finalToken);
+                                throw new Exception("Unknown method or property.");
+                            } else if (cur_token.type == TokenType.LSBracket) {
+                                NextAndSave(TokenType.LSBracket);
+                                dNext = NextAndSave;
+                                Expr();
+                                NextAndSave(TokenType.RSBracket);
+                                if (cur_token.type == finalToken)
+                                    return "Card";
+                                else if (cur_token.type == TokenType.Point) {
+                                    Next(TokenType.Point);
+                                    if (Enum.IsDefined(typeof(CardProperties), cur_token.val))
+                                        return WichTypeIs(finalToken);
+                                    throw new Exception("Unknown method or property.");
+                                }
+                                throw new Exception("Variable declaration error.");
+                            }
+                            throw new Exception("Expected semicolon or method call.");
                         }
-                        throw new Exception("Expected variable or method.");
+                    } else if (Enum.IsDefined(typeof(CardProperties), cur_token.val)) {
+                        Token token = cur_token;
+                        NextAndSave(TokenType.Keyword);
+                        if (token.val == "Owner")
+                            return "Player";
+                        throw new Exception("Invalid Card property.");
+                    } else if (Enum.IsDefined(typeof(CardListProperties), cur_token.val)) {
+                        if (cur_token.val == "Pop") {
+                            NextAndSave(TokenType.Keyword);
+                            Next(TokenType.LParen);
+                            Next(TokenType.RParen);
+                            if (cur_token.type == finalToken)
+                                return "Card";
+                            else if (cur_token.type == TokenType.Point) {
+                                Next(TokenType.Point);
+
+                                if (Enum.IsDefined(typeof(CardProperties), cur_token.val))
+                                    return WichTypeIs(finalToken);
+                                throw new Exception("Expected method return type not null.");
+                            }
+                            throw new Exception("Expected semicolon or method call.");
+                        } else if (cur_token.val == "Find") {
+                            NextAndSave(TokenType.Keyword);
+                            Next(TokenType.LParen);
+                            dNext = NextAndSave;
+                            Predicate(variables2);
+                            Next(TokenType.RParen);
+                            if (cur_token.type == finalToken)
+                                return "List<Card>";
+                            else if (cur_token.type == TokenType.Point) {
+                                Next(TokenType.Point);
+
+                                if (Enum.IsDefined(typeof(CardListProperties), cur_token.val))
+                                    return WichTypeIs(finalToken);
+                                throw new Exception("Expected method return type not null.");
+                            } else if (cur_token.type == TokenType.LSBracket) {
+                                NextAndSave(TokenType.LSBracket);
+                                dNext = NextAndSave;
+                                Expr();
+                                NextAndSave(TokenType.RSBracket);
+                                if (cur_token.type == finalToken)
+                                    return "Card";
+                                else if (cur_token.type == TokenType.Point) {
+                                    Next(TokenType.Point);
+                                    if (Enum.IsDefined(typeof(CardProperties), cur_token.val))
+                                        return WichTypeIs(finalToken);
+                                    throw new Exception("Uknown method or property.");
+                                }
+                                throw new Exception("Variable declaration error.");
+                            }
+                            throw new Exception("Expected semicolon or method call.");
+                        } 
+                        throw new Exception("Expected method return type not null.");
                     }
                     throw new Exception("Expected variable or method.");
                 }
+                throw new Exception("Expected variable or method.");
             }
-            // Expect "card"
-            if (
-                cur_token.val != "card"
-                && cur_token.type != TokenType.End
-            )
-                throw new Exception($"Expected card declaration after effects declarations.");
-
-            while (cur_token.val == "card") {
-                // Collect properties
-                Next(TokenType.Keyword);
-                Next(TokenType.LCBracket);
-                Properties(); 
-
-                // Effect found
-                if (cur_token.type == TokenType.Comma) {
-                    Next(TokenType.Comma);
-                    if (cur_token.val == "OnActivation")
-                        Next(TokenType.Keyword);
-                    else
-                        throw new Exception("OnActivation keyword expected");
-                    Next(TokenType.Colon);
-                    Next(TokenType.LSBracket);
-                    CardEffect();
-                    Next(TokenType.RSBracket);  
-                }
-
-                Next(TokenType.RCBracket);
-
-                // Create card blueprint
-                CardMaker cardCreator = new();
-                if (
-                    !IsCardWithEffectCorrect()
-                    && cardEffects.Count == 0
-                )
-                    cardCreator.Create(props, new List<Effect>());
-                else if (IsCardWithEffectCorrect())
-                    cardCreator.Create(props, cardEffects);
-                else
-                    throw new Exception("This card cannot have effects");
-
-                Console.WriteLine("Card created with properties:");
-                foreach (var property in props)
-                    Console.WriteLine($"Prop: {property.type}, Val: {property.value}");
-
-                props.Clear();
-                cardEffects.Clear();
-            }
-            if (cur_token.type != TokenType.End)
-                throw new Exception($"Syntax error in: {cur_token.pos}");  
         }
-        else throw new Exception($"Syntax error in: {cur_token.pos}");
+    }
+
+    // Parse Cards
+    private void ParseCards() {
+        // Expect "card"
+        if (
+            cur_token.val != "card"
+            && cur_token.type != TokenType.End
+        )
+            throw new Exception($"Expected card declaration after effects declarations.");
+
+        while (cur_token.val == "card") {
+            // Collect properties
+            Next(TokenType.Keyword);
+            Next(TokenType.LCBracket);
+            Properties(); 
+
+            // Effect found
+            if (cur_token.type == TokenType.Comma) {
+                Next(TokenType.Comma);
+                if (cur_token.val == "OnActivation")
+                    Next(TokenType.Keyword);
+                else
+                    throw new Exception("OnActivation keyword expected");
+                Next(TokenType.Colon);
+                Next(TokenType.LSBracket);
+                CardEffect();
+                Next(TokenType.RSBracket);  
+            }
+
+            Next(TokenType.RCBracket);
+
+            // Create card blueprint
+            CardMaker cardCreator = new();
+            if (
+                !IsCardWithEffectCorrect()
+                && cardEffects.Count == 0
+            )
+                cardCreator.Create(props, new List<Effect>());
+            else if (IsCardWithEffectCorrect())
+                cardCreator.Create(props, cardEffects);
+            else
+                throw new Exception("This card cannot have effects");
+
+            Console.WriteLine("Card created with properties:");
+            foreach (var property in props)
+                Console.WriteLine($"Prop: {property.type}, Val: {property.value}");
+
+            props.Clear();
+            cardEffects.Clear();
+        }
+        if (cur_token.type != TokenType.End)
+            throw new Exception($"Syntax error in: {cur_token.pos}");  
     }
 
     // Change to next token
@@ -1259,7 +1269,7 @@ public class Parser {
                 return (Effect)effect.Clone();
         }
 
-        throw new Exception("Fffect does not exist.");
+        throw new Exception("Effect does not exist.");
     }
 
     private void SetParams(Effect effect, ref int count) {
@@ -1276,7 +1286,7 @@ public class Parser {
                         else if (param.type == "Bool") {
                             dNext = Next;
                             variable.val = ParseBooleanExpression();
-                        } else if(param.type == "String") {                     
+                        } else if (param.type == "String") {                     
                             variable.val = ParseString();
                         } else throw new Exception("Invalid parameter type.");
 
@@ -1328,20 +1338,19 @@ public class Parser {
         Next(TokenType.Comma);
 
         //Single
-        if (cur_token.val == "Single")
+        if (cur_token.val == "Single") {
             Next(TokenType.Keyword);
-        else
-            throw new Exception("Single expected");
+            Next(TokenType.Colon);
 
-        Next(TokenType.Colon);
-
-        if (cur_token.val == "false") {
+            if (cur_token.val == "false") {
+                effect.single = false;
+                Next(TokenType.Word);
+            } else if (cur_token.val == "true") {
+                effect.single = true;
+                Next(TokenType.Word);
+            } else throw new Exception("Expected [true] or [false].");
+        } else
             effect.single = false;
-            Next(TokenType.Word);
-        } else if(cur_token.val == "true") {
-            effect.single = true;
-            Next(TokenType.Word);
-        } else throw new Exception("Expected [true] or [false].");
 
         Next(TokenType.Comma);
 
@@ -1444,9 +1453,12 @@ public class Parser {
     private bool IsCardWithEffectCorrect() {
         foreach (var property in props)
         if (
-            (string)property.value == "Silver"
-            || (string)property.value == "Gold"
-            || (string)property.value == "Leader"
+            property.type == "Type"
+            && (
+                (string)property.value == "Silver"
+                || (string)property.value == "Gold"
+                || (string)property.value == "Leader"
+            )
         )
             return true;
         return false;
@@ -1521,8 +1533,7 @@ public class Parser {
         return result;
     }
 
-    private bool ParseAndExpression()
-    {
+    private bool ParseAndExpression() {
         var result = ParseRelationalExpression();
 
         while (cur_token.type == TokenType.AND) {
@@ -1619,7 +1630,7 @@ public class Parser {
             bool result = ParseOrExpression();
             dNext(TokenType.RParen);
             return result;
-        } else if(cur_token.type == TokenType.Word) {
+        } else if (cur_token.type == TokenType.Word) {
             foreach (var variable in cur_vars) {
                 if (
                     variable.name == cur_token.val
@@ -1733,7 +1744,7 @@ public class Parser {
         if (cur_token.type == TokenType.At) {
             dNext(TokenType.At);
             result += ParseString(); 
-        } else if(cur_token.type == TokenType.DoubleAt) {
+        } else if (cur_token.type == TokenType.DoubleAt) {
             dNext(TokenType.DoubleAt);
             result += " " + ParseString(); 
         }
