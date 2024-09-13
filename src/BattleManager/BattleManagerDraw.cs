@@ -45,6 +45,7 @@ public partial class BattleManager
     private const string TEXT_DRAW = "It's a draw. Players failed to decide a victor.";
     private const string TEXT_PRESS_ENTER = "Press Enter to continue.";
     private const string TEXT_PRESS_F1 = "Press F1 for help.";
+    private const string TEXT_CARD_FACTION = "Faction: {0}";
     private const string TEXT_CARD_TYPE = "Type: {0}";
     private const string TEXT_CARD_EFFECT = "Effect: {0}";
     private const string TEXT_CARD_DESCRIPTION = "\n{0}";
@@ -445,6 +446,20 @@ Licenced under MIT Licence. Copyright (c) 2024 DP-404
                     Color.White
                 );
                 last_ypos += (int)card_name_size.Y;
+
+                // Draw Card Faction
+                var card_faction = gt.WrapText(fnt_message, string.Format(TEXT_CARD_FACTION, card.faction), PREVIEW_CARD_WIDTH);
+                var card_faction_size = fnt_message.MeasureString(card_faction);
+                gt.spriteBatch.DrawString(
+                    fnt_message,
+                    card_faction,
+                    new Vector2(
+                        PREVIEW_CARD_XPOS,
+                        last_ypos
+                    ),
+                    Color.White
+                );
+                last_ypos += (int)card_faction_size.Y;
 
                 // Draw Card Info Type
                 var card_type = gt.WrapText(fnt_message, string.Format(TEXT_CARD_TYPE, card.type_name), PREVIEW_CARD_WIDTH);
