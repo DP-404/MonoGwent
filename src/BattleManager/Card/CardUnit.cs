@@ -5,13 +5,13 @@ namespace MonoGwent;
 public class CardUnit : Card {
     public const int POWER_DECOY = 0;
     private const string TYPE_SILVER_NAME = "Silver";
-    private const string TYPE_GOLDEN_NAME = "Golden";
+    private const string TYPE_GOLD_NAME = "Gold";
     private const string TYPE_DECOY_NAME = "Decoy";
 
     public override string type_name {get => 
         !is_decoy?
             is_hero?
-                TYPE_GOLDEN_NAME
+                TYPE_GOLD_NAME
                 : TYPE_SILVER_NAME
             : TYPE_DECOY_NAME;
     }

@@ -25,7 +25,7 @@ Decks are filled with lots of different cards. Each decks is its own faction, wh
 The existing card types are:
 - **Unit**: these are the main type, as they add power to the player's overall. Unit cards can be played in any of the fields whose type is specified in the types of the card. The field types are Melee, Range and Siege. These can be:
     * **Silver**: decks can have up to 3 copies of these cards.
-    * **Golden (Hero)**: decks can only have 1 copy of these cards. They are also unaffected by any effect.
+    * **Gold (Hero)**: decks can only have 1 copy of these cards. They are also unaffected by any effect.
 - **Weather**: after being placed in any of the fields whose type is specified in the types of the card, all cards' power in this field for both players are decreased.
 - **Dispel**: cancel one Weather in any of the fields whose type is specified in the types of the card, or all Weathers at once.
 - **Boost**: increase the power of all cards in a single one of any of the fields whose type is specified in the types of the card.
@@ -37,13 +37,12 @@ From all the existing cards, decks for all factions (except "Neutral" faction) a
 | Card Type | Power | Has Effect | Quantity |
 |:---|:---:|:---:|:---:|
 | Leader | - | - | 1 |
-| Unit Silver | < 4 | No | 3 |
-| ... | < 4 | - | 3 |
+| Unit Silver | up to 3 | - | 3 |
 | ... | 4 to 5 | No | 3 |
 | ... | 4 to 5 | Yes | 2 |
-| ... | 6 > | No | 2 |
-| ... | 6 > | Yes | 1 |
-| Unit Golden | - | - | 1 |
+| ... | 6 and on | No | 2 |
+| ... | 6 and on | Yes | 1 |
+| Unit Gold | - | - | 1 |
 | Weather | - | - | 1 |
 | Dispel | - | - | 1 |
 | Boost | - | - | 1 |
@@ -102,7 +101,7 @@ Note: To know how Monogame projects work, please refer to the [Monogame Official
 - `/src`: game code.
     - `Gwent.cs`: the `Gwent` class that represents the game is here. Inheriting from `Microsoft.Xna.Framework.Game`, it includes all sorts of utilities to develop and run a game. Application logic should be put here.
 - `/src/BattleManager`: game logic code.
-    - `/Card`: defines the base `Card` class, from which all the other card classes inherit. There is also the `CardUnit` (represents Silver/Golden unit cards and Decoy cards), `CardLeader`, `CardWeather` (represents Weather cards and Dispel cards) and `CardBoost`.
+    - `/Card`: defines the base `Card` class, from which all the other card classes inherit. There is also the `CardUnit` (represents Silver/Gold unit cards and Decoy cards), `CardLeader`, `CardWeather` (represents Weather cards and Dispel cards) and `CardBoost`.
     - `/Effect`: defines the base `IEffect` interface, from which all the other card effects inherit. Effects are first called their `Eval()` method, which returns wether the effect should be activated, then the `Use()` method has the actual effect actions.
     - `/Scene`: defines the base `IScene` interface, from which all the other scenes inherit. Scenes logic is in the `Update()` method, which updated the game state according to different moments of the game. 
     - `BattleManager.cs` (partial `BattleManagerDraw.cs`): the core of the battle system and most likely the whole game, since all the `Update()` and `Draw()` logic is called through this root. The BM `Update()` method evaluates according to the current `IScene`, which calls a specific `Update()` method, this has different conditions with the `Cursor` indexes, the current/rival `Player` state and the `Keyboard` inputs to finally take the actions in the game, whereas the `Draw` while using the game status draws on screen.
@@ -224,7 +223,7 @@ If you press the script editor key in-game, a text editor will be opened, allowi
         - `Shuffle()`: Shuffles the list.
 
 ### Cards (`card`)
-- **Type**: The card type (can be "Golden", "Silver", "Weather", "Boost", "Leader", etc...).
+- **Type**: The card type (can be "Gold", "Silver", "Weather", "Boost", "Leader", etc...).
 - **Name**: The card name.
 - **Faction**: The card faction, ideally all cards of a deck belong to the same faction.
 - **Power**: The card power or points. Weather, Boost and Leader have `Power = 0`.
@@ -252,7 +251,7 @@ If you press the script editor key in-game, a text editor will be opened, allowi
 - [x] Game can be won.
 - [x] Unit cards.
     * [x] Silver cards.
-    * [x] Golden cards.
+    * [x] Gold cards.
     * [x] Special effects.
 - [x] Leader cards.
 - [x] Additional leader cards effects.
