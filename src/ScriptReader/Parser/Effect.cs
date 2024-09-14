@@ -174,7 +174,9 @@ public class Effect : IEffect {
                 if (sourceTargets != "empty") {
                     if (single) {
                         List<Card> cards = (List<Card>)variable.val;
-                        List<Card> cards2 = new(){cards[0]};
+                        List<Card> cards2 = new();
+                        if (cards.Count != 0)
+                            cards2 = new(){cards[0]};
                         variable.val = cards2;
                     }
 
