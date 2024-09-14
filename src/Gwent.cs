@@ -1,11 +1,14 @@
 ﻿
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace MonoGwent;
+
+public class GameRestartException : Exception {}
 
 public class GameTools {
     public GraphicsDeviceManager graphics;
@@ -86,9 +89,7 @@ public class Gwent : Game {
         if (Keyboard.GetState().IsKeyDown(Keys.F4))
             ToggleFullScreen();
         if (Keyboard.GetState().IsKeyDown(Keys.F12)) {
-            Startup();
-            LoadContent();
-            Initialize();
+            throw new GameRestartException();
         }
 
         // TODO: Add your update logic here

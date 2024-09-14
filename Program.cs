@@ -1,2 +1,12 @@
-﻿using var game = new MonoGwent.Gwent();
-game.Run();
+﻿using System;
+using MonoGwent;
+
+while (true) {
+    try {
+        using var game = new Gwent();
+        game.Run();
+    } catch (GameRestartException) {
+        continue;
+    }
+    Environment.Exit(0);
+}
