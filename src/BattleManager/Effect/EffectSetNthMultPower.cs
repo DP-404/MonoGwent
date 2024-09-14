@@ -6,6 +6,9 @@ public class EffectSetNthMultPower : IEffect {
     public string Description {get => $"When placed, multiplies this card power by the amount of copies of it in your field.";}
     public EffectType Type {get => EffectType.ON_USE;}
 
+    public object Clone() {
+        return new EffectSetNthMultPower();
+    }
     public bool Eval(BattleManager bm) {
         return true;
     }

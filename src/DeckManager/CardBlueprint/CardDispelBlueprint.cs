@@ -14,7 +14,8 @@ public class CardDispelBlueprint : CardBlueprint {
             img_name=image_name,
             img=image,
             types=types,
-            penalty=CardWeather.DISPEL_PENALTY
+            penalty=CardWeather.DISPEL_PENALTY,
+            effects=GetEffects()
         };
     }
 }

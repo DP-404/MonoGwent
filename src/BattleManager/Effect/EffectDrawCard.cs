@@ -6,6 +6,9 @@ public class EffectDrawCard : IEffect {
     public string Description {get => "Draws an extra card.";}
     public EffectType Type {get => EffectType.ON_USE;}
 
+    public object Clone() {
+        return new EffectDrawCard();
+    }
     public bool Eval(BattleManager bm) {
         return bm.EffectPlayer.deck.Count > 0;
     }

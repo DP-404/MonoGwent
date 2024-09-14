@@ -8,6 +8,9 @@ public class EffectSetWeather : IEffect {
     public EffectType Type {get => EffectType.ON_USE;}
     public RowType row;
 
+    public object Clone() {
+        return new EffectSetWeather(row);
+    }
     public EffectSetWeather(RowType row) {
         this.row = row;
     }

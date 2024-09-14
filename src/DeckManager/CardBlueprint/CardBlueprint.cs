@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 using Microsoft.Xna.Framework.Graphics;
@@ -13,6 +14,7 @@ public class CardBlueprint {
     public virtual string type_name {get;}
     public string image_name {get => faction.ToLower().Replace(' ','-')+"_"+type_name.ToLower()+"_"+name.ToLower().Replace(' ','-');}
     public RowType[] types = [];
+    public List<IEffect> effects = new ();
 
     public Texture2D image;
 
@@ -36,6 +38,12 @@ public class CardBlueprint {
         image = gt.content.Load<Texture2D>(actual_image_name);
     }
 
+    protected List<IEffect> GetEffects() {
+        List<IEffect> new_effects = new();
+        foreach (var e in effects)
+            new_effects.Add((IEffect)e.Clone());
+        return new_effects;
+    }
     public virtual Card GetCard() {
         throw new NotImplementedException();
     }

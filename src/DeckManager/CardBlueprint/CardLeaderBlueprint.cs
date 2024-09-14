@@ -4,7 +4,6 @@ namespace MonoGwent;
 
 public class CardLeaderBlueprint : CardBlueprint {
     public override string type_name {get => "Leader";}
-    public List<IEffect> effects = new ();
 
     public override Card GetCard() {
         return new CardLeader {
@@ -15,7 +14,7 @@ public class CardLeaderBlueprint : CardBlueprint {
             img_name=image_name,
             img=image,
             types=types,
-            effects=effects,
+            effects=GetEffects()
         };
     }
 }

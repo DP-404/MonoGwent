@@ -6,6 +6,9 @@ public class EffectRemoveRivalWeakest : IEffect {
     public string Description {get => $"Removes the rival card with the lowest power from the field.";}
     public EffectType Type {get => EffectType.ON_USE;}
 
+    public object Clone() {
+        return new EffectRemoveRivalWeakest();
+    }
     public bool Eval(BattleManager bm) {
         return true;
     }

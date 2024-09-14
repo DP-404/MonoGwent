@@ -16,7 +16,8 @@ public class CardDecoyBlueprint : CardBlueprint {
             types=types,
             original_power=CardUnit.POWER_DECOY,
             power=CardUnit.POWER_DECOY,
-            is_hero=false
+            is_hero=false,
+            effects=GetEffects()
         };
     }
 }

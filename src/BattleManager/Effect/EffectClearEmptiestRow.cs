@@ -9,6 +9,9 @@ public class EffectClearEmptiestRow : IEffect {
     public EffectType Type {get => EffectType.ON_USE;}
 
 
+    public object Clone() {
+        return new EffectClearEmptiestRow();
+    }
     public bool Eval(BattleManager bm) {
         return true;
     }

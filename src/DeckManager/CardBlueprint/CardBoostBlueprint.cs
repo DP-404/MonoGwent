@@ -15,7 +15,8 @@ public class CardBoostBlueprint : CardBlueprint {
             img_name=image_name,
             img=image,
             types=types,
-            bonus=bonus
+            bonus=bonus,
+            effects=GetEffects()
         };
     }
 }

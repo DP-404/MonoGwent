@@ -6,7 +6,6 @@ public class CardUnitBlueprint : CardBlueprint {
     public override string type_name {get => "Unit";}
     public int power;
     public bool is_hero = false;
-    public List<IEffect> effects = new ();
 
     public override Card GetCard() {
         return new CardUnit {
@@ -20,7 +19,7 @@ public class CardUnitBlueprint : CardBlueprint {
             original_power=power,
             power=power,
             is_hero=is_hero,
-            effects=effects
+            effects=GetEffects()
         };
     }
 }

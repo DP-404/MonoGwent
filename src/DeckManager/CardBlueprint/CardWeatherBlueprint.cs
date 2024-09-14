@@ -15,7 +15,8 @@ public class CardWeatherBlueprint : CardBlueprint {
             img_name=image_name,
             img=image,
             types=types,
-            penalty=power
+            penalty=power,
+            effects=GetEffects()
         };
     }
 }

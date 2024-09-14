@@ -7,6 +7,9 @@ public class EffectAveragePower : IEffect {
     public string Description {get => $"Sets the average power among all cards in the fields to all them.";}
     public EffectType Type {get => EffectType.ON_USE;}
 
+    public object Clone() {
+        return new EffectAveragePower();
+    }
     public bool Eval(BattleManager bm) {
         return true;
     }

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MonoGwent;
 
-public class Effect : IEffect, ICloneable {
+public class Effect : IEffect {
     // Effect name
     public string name {get;}
     // Card parameters

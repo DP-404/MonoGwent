@@ -8,6 +8,9 @@ public class EffectSetBoost : IEffect {
     public EffectType Type {get => EffectType.ON_USE;}
     public RowType row;
 
+    public object Clone() {
+        return new EffectSetBoost(row);
+    }
     public EffectSetBoost(RowType row) {
         this.row = row;
     }

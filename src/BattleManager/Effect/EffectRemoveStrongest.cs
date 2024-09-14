@@ -6,6 +6,9 @@ public class EffectRemoveStrongest : IEffect {
     public string Description {get => $"Removes the card with the highest power from the field.";}
     public EffectType Type {get => EffectType.ON_USE;}
 
+    public object Clone() {
+        return new EffectRemoveRivalWeakest();
+    }
     public bool Eval(BattleManager bm) {
         return true;
     }

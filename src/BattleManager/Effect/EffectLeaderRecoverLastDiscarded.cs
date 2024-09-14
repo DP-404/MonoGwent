@@ -7,6 +7,9 @@ public class EffectLeaderRecoverLastDiscardedCard : IEffect {
     public EffectType Type {get => EffectType.ON_USE;}
 
 
+    public object Clone() {
+        return new EffectLeaderRecoverLastDiscardedCard();
+    }
     public bool Eval(BattleManager bm) {
         if (
             bm.EffectPlayer.graveyard.Count == 0
