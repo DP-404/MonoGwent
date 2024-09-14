@@ -35,11 +35,11 @@ public class SceneDeckSelection : IScene {
                 Keyboard.GetState().IsKeyDown(Keys.Right)
             ) {
                 bm.SfxSelect.Play();
-                if (bm.Cursor.index == DecksDump.Count-1)
+                if (bm.Cursor.index == bm.dd.Count-1)
                     bm.Cursor.Move(0);
                 else
                     bm.Cursor.Move(bm.Cursor.index+1);
-                bm.Current.original_deck = DecksDump.GetDeck(bm.Cursor.index);
+                bm.Current.original_deck = bm.dd.GetDeck(bm.Cursor.index);
             }
             // Move Left
             else if (
@@ -47,10 +47,10 @@ public class SceneDeckSelection : IScene {
             ) {
                 bm.SfxSelect.Play();
                 if (bm.Cursor.index == 0)
-                    bm.Cursor.Move(DecksDump.Count-1);
+                    bm.Cursor.Move(bm.dd.Count-1);
                 else
                     bm.Cursor.Move(bm.Cursor.index-1);
-                bm.Current.original_deck = DecksDump.GetDeck(bm.Cursor.index);
+                bm.Current.original_deck = bm.dd.GetDeck(bm.Cursor.index);
             }
             // Read Keys
             else if (

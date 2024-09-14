@@ -16,6 +16,8 @@ public partial class BattleManager {
     public const int REDRAW_PHASE = -1;
     public const int LOSE_HEALTH = 0;
 
+    public CardsDump cd;
+    public DecksDump dd;
     private int phase = REDRAW_PHASE;
     private IScene scene = new SceneDeckSelection();
     private bool help = false;
@@ -94,6 +96,8 @@ public partial class BattleManager {
     public SoundEffect SfxCancel {get => sfx_cancel;}
 
     public BattleManager() {
+        cd = new CardsDump();
+        dd = new DecksDump(cd);
         for (int i = 0; i < phase_victors.Length; i++) {
             phase_victors[i] = new();
         }
@@ -108,11 +112,15 @@ public partial class BattleManager {
         MediaPlayer.Play(bgm_startup);
         MediaPlayer.IsRepeating = true;
         current_player = player_1;
-        player_1.original_deck = DecksDump.GetDeck();
-        player_2.original_deck = DecksDump.GetDeck();
+        player_1.original_deck = dd.GetDeck();
+        player_2.original_deck = dd.GetDeck();
     }
 
     public void LoadContent(GameTools gt) {
+        cd.LoadContent(gt);
+        dd.Initialize();
+        dd.LoadContent(gt);
+
         Card.img_back = gt.content.Load<Texture2D>("graphics/img/card_back");
         Card.img_power_normal = gt.content.Load<Texture2D>("graphics/img/card_power_normal");
         Card.img_power_hero = gt.content.Load<Texture2D>("graphics/img/card_power_hero");

@@ -75,9 +75,6 @@ public class Gwent : Game {
 
         // TODO: use this.Content to load your game content here
 
-        CardsDump.LoadContent(gameTools);
-        DecksDump.Initialize();
-        DecksDump.LoadContent(gameTools);
         bm.LoadContent(gameTools);
     }
 

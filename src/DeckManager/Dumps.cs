@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace MonoGwent;
 
-public struct CardsDump {
+public class CardsDump {
 
-    public static List<CardBlueprint> blueprints = new() {
+    public List<CardBlueprint> blueprints = new() {
 
         new CardLeaderBlueprint() {
             name="The Pale King",
@@ -436,24 +436,29 @@ public struct CardsDump {
         }
     };
 
-    public static void LoadContent(GameTools gt) {
+    public void LoadContent(GameTools gt) {
         foreach (var bp in blueprints) {
             bp.LoadContent(gt);
         }
     }
 }
 
-public struct DecksDump {
+public class DecksDump {
 
     private const int DEFAULT_DECK_INDEX = 0;
-    public static Dictionary<string,Deck> decks = new();
-    public static int Count {get => decks.Count();}
+    private CardsDump cd;
+    public Dictionary<string,Deck> decks = new();
+    public int Count {get => decks.Count();}
 
-    public static Deck Generate(string faction) {
+    public DecksDump(CardsDump cd) {
+        this.cd = cd;
+    }
+
+    public Deck Generate(string faction) {
         Dictionary<CardBlueprint,int> cards = new();
         CardLeaderBlueprint leader = null;
 
-        foreach (var c in CardsDump.blueprints) {
+        foreach (var c in cd.blueprints) {
             if (
                 c.faction == faction
                 || c.faction == Card.NEUTRAL_FACTION
@@ -507,12 +512,12 @@ public struct DecksDump {
         );
     }
 
-    public static Deck GetDeck(int index=DEFAULT_DECK_INDEX) {
+    public Deck GetDeck(int index=DEFAULT_DECK_INDEX) {
         return decks.Values.ToArray()[index].GetCopy();
     }
 
-    public static void Initialize() {
-        foreach (var bp in CardsDump.blueprints) {
+    public void Initialize() {
+        foreach (var bp in cd.blueprints) {
             if (
                 bp.faction != Card.NEUTRAL_FACTION
                 && !decks.Keys.Contains(bp.faction)
@@ -525,7 +530,7 @@ public struct DecksDump {
         }
     }
 
-    public static void LoadContent(GameTools gt) {
+    public void LoadContent(GameTools gt) {
         foreach (var deck in decks.Values) {
             deck.LoadContent(gt);
         }

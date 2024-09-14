@@ -47,7 +47,7 @@ public class CardMaker {
                     break;
             }
 
-        CardsDump.blueprints.Add(blueprint);
+        Context.bm.cd.blueprints.Add(blueprint);
     }
 
     // Add actual card properties values
